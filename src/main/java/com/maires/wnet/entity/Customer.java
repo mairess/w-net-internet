@@ -1,5 +1,6 @@
 package com.maires.wnet.entity;
 
+import com.maires.wnet.utils.DateUtil;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,8 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
@@ -54,9 +53,7 @@ public class Customer {
     this.cpf = cpf;
     this.phone = phone;
     this.email = email;
-    LocalDateTime now = LocalDateTime.now().minusHours(3);
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm:ss");
-    this.registrationDate = now.format(formatter);
+    this.registrationDate = DateUtil.formatCurrentDate();
   }
 
   /**

@@ -1,5 +1,6 @@
 package com.maires.wnet.entity;
 
+import com.maires.wnet.utils.DateUtil;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,7 +37,7 @@ public class Installation {
   @OneToOne(mappedBy = "installation", cascade = CascadeType.ALL)
   private Technician technician;
 
-  private Date installationDate;
+  private String installationDate;
 
   /**
    * Instantiates a new Installation.
@@ -56,7 +56,7 @@ public class Installation {
     this.address = address;
     this.plan = plan;
     this.technician = technician;
-    this.installationDate = new Date();
+    this.installationDate = DateUtil.formatCurrentDate();
   }
 
   /**
@@ -154,7 +154,7 @@ public class Installation {
    *
    * @return the installation date
    */
-  public Date getInstallationDate() {
+  public String getInstallationDate() {
     return installationDate;
   }
 
@@ -163,7 +163,7 @@ public class Installation {
    *
    * @param installationDate the installation date
    */
-  public void setInstallationDate(Date installationDate) {
+  public void setInstallationDate(String installationDate) {
     this.installationDate = installationDate;
   }
 }
