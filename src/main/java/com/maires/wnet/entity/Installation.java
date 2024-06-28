@@ -6,9 +6,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.Date;
+import java.util.List;
 
 /**
  * The type Installation.
@@ -25,11 +27,8 @@ public class Installation {
   @JoinColumn(name = "address_id")
   private Address address;
 
-  @OneToOne(mappedBy = "installationFirst", cascade = CascadeType.ALL)
-  private Equipment equipmentFirst;
-
-  @OneToOne(mappedBy = "installationSecond", cascade = CascadeType.ALL)
-  private Equipment equipmentSecond;
+  @OneToMany(mappedBy = "installation", cascade = CascadeType.ALL)
+  private List<Equipment> equipments;
 
   @OneToOne
   @JoinColumn(name = "plan_id")
@@ -79,57 +78,39 @@ public class Installation {
   }
 
   /**
-   * Gets address id.
+   * Gets address.
    *
-   * @return the address id
+   * @return the address
    */
   public Address getAddress() {
     return address;
   }
 
   /**
-   * Sets address id.
+   * Sets address.
    *
-   * @param address the address id
+   * @param address the address
    */
   public void setAddress(Address address) {
     this.address = address;
   }
 
   /**
-   * Gets equipment first.
+   * Gets equipments.
    *
-   * @return the equipment first
+   * @return the equipments
    */
-  public Equipment getEquipmentFirst() {
-    return equipmentFirst;
+  public List<Equipment> getEquipments() {
+    return equipments;
   }
 
   /**
-   * Sets equipment first.
+   * Sets equipments.
    *
-   * @param equipmentFirst the equipment first
+   * @param equipments the equipments
    */
-  public void setEquipmentFirst(Equipment equipmentFirst) {
-    this.equipmentFirst = equipmentFirst;
-  }
-
-  /**
-   * Gets equipment second.
-   *
-   * @return the equipment second
-   */
-  public Equipment getEquipmentSecond() {
-    return equipmentSecond;
-  }
-
-  /**
-   * Sets equipment second.
-   *
-   * @param equipmentSecond the equipment second
-   */
-  public void setEquipmentSecond(Equipment equipmentSecond) {
-    this.equipmentSecond = equipmentSecond;
+  public void setEquipments(List<Equipment> equipments) {
+    this.equipments = equipments;
   }
 
   /**
@@ -151,36 +132,18 @@ public class Installation {
   }
 
   /**
-   * Gets plan id.
+   * Gets technician.
    *
-   * @return the plan id
-   */
-  public Plan getPlanId() {
-    return plan;
-  }
-
-  /**
-   * Sets plan id.
-   *
-   * @param plan the plan id
-   */
-  public void setPlanId(Plan plan) {
-    this.plan = plan;
-  }
-
-  /**
-   * Gets technician id.
-   *
-   * @return the technician id
+   * @return the technician
    */
   public Technician getTechnician() {
     return technician;
   }
 
   /**
-   * Sets technician id.
+   * Sets technician.
    *
-   * @param technician the technician id
+   * @param technician the technician
    */
   public void setTechnician(Technician technician) {
     this.technician = technician;

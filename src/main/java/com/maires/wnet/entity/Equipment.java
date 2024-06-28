@@ -4,7 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.Date;
 
@@ -30,11 +31,9 @@ public class Equipment {
 
   private Date provisionDate;
 
-  @OneToOne
-  private Installation installationFirst;
-
-  @OneToOne
-  private Installation installationSecond;
+  @ManyToOne
+  @JoinColumn(name = "installation_id")
+  private Installation installation;
 
   /**
    * Instantiates a new Equipment.
@@ -77,18 +76,18 @@ public class Equipment {
   }
 
   /**
-   * Gets addressType.
+   * Gets type.
    *
-   * @return the addressType
+   * @return the type
    */
   public String getType() {
     return type;
   }
 
   /**
-   * Sets addressType.
+   * Sets type.
    *
-   * @param type the addressType
+   * @param type the type
    */
   public void setType(String type) {
     this.type = type;
@@ -164,5 +163,23 @@ public class Equipment {
    */
   public void setProvisionDate(Date provisionDate) {
     this.provisionDate = provisionDate;
+  }
+
+  /**
+   * Gets installation.
+   *
+   * @return the installation
+   */
+  public Installation getInstallation() {
+    return installation;
+  }
+
+  /**
+   * Sets installation.
+   *
+   * @param installation the installation
+   */
+  public void setInstallation(Installation installation) {
+    this.installation = installation;
   }
 }
