@@ -1,0 +1,23 @@
+on:
+  pull_request:
+    types: [ opened, synchronize ]
+
+jobs:
+
+  validate-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository and switch to branch
+        uses: actions/checkout@v3
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Validate checkstyle
+        run: mvn checkstyle:check
+
+      - name: Validate test coverage
+        run: mvn clean verify
