@@ -36,22 +36,20 @@ public class Plan {
   public Plan() {
   }
 
+
   /**
    * Instantiates a new Plan.
    *
-   * @param name         the name
-   * @param speed        the speed
-   * @param price        the price
-   * @param isActive     the is active
-   * @param installation the installation
+   * @param name     the name
+   * @param speed    the speed
+   * @param price    the price
+   * @param isActive the is active
    */
-  public Plan(String name, Integer speed, Double price, boolean isActive,
-      Installation installation) {
+  public Plan(String name, Integer speed, Double price, boolean isActive) {
     this.name = name;
     this.speed = speed;
     this.price = price;
     this.isActive = isActive;
-    this.installation = installation;
   }
 
   /**
