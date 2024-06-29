@@ -46,13 +46,15 @@ public class AddressService {
         .orElseThrow(AddressNotFoundException::new);
   }
 
+
   /**
-   * Create address.
+   * Create address t.
    *
+   * @param <T>     the type parameter
    * @param address the address
-   * @return the address
+   * @return the t
    */
-  public Address createAddress(Address address) {
+  public <T extends Address> T createAddress(T address) {
     return addressRepository.save(address);
   }
 
