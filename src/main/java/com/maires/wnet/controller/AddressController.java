@@ -1,6 +1,5 @@
 package com.maires.wnet.controller;
 
-import com.maires.wnet.controller.dto.AddressDto;
 import com.maires.wnet.controller.dto.RuralAddressCreationDto;
 import com.maires.wnet.controller.dto.RuralAddressDto;
 import com.maires.wnet.controller.dto.UrbanAddressCreationDto;
@@ -43,6 +42,7 @@ public class AddressController {
     this.addressService = addressService;
   }
 
+
   /**
    * Find all addresses list.
    *
@@ -61,19 +61,24 @@ public class AddressController {
     }).toList();
   }
 
+
   /**
-   * Find address by id address dto.
+   * Find address by id record.
    *
    * @param addressId the address id
-   * @return the address dto
+   * @return the record
    * @throws AddressNotFoundException the address not found exception
    */
   @GetMapping("/{addressId}")
-  public AddressDto findAddressById(@PathVariable Long addressId)
+  public Record findAddressById(@PathVariable Long addressId)
       throws AddressNotFoundException {
-    return AddressDto.fromEntity(
-        addressService.findAddressById(addressId)
-    );
+    Address address = addressService.removeAddressById(addressId);
+
+    if (address instanceof UrbanAddress) {
+      return UrbanAddressDto.fromEntity((UrbanAddress) address);
+    } else {
+      return RuralAddressDto.fromEntity((RuralAddress) address);
+    }
   }
 
 
@@ -111,19 +116,24 @@ public class AddressController {
     );
   }
 
+
   /**
-   * Remove address by id address dto.
+   * Remove address by id record.
    *
    * @param addressId the address id
-   * @return the address dto
+   * @return the record
    * @throws AddressNotFoundException the address not found exception
    */
   @DeleteMapping("/{addressId}")
-  public AddressDto removeAddressById(@PathVariable Long addressId)
+  public Record removeAddressById(@PathVariable Long addressId)
       throws AddressNotFoundException {
-    return AddressDto.fromEntity(
-        addressService.removeAddressById(addressId)
-    );
+    Address address = addressService.removeAddressById(addressId);
+
+    if (address instanceof UrbanAddress) {
+      return UrbanAddressDto.fromEntity((UrbanAddress) address);
+    } else {
+      return RuralAddressDto.fromEntity((RuralAddress) address);
+    }
   }
 
 }
