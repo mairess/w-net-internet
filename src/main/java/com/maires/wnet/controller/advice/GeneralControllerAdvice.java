@@ -1,6 +1,6 @@
 package com.maires.wnet.controller.advice;
 
-import com.maires.wnet.service.exceptions.NotFoundException;
+import com.maires.wnet.service.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
