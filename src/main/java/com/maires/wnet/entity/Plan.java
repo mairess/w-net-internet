@@ -45,13 +45,11 @@ public class Plan {
    * @param isActive     the is active
    * @param installation the installation
    */
-  public Plan(String name, Integer speed, Double price, boolean isActive,
-      Installation installation) {
+  public Plan(String name, Integer speed, Double price, boolean isActive) {
     this.name = name;
     this.speed = speed;
     this.price = price;
     this.isActive = isActive;
-    this.installation = installation;
   }
 
   /**
