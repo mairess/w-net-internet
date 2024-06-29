@@ -1,4 +1,4 @@
-package com.maires.wnet.service.exceptions;
+package com.maires.wnet.service.exception;
 
 
 /**
