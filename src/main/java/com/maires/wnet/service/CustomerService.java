@@ -65,9 +65,9 @@ public class CustomerService {
    * @throws CustomerNotFoundException the customer not found exception
    */
   public Customer removeCustomerById(Long customerId) throws CustomerNotFoundException {
-    Customer customer = findCustomerById(customerId);
-    customerRepository.delete(customer);
-    return customer;
+    Customer deletedCustomer = findCustomerById(customerId);
+    customerRepository.delete(deletedCustomer);
+    return deletedCustomer;
   }
 
 }
