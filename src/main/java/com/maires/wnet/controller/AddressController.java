@@ -5,10 +5,9 @@ import com.maires.wnet.controller.dto.RuralAddressDto;
 import com.maires.wnet.controller.dto.UrbanAddressCreationDto;
 import com.maires.wnet.controller.dto.UrbanAddressDto;
 import com.maires.wnet.entity.Address;
-import com.maires.wnet.entity.RuralAddress;
-import com.maires.wnet.entity.UrbanAddress;
 import com.maires.wnet.service.AddressService;
 import com.maires.wnet.service.exception.AddressNotFoundException;
+import com.maires.wnet.utils.AddressUtil;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,13 +51,7 @@ public class AddressController {
   public List<Record> findAllAddresses() {
     List<Address> allAddresses = addressService.findAllAddresses();
 
-    return allAddresses.stream().map(address -> {
-      if (address instanceof UrbanAddress) {
-        return UrbanAddressDto.fromEntity((UrbanAddress) address);
-      } else {
-        return RuralAddressDto.fromEntity((RuralAddress) address);
-      }
-    }).toList();
+    return allAddresses.stream().map(AddressUtil::returnAddressType).toList();
   }
 
 
@@ -73,12 +66,7 @@ public class AddressController {
   public Record findAddressById(@PathVariable Long addressId)
       throws AddressNotFoundException {
     Address address = addressService.removeAddressById(addressId);
-
-    if (address instanceof UrbanAddress) {
-      return UrbanAddressDto.fromEntity((UrbanAddress) address);
-    } else {
-      return RuralAddressDto.fromEntity((RuralAddress) address);
-    }
+    return AddressUtil.returnAddressType(address);
   }
 
 
@@ -128,12 +116,7 @@ public class AddressController {
   public Record removeAddressById(@PathVariable Long addressId)
       throws AddressNotFoundException {
     Address address = addressService.removeAddressById(addressId);
-
-    if (address instanceof UrbanAddress) {
-      return UrbanAddressDto.fromEntity((UrbanAddress) address);
-    } else {
-      return RuralAddressDto.fromEntity((RuralAddress) address);
-    }
+    return AddressUtil.returnAddressType(address);
   }
 
 }
