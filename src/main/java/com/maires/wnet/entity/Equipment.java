@@ -1,5 +1,6 @@
 package com.maires.wnet.entity;
 
+import com.maires.wnet.utils.DateUtil;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -7,7 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.Date;
 
 /**
  * The type Equipment.
@@ -29,7 +29,7 @@ public class Equipment {
 
   private String manufacturer;
 
-  private Date provisionDate;
+  private String provisionDate;
 
   @ManyToOne
   @JoinColumn(name = "installation_id")
@@ -54,7 +54,7 @@ public class Equipment {
     this.model = model;
     this.serialNumber = serialNumber;
     this.manufacturer = manufacturer;
-    this.provisionDate = new Date();
+    this.provisionDate = DateUtil.formatCurrentDate();
   }
 
   /**
@@ -152,7 +152,7 @@ public class Equipment {
    *
    * @return the provision date
    */
-  public Date getProvisionDate() {
+  public String getProvisionDate() {
     return provisionDate;
   }
 
@@ -161,7 +161,7 @@ public class Equipment {
    *
    * @param provisionDate the provision date
    */
-  public void setProvisionDate(Date provisionDate) {
+  public void setProvisionDate(String provisionDate) {
     this.provisionDate = provisionDate;
   }
 
