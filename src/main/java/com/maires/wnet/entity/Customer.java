@@ -1,5 +1,6 @@
 package com.maires.wnet.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.maires.wnet.utils.DateUtil;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -32,6 +33,7 @@ public class Customer {
   private String registrationDate;
 
   @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+  @JsonIgnore
   private List<Address> addresses;
 
   /**
