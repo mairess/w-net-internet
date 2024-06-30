@@ -1,6 +1,8 @@
 package com.maires.wnet.controller.dto;
 
 import com.maires.wnet.entity.Equipment;
+import java.util.Date;
+
 
 /**
  * The type Equipment dto.
@@ -11,7 +13,8 @@ public record EquipmentDto(
     String model,
     String serialNumber,
     String manufacturer,
-    String provisionDate) {
+    Date provisionDate) {
+
 
   /**
    * From entity equipment dto.

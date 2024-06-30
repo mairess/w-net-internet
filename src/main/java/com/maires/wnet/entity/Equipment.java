@@ -1,6 +1,5 @@
 package com.maires.wnet.entity;
 
-import com.maires.wnet.utils.DateUtil;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.util.Date;
 
 /**
  * The type Equipment.
@@ -29,7 +29,7 @@ public class Equipment {
 
   private String manufacturer;
 
-  private String provisionDate;
+  private Date provisionDate;
 
   @ManyToOne
   @JoinColumn(name = "installation_id")
@@ -41,20 +41,23 @@ public class Equipment {
   public Equipment() {
   }
 
+
   /**
    * Instantiates a new Equipment.
    *
-   * @param type         the addressType
-   * @param model        the model
-   * @param serialNumber the serial number
-   * @param manufacturer the manufacturer
+   * @param type          the type
+   * @param model         the model
+   * @param serialNumber  the serial number
+   * @param manufacturer  the manufacturer
+   * @param provisionDate the provision date
    */
-  public Equipment(String type, String model, String serialNumber, String manufacturer) {
+  public Equipment(String type, String model, String serialNumber, String manufacturer,
+      Date provisionDate) {
     this.type = type;
     this.model = model;
     this.serialNumber = serialNumber;
     this.manufacturer = manufacturer;
-    this.provisionDate = DateUtil.formatCurrentDate();
+    this.provisionDate = provisionDate;
   }
 
   /**
@@ -147,21 +150,23 @@ public class Equipment {
     this.manufacturer = manufacturer;
   }
 
+
   /**
    * Gets provision date.
    *
    * @return the provision date
    */
-  public String getProvisionDate() {
+  public Date getProvisionDate() {
     return provisionDate;
   }
+
 
   /**
    * Sets provision date.
    *
    * @param provisionDate the provision date
    */
-  public void setProvisionDate(String provisionDate) {
+  public void setProvisionDate(Date provisionDate) {
     this.provisionDate = provisionDate;
   }
 
