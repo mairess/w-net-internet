@@ -1,6 +1,7 @@
 package com.maires.wnet.controller.advice;
 
 import com.maires.wnet.service.exception.NotFoundException;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,7 +22,8 @@ public class GeneralControllerAdvice {
    * @return the response entity
    */
   @ExceptionHandler(NotFoundException.class)
-  public ResponseEntity<String> handleNotFound(NotFoundException exception) {
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+  public ResponseEntity<Map<String, String>> handleNotFound(NotFoundException exception) {
+    Map<String, String> response = Map.of("message", exception.getMessage());
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
   }
 }

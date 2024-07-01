@@ -7,6 +7,7 @@ import com.maires.wnet.service.CustomerService;
 import com.maires.wnet.service.exception.AddressNotFoundException;
 import com.maires.wnet.service.exception.CustomerNotFoundException;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -104,7 +105,7 @@ public class CustomerController {
    * @throws AddressNotFoundException  the address not found exception
    */
   @PostMapping("/{customerId}/addresses/{addressId}")
-  public ResponseEntity<String> addCustomerAddress(@PathVariable Long customerId,
+  public ResponseEntity<Map<String, String>> addCustomerAddress(@PathVariable Long customerId,
       @PathVariable Long addressId)
       throws CustomerNotFoundException, AddressNotFoundException {
     return customerService.addCustomerAddress(customerId, addressId);

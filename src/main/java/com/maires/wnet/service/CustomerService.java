@@ -8,6 +8,7 @@ import com.maires.wnet.service.exception.AddressNotFoundException;
 import com.maires.wnet.service.exception.CustomerNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,12 @@ public class CustomerService {
 
   private final CustomerRepository customerRepository;
   private final AddressRepository addressRepository;
+
+  private final Map<String, String> responseSuccess = Map.of("Message",
+      "Address successful associated!");
+
+  private final Map<String, String> responseError = Map.of("Message",
+      "This address already has an association!");
 
   /**
    * Instantiates a new Customer service.
@@ -91,22 +98,23 @@ public class CustomerService {
    * @throws AddressNotFoundException  the address not found exception
    */
   @Transactional
-  public ResponseEntity<String> addCustomerAddress(Long customerId, Long addressId)
+  public ResponseEntity<Map<String, String>> addCustomerAddress(Long customerId, Long addressId)
       throws CustomerNotFoundException, AddressNotFoundException {
+
     Customer customer = findCustomerById(customerId);
     Address address = addressRepository.findById(addressId)
         .orElseThrow(AddressNotFoundException::new);
 
     if (address.getCustomer() != null) {
       return ResponseEntity.status(HttpStatus.CONFLICT)
-          .body("This address is already associated with a customer");
+          .body(responseError);
     }
 
     address.setCustomer(customer);
     customer.getAddresses().add(address);
     addressRepository.save(address);
 
-    return ResponseEntity.ok("Address successful associated");
+    return ResponseEntity.ok(responseSuccess);
 
   }
 }
