@@ -5,8 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 
 /**
  * The type Plan.
@@ -27,8 +28,8 @@ public class Plan {
 
   private boolean isActive;
 
-  @OneToOne(mappedBy = "plan", cascade = CascadeType.ALL)
-  private Installation installation;
+  @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
+  private List<Installation> installations;
 
   /**
    * Instantiates a new Plan.
@@ -143,20 +144,20 @@ public class Plan {
   }
 
   /**
-   * Gets installation.
+   * Gets installations.
    *
-   * @return the installation
+   * @return the installations
    */
-  public Installation getInstallation() {
-    return installation;
+  public List<Installation> getInstallations() {
+    return installations;
   }
 
   /**
-   * Sets installation.
+   * Sets installations.
    *
-   * @param installation the installation
+   * @param installations the installations
    */
-  public void setInstallation(Installation installation) {
-    this.installation = installation;
+  public void setInstallations(List<Installation> installations) {
+    this.installations = installations;
   }
 }

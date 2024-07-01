@@ -1,13 +1,15 @@
 package com.maires.wnet.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.Date;
 
 /**
  * The type Equipment.
@@ -21,15 +23,15 @@ public class Equipment {
 
   private Long id;
 
-  private String type;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "type")
+  private EquipmentType type;
 
   private String model;
 
   private String serialNumber;
 
   private String manufacturer;
-
-  private Date provisionDate;
 
   @ManyToOne
   @JoinColumn(name = "installation_id")
@@ -45,19 +47,16 @@ public class Equipment {
   /**
    * Instantiates a new Equipment.
    *
-   * @param type          the type
-   * @param model         the model
-   * @param serialNumber  the serial number
-   * @param manufacturer  the manufacturer
-   * @param provisionDate the provision date
+   * @param type         the type
+   * @param model        the model
+   * @param serialNumber the serial number
+   * @param manufacturer the manufacturer
    */
-  public Equipment(String type, String model, String serialNumber, String manufacturer,
-      Date provisionDate) {
+  public Equipment(EquipmentType type, String model, String serialNumber, String manufacturer) {
     this.type = type;
     this.model = model;
     this.serialNumber = serialNumber;
     this.manufacturer = manufacturer;
-    this.provisionDate = provisionDate;
   }
 
   /**
@@ -83,7 +82,7 @@ public class Equipment {
    *
    * @return the type
    */
-  public String getType() {
+  public EquipmentType getType() {
     return type;
   }
 
@@ -92,7 +91,7 @@ public class Equipment {
    *
    * @param type the type
    */
-  public void setType(String type) {
+  public void setType(EquipmentType type) {
     this.type = type;
   }
 
@@ -148,26 +147,6 @@ public class Equipment {
    */
   public void setManufacturer(String manufacturer) {
     this.manufacturer = manufacturer;
-  }
-
-
-  /**
-   * Gets provision date.
-   *
-   * @return the provision date
-   */
-  public Date getProvisionDate() {
-    return provisionDate;
-  }
-
-
-  /**
-   * Sets provision date.
-   *
-   * @param provisionDate the provision date
-   */
-  public void setProvisionDate(Date provisionDate) {
-    this.provisionDate = provisionDate;
   }
 
   /**

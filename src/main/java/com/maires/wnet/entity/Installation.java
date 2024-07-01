@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -30,11 +31,12 @@ public class Installation {
   @OneToMany(mappedBy = "installation", cascade = CascadeType.ALL)
   private List<Equipment> equipments;
 
-  @OneToOne
+  @ManyToOne
   @JoinColumn(name = "plan_id")
   private Plan plan;
 
-  @OneToOne(mappedBy = "installation", cascade = CascadeType.ALL)
+  @ManyToOne
+  @JoinColumn(name = "technician_id")
   private Technician technician;
 
   private String installationDate;
@@ -52,10 +54,12 @@ public class Installation {
    * @param plan       the plan id
    * @param technician the technician id
    */
-  public Installation(Address address, Plan plan, Technician technician) {
+  public Installation(Address address, Plan plan, Technician technician,
+      List<Equipment> equipments) {
     this.address = address;
     this.plan = plan;
     this.technician = technician;
+    this.equipments = equipments;
     this.installationDate = DateUtil.formatCurrentDate();
   }
 
