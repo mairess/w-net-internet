@@ -1,13 +1,12 @@
 package com.maires.wnet.controller;
 
+import com.maires.wnet.controller.dto.AddressConverter;
+import com.maires.wnet.controller.dto.AddressDto;
 import com.maires.wnet.controller.dto.RuralAddressCreationDto;
-import com.maires.wnet.controller.dto.RuralAddressDto;
 import com.maires.wnet.controller.dto.UrbanAddressCreationDto;
-import com.maires.wnet.controller.dto.UrbanAddressDto;
 import com.maires.wnet.entity.Address;
 import com.maires.wnet.service.AddressService;
 import com.maires.wnet.service.exception.AddressNotFoundException;
-import com.maires.wnet.utils.AddressUtil;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,10 +47,10 @@ public class AddressController {
    * @return the list
    */
   @GetMapping
-  public List<Record> findAllAddresses() {
+  public List<AddressDto> findAllAddresses() {
     List<Address> allAddresses = addressService.findAllAddresses();
 
-    return allAddresses.stream().map(AddressUtil::returnAddressType).toList();
+    return allAddresses.stream().map(AddressConverter::returnAddressType).toList();
   }
 
 
@@ -63,10 +62,10 @@ public class AddressController {
    * @throws AddressNotFoundException the address not found exception
    */
   @GetMapping("/{addressId}")
-  public Record findAddressById(@PathVariable Long addressId)
+  public AddressDto findAddressById(@PathVariable Long addressId)
       throws AddressNotFoundException {
     Address address = addressService.removeAddressById(addressId);
-    return AddressUtil.returnAddressType(address);
+    return AddressConverter.returnAddressType(address);
   }
 
 
@@ -78,10 +77,10 @@ public class AddressController {
    */
   @PostMapping("/rural")
   @ResponseStatus(HttpStatus.CREATED)
-  public RuralAddressDto createRuralAddress(
+  public AddressDto createRuralAddress(
       @RequestBody RuralAddressCreationDto ruralAddressCreationDto) {
 
-    return RuralAddressDto.fromEntity(
+    return AddressConverter.returnAddressType(
         addressService.createAddress(ruralAddressCreationDto.toEntity())
     );
 
@@ -96,10 +95,10 @@ public class AddressController {
    */
   @PostMapping("/urban")
   @ResponseStatus(HttpStatus.CREATED)
-  public UrbanAddressDto createUrbanAddress(
+  public AddressDto createUrbanAddress(
       @RequestBody UrbanAddressCreationDto urbanAddressCreationDto) {
 
-    return UrbanAddressDto.fromEntity(
+    return AddressConverter.returnAddressType(
         addressService.createAddress(urbanAddressCreationDto.toEntity())
     );
   }
@@ -113,10 +112,10 @@ public class AddressController {
    * @throws AddressNotFoundException the address not found exception
    */
   @DeleteMapping("/{addressId}")
-  public Record removeAddressById(@PathVariable Long addressId)
+  public AddressDto removeAddressById(@PathVariable Long addressId)
       throws AddressNotFoundException {
     Address address = addressService.removeAddressById(addressId);
-    return AddressUtil.returnAddressType(address);
+    return AddressConverter.returnAddressType(address);
   }
 
 }

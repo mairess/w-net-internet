@@ -3,8 +3,9 @@ package com.maires.wnet.controller.dto;
 
 import com.maires.wnet.entity.RuralAddress;
 
+
 /**
- * The addressType Rural address dto.
+ * The type Rural address dto.
  */
 public record RuralAddressDto(
     Long id,
@@ -13,7 +14,8 @@ public record RuralAddressDto(
     String city,
     String state,
     String zipCode
-) {
+) implements AddressDto {
+
 
   /**
    * From entity rural address dto.
@@ -30,5 +32,25 @@ public record RuralAddressDto(
         ruralAddress.getState(),
         ruralAddress.getZipCode()
     );
+  }
+
+  @Override
+  public Long getId() {
+    return id;
+  }
+
+  @Override
+  public String getCity() {
+    return city;
+  }
+
+  @Override
+  public String getState() {
+    return state;
+  }
+
+  @Override
+  public String getZipCode() {
+    return zipCode;
   }
 }

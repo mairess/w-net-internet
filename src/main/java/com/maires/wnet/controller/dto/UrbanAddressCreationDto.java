@@ -2,8 +2,9 @@ package com.maires.wnet.controller.dto;
 
 import com.maires.wnet.entity.UrbanAddress;
 
+
 /**
- * The addressType Rural address creation dto.
+ * The type Urban address creation dto.
  */
 public record UrbanAddressCreationDto(
     String city,
@@ -15,10 +16,11 @@ public record UrbanAddressCreationDto(
     String neighborhood
 ) {
 
+
   /**
-   * To entity rural address.
+   * To entity urban address.
    *
-   * @return the rural address
+   * @return the urban address
    */
   public UrbanAddress toEntity() {
     return new UrbanAddress(city, state, zipCode, street, streetNumber, complement, neighborhood);
