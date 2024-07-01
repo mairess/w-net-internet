@@ -13,6 +13,7 @@ import com.maires.wnet.repository.TechnicianRepository;
 import com.maires.wnet.service.exception.AddressNotFoundException;
 import com.maires.wnet.service.exception.PlanNotFoundException;
 import com.maires.wnet.service.exception.TechnicianNotFoundException;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -71,8 +72,13 @@ public class InstallationService {
    * @throws PlanNotFoundException       the plan not found exception
    * @throws TechnicianNotFoundException the technician not found exception
    */
-  public Installation createInstallation(Long addressId, Long planId, Long technicianId,
-      List<Long> equipmentIds)
+  @Transactional
+  public Installation createInstallation(
+      Long addressId,
+      Long planId,
+      Long technicianId,
+      List<Long> equipmentIds
+  )
       throws AddressNotFoundException, PlanNotFoundException, TechnicianNotFoundException {
 
     Address address = addressRepository.findById(addressId)
@@ -92,10 +98,6 @@ public class InstallationService {
     }
 
     Installation newInstallation = new Installation(address, plan, technician, equipmentList);
-
-    for (Equipment equipment : equipmentList) {
-      equipment.setInstallation(newInstallation);
-    }
 
     return installationRepository.save(newInstallation);
   }
