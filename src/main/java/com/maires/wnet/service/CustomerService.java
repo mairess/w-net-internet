@@ -23,12 +23,6 @@ public class CustomerService {
   private final CustomerRepository customerRepository;
   private final AddressRepository addressRepository;
 
-  private final Map<String, String> responseSuccess = Map.of("Message",
-      "Address successful associated!");
-
-  private final Map<String, String> responseError = Map.of("Message",
-      "This address already has an association!");
-
   /**
    * Instantiates a new Customer service.
    *
@@ -102,19 +96,23 @@ public class CustomerService {
       throws CustomerNotFoundException, AddressNotFoundException {
 
     Customer customer = findCustomerById(customerId);
-    Address address = addressRepository.findById(addressId)
+    Address address = addressRepository
+        .findById(addressId)
         .orElseThrow(AddressNotFoundException::new);
 
+    Map<String, String> response;
+
     if (address.getCustomer() != null) {
-      return ResponseEntity.status(HttpStatus.CONFLICT)
-          .body(responseError);
+      response = Map.of("message", "This address already has an association!");
+      return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     address.setCustomer(customer);
     customer.getAddresses().add(address);
     addressRepository.save(address);
 
-    return ResponseEntity.ok(responseSuccess);
+    response = Map.of("message", "Address successful associated!");
+    return ResponseEntity.ok(response);
 
   }
 }
