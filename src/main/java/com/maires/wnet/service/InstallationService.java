@@ -10,7 +10,11 @@ import com.maires.wnet.repository.EquipmentRepository;
 import com.maires.wnet.repository.InstallationRepository;
 import com.maires.wnet.repository.PlanRepository;
 import com.maires.wnet.repository.TechnicianRepository;
+import com.maires.wnet.service.exception.AddressAlreadyAssociatedException;
 import com.maires.wnet.service.exception.AddressNotFoundException;
+import com.maires.wnet.service.exception.EquipmentAlreadyAssociatedException;
+import com.maires.wnet.service.exception.EquipmentNotFoundException;
+import com.maires.wnet.service.exception.InstallationNotFoundException;
 import com.maires.wnet.service.exception.PlanNotFoundException;
 import com.maires.wnet.service.exception.TechnicianNotFoundException;
 import jakarta.transaction.Transactional;
@@ -59,6 +63,19 @@ public class InstallationService {
     return installationRepository.findAll();
   }
 
+  /**
+   * Find installation by id installation.
+   *
+   * @param installationId the installation id
+   * @return the installation
+   * @throws InstallationNotFoundException the installation not found exception
+   */
+  public Installation findInstallationById(Long installationId)
+      throws InstallationNotFoundException {
+    return installationRepository.findById(installationId).orElseThrow(
+        InstallationNotFoundException::new);
+  }
+
 
   /**
    * Create installation installation.
@@ -68,9 +85,12 @@ public class InstallationService {
    * @param technicianId the technician id
    * @param equipmentIds the equipment ids
    * @return the installation
-   * @throws AddressNotFoundException    the address not found exception
-   * @throws PlanNotFoundException       the plan not found exception
-   * @throws TechnicianNotFoundException the technician not found exception
+   * @throws AddressNotFoundException            the address not found exception
+   * @throws AddressAlreadyAssociatedException   the address already associated exception
+   * @throws PlanNotFoundException               the plan not found exception
+   * @throws TechnicianNotFoundException         the technician not found exception
+   * @throws EquipmentNotFoundException          the equipment not found exception
+   * @throws EquipmentAlreadyAssociatedException the equipment already associated exception
    */
   @Transactional
   public Installation createInstallation(
@@ -79,10 +99,20 @@ public class InstallationService {
       Long technicianId,
       List<Long> equipmentIds
   )
-      throws AddressNotFoundException, PlanNotFoundException, TechnicianNotFoundException {
+      throws
+      AddressNotFoundException,
+      AddressAlreadyAssociatedException,
+      PlanNotFoundException,
+      TechnicianNotFoundException,
+      EquipmentNotFoundException,
+      EquipmentAlreadyAssociatedException {
 
     Address address = addressRepository.findById(addressId)
         .orElseThrow(AddressNotFoundException::new);
+
+    if (address.getInstallation() != null) {
+      throw new AddressAlreadyAssociatedException();
+    }
 
     Plan plan = planRepository.findById(planId)
         .orElseThrow(PlanNotFoundException::new);
@@ -94,12 +124,34 @@ public class InstallationService {
 
     for (Long id : equipmentIds) {
       Optional<Equipment> equipmentOptional = equipmentRepository.findById(id);
-      equipmentOptional.ifPresent(equipmentList::add);
+      if (equipmentOptional.isEmpty()) {
+        throw new EquipmentNotFoundException();
+      }
+      Equipment equipment = equipmentOptional.get();
+
+      if (equipment.getInstallation() != null) {
+        throw new EquipmentAlreadyAssociatedException();
+      }
+      equipmentList.add(equipment);
     }
 
     Installation newInstallation = new Installation(address, plan, technician, equipmentList);
 
     return installationRepository.save(newInstallation);
+  }
+
+  /**
+   * Remove installation by id installation.
+   *
+   * @param installationId the installation id
+   * @return the installation
+   * @throws InstallationNotFoundException the installation not found exception
+   */
+  public Installation removeInstallationById(Long installationId)
+      throws InstallationNotFoundException {
+    Installation deletedInstallation = findInstallationById(installationId);
+    installationRepository.delete(deletedInstallation);
+    return deletedInstallation;
   }
 
 }

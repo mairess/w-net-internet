@@ -7,6 +7,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 /**
@@ -27,16 +29,20 @@ public class Equipment {
 
   private String model;
 
+  @Column(unique = true)
   private String serialNumber;
 
   private String manufacturer;
+
+  @ManyToOne
+  @JoinColumn(name = "installation_id")
+  private Installation installation;
 
   /**
    * Instantiates a new Equipment.
    */
   public Equipment() {
   }
-
 
   /**
    * Instantiates a new Equipment.
@@ -141,6 +147,14 @@ public class Equipment {
    */
   public void setManufacturer(String manufacturer) {
     this.manufacturer = manufacturer;
+  }
+
+  public Installation getInstallation() {
+    return installation;
+  }
+
+  public void setInstallation(Installation installation) {
+    this.installation = installation;
   }
 
 }
