@@ -1,18 +1,17 @@
 package com.maires.wnet.controller.dto;
 
 import com.maires.wnet.entity.Equipment;
-import java.util.Date;
+import com.maires.wnet.entity.EquipmentType;
 
 
 /**
  * The type Equipment creation dto.
  */
 public record EquipmentCreationDto(
-    String type,
+    EquipmentType type,
     String model,
     String serialNumber,
-    String manufacturer,
-    Date provisionDate
+    String manufacturer
 ) {
 
 
@@ -22,7 +21,7 @@ public record EquipmentCreationDto(
    * @return the equipment
    */
   public Equipment toEntity() {
-    return new Equipment(type, model, serialNumber, manufacturer, provisionDate);
+    return new Equipment(type, model, serialNumber, manufacturer);
   }
 
 }

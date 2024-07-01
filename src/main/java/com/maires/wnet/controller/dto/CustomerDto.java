@@ -1,11 +1,15 @@
 package com.maires.wnet.controller.dto;
 
+import com.maires.wnet.entity.Address;
 import com.maires.wnet.entity.Customer;
+import java.util.List;
+
 
 /**
- * The addressType Customer dto.
+ * The type Customer dto.
  */
 public record CustomerDto(Long id, String name, String cpf, String phone, String email,
+                          List<Long> addresses,
                           String registrationDate) {
 
   /**
@@ -21,6 +25,7 @@ public record CustomerDto(Long id, String name, String cpf, String phone, String
         customer.getCpf(),
         customer.getPhone(),
         customer.getEmail(),
+        customer.getAddresses().stream().map(Address::getId).toList(),
         customer.getRegistrationDate()
     );
   }

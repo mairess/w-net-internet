@@ -1,7 +1,7 @@
 package com.maires.wnet.controller.dto;
 
 import com.maires.wnet.entity.Equipment;
-import java.util.Date;
+import com.maires.wnet.entity.EquipmentType;
 
 
 /**
@@ -9,11 +9,11 @@ import java.util.Date;
  */
 public record EquipmentDto(
     Long id,
-    String type,
+    EquipmentType type,
     String model,
     String serialNumber,
-    String manufacturer,
-    Date provisionDate) {
+    String manufacturer
+) {
 
 
   /**
@@ -28,8 +28,7 @@ public record EquipmentDto(
         equipment.getType(),
         equipment.getModel(),
         equipment.getSerialNumber(),
-        equipment.getManufacturer(),
-        equipment.getProvisionDate()
+        equipment.getManufacturer()
     );
   }
 
