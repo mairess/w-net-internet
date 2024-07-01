@@ -28,7 +28,8 @@ public class Installation {
   @JoinColumn(name = "address_id")
   private Address address;
 
-  @OneToMany(mappedBy = "installation", cascade = CascadeType.ALL)
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "installation_id")
   private List<Equipment> equipments;
 
   @ManyToOne
