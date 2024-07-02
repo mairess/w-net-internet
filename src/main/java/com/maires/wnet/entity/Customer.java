@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,8 +23,12 @@ public class Customer {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
   private String name;
+
+  @Column(unique = true)
   private String cpf;
+
   private String phone;
 
   @Column(unique = true)
@@ -31,8 +36,9 @@ public class Customer {
 
   private String registrationDate;
 
+
   @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-  private List<Address> addresses;
+  private List<Address> addresses = new ArrayList<>();
 
   /**
    * Instantiates a new Customer.

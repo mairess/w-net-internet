@@ -5,7 +5,7 @@ import com.maires.wnet.entity.Plan;
 /**
  * The type Plan creation dto.
  */
-public record PlanCreationDto(String name, Integer speed, double price, boolean isActive) {
+public record PlanCreationDto(String name, Integer speed, double price) {
 
   /**
    * To entity plan.
@@ -13,6 +13,6 @@ public record PlanCreationDto(String name, Integer speed, double price, boolean 
    * @return the plan
    */
   public Plan toEntity() {
-    return new Plan(name, speed, price, isActive);
+    return new Plan(name, speed, price);
   }
 }

@@ -5,7 +5,7 @@ import com.maires.wnet.entity.Plan;
 /**
  * The type Plan dto.
  */
-public record PlanDto(Long id, String name, Integer speed, double price, boolean isActive) {
+public record PlanDto(Long id, String name, Integer speed, double price) {
 
   /**
    * From entity plan dto.
@@ -18,8 +18,7 @@ public record PlanDto(Long id, String name, Integer speed, double price, boolean
         plan.getId(),
         plan.getName(),
         plan.getSpeed(),
-        plan.getPrice(),
-        plan.isActive()
+        plan.getPrice()
     );
   }
 

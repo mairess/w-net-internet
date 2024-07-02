@@ -2,8 +2,9 @@ package com.maires.wnet.controller.dto;
 
 import com.maires.wnet.entity.RuralAddress;
 
+
 /**
- * The addressType Rural address creation dto.
+ * The type Rural address creation dto.
  */
 public record RuralAddressCreationDto(
     String city,
@@ -11,6 +12,7 @@ public record RuralAddressCreationDto(
     String zipCode,
     String farmName,
     String village) {
+
 
   /**
    * To entity rural address.

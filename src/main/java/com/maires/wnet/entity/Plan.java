@@ -5,8 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The type Plan.
@@ -25,10 +27,8 @@ public class Plan {
 
   private Double price;
 
-  private boolean isActive;
-
-  @OneToOne(mappedBy = "plan", cascade = CascadeType.ALL)
-  private Installation installation;
+  @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
+  private List<Installation> installations = new ArrayList<>();
 
   /**
    * Instantiates a new Plan.
@@ -40,16 +40,14 @@ public class Plan {
   /**
    * Instantiates a new Plan.
    *
-   * @param name     the name
-   * @param speed    the speed
-   * @param price    the price
-   * @param isActive the is active
+   * @param name  the name
+   * @param speed the speed
+   * @param price the price
    */
-  public Plan(String name, Integer speed, Double price, boolean isActive) {
+  public Plan(String name, Integer speed, Double price) {
     this.name = name;
     this.speed = speed;
     this.price = price;
-    this.isActive = isActive;
   }
 
   /**
@@ -125,38 +123,20 @@ public class Plan {
   }
 
   /**
-   * Is active boolean.
+   * Gets installations.
    *
-   * @return the boolean
+   * @return the installations
    */
-  public boolean isActive() {
-    return isActive;
+  public List<Installation> getInstallations() {
+    return installations;
   }
 
   /**
-   * Sets active.
+   * Sets installations.
    *
-   * @param active the active
+   * @param installations the installations
    */
-  public void setActive(boolean active) {
-    isActive = active;
-  }
-
-  /**
-   * Gets installation.
-   *
-   * @return the installation
-   */
-  public Installation getInstallation() {
-    return installation;
-  }
-
-  /**
-   * Sets installation.
-   *
-   * @param installation the installation
-   */
-  public void setInstallation(Installation installation) {
-    this.installation = installation;
+  public void setInstallations(List<Installation> installations) {
+    this.installations = installations;
   }
 }

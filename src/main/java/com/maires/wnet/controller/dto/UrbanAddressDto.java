@@ -3,8 +3,9 @@ package com.maires.wnet.controller.dto;
 
 import com.maires.wnet.entity.UrbanAddress;
 
+
 /**
- * The addressType Rural address dto.
+ * The type Urban address dto.
  */
 public record UrbanAddressDto(
     Long id,
@@ -14,14 +15,16 @@ public record UrbanAddressDto(
     String neighborhood,
     String city,
     String state,
-    String zipCode
-) {
+    String zipCode,
+    InstallationDto installation
+) implements AddressDto {
+
 
   /**
-   * From entity rural address dto.
+   * From entity urban address dto.
    *
    * @param urbanAddress the urban address
-   * @return the rural address dto
+   * @return the urban address dto
    */
   public static UrbanAddressDto fromEntity(UrbanAddress urbanAddress) {
     return new UrbanAddressDto(
@@ -32,7 +35,25 @@ public record UrbanAddressDto(
         urbanAddress.getNeighborhood(),
         urbanAddress.getCity(),
         urbanAddress.getState(),
-        urbanAddress.getZipCode()
+        urbanAddress.getZipCode(),
+        urbanAddress.getInstallation() == null ? null
+            : InstallationDto.fromEntity(urbanAddress.getInstallation())
     );
+  }
+
+
+  @Override
+  public String getCity() {
+    return city;
+  }
+
+  @Override
+  public String getState() {
+    return state;
+  }
+
+  @Override
+  public String getZipCode() {
+    return zipCode;
   }
 }

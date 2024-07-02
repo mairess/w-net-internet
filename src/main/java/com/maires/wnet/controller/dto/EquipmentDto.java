@@ -1,17 +1,20 @@
 package com.maires.wnet.controller.dto;
 
 import com.maires.wnet.entity.Equipment;
+import com.maires.wnet.entity.EquipmentType;
+
 
 /**
  * The type Equipment dto.
  */
 public record EquipmentDto(
     Long id,
-    String type,
+    EquipmentType type,
     String model,
     String serialNumber,
-    String manufacturer,
-    String provisionDate) {
+    String manufacturer
+) {
+
 
   /**
    * From entity equipment dto.
@@ -25,8 +28,7 @@ public record EquipmentDto(
         equipment.getType(),
         equipment.getModel(),
         equipment.getSerialNumber(),
-        equipment.getManufacturer(),
-        equipment.getProvisionDate()
+        equipment.getManufacturer()
     );
   }
 

@@ -1,5 +1,6 @@
 package com.maires.wnet.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.maires.wnet.utils.DateUtil;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -7,9 +8,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,21 +26,24 @@ public class Installation {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @OneToOne
-  @JoinColumn(name = "address_id")
+  private String installationDate;
+
+  private boolean isActive;
+
+  @OneToOne(mappedBy = "installation", cascade = CascadeType.ALL)
+  @JsonIgnore
   private Address address;
 
   @OneToMany(mappedBy = "installation", cascade = CascadeType.ALL)
-  private List<Equipment> equipments;
+  private List<Equipment> equipments = new ArrayList<>();
 
-  @OneToOne
+  @ManyToOne
   @JoinColumn(name = "plan_id")
   private Plan plan;
 
-  @OneToOne(mappedBy = "installation", cascade = CascadeType.ALL)
+  @ManyToOne
+  @JoinColumn(name = "technician_id")
   private Technician technician;
-
-  private String installationDate;
 
   /**
    * Instantiates a new Installation.
@@ -51,11 +57,15 @@ public class Installation {
    * @param address    the address id
    * @param plan       the plan id
    * @param technician the technician id
+   * @param equipments the equipments
    */
-  public Installation(Address address, Plan plan, Technician technician) {
+  public Installation(Address address, Plan plan, Technician technician,
+      List<Equipment> equipments) {
+    this.isActive = true;
     this.address = address;
     this.plan = plan;
     this.technician = technician;
+    this.equipments = equipments;
     this.installationDate = DateUtil.formatCurrentDate();
   }
 
@@ -75,6 +85,42 @@ public class Installation {
    */
   public void setId(Long id) {
     this.id = id;
+  }
+
+  /**
+   * Gets installation date.
+   *
+   * @return the installation date
+   */
+  public String getInstallationDate() {
+    return installationDate;
+  }
+
+  /**
+   * Sets installation date.
+   *
+   * @param installationDate the installation date
+   */
+  public void setInstallationDate(String installationDate) {
+    this.installationDate = installationDate;
+  }
+
+  /**
+   * Is active boolean.
+   *
+   * @return the boolean
+   */
+  public boolean isActive() {
+    return isActive;
+  }
+
+  /**
+   * Sets active.
+   *
+   * @param active the active
+   */
+  public void setActive(boolean active) {
+    isActive = active;
   }
 
   /**
@@ -147,23 +193,5 @@ public class Installation {
    */
   public void setTechnician(Technician technician) {
     this.technician = technician;
-  }
-
-  /**
-   * Gets installation date.
-   *
-   * @return the installation date
-   */
-  public String getInstallationDate() {
-    return installationDate;
-  }
-
-  /**
-   * Sets installation date.
-   *
-   * @param installationDate the installation date
-   */
-  public void setInstallationDate(String installationDate) {
-    this.installationDate = installationDate;
   }
 }

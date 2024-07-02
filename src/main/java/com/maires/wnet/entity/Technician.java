@@ -1,12 +1,15 @@
 package com.maires.wnet.entity;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The type Technician.
@@ -23,11 +26,11 @@ public class Technician {
 
   private String phone;
 
+  @Column(unique = true)
   private String email;
 
-  @OneToOne
-  @JoinColumn(name = "installation_id")
-  private Installation installation;
+  @OneToMany(mappedBy = "technician", cascade = CascadeType.ALL)
+  private List<Installation> installations = new ArrayList<>();
 
   /**
    * Instantiates a new Technician.
@@ -118,5 +121,23 @@ public class Technician {
    */
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  /**
+   * Gets installations.
+   *
+   * @return the installations
+   */
+  public List<Installation> getInstallations() {
+    return installations;
+  }
+
+  /**
+   * Sets installations.
+   *
+   * @param installations the installations
+   */
+  public void setInstallations(List<Installation> installations) {
+    this.installations = installations;
   }
 }

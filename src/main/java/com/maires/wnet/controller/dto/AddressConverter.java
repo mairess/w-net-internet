@@ -1,30 +1,29 @@
-package com.maires.wnet.utils;
+package com.maires.wnet.controller.dto;
 
-import com.maires.wnet.controller.dto.RuralAddressDto;
-import com.maires.wnet.controller.dto.UrbanAddressDto;
 import com.maires.wnet.entity.Address;
 import com.maires.wnet.entity.RuralAddress;
 import com.maires.wnet.entity.UrbanAddress;
 
-
 /**
- * The type Address util.
+ * The type Address converter.
  */
-public class AddressUtil {
-
+public class AddressConverter {
 
   /**
-   * Return address type record.
+   * Return address type address dto.
    *
    * @param address the address
-   * @return the record
+   * @return the address dto
    */
-  public static Record returnAddressType(Address address) {
+  public static AddressDto returnAddressType(Address address) {
 
     if (address instanceof UrbanAddress) {
       return UrbanAddressDto.fromEntity((UrbanAddress) address);
-    } else {
+    } else if (address instanceof RuralAddress) {
+
       return RuralAddressDto.fromEntity((RuralAddress) address);
+    } else {
+      return null;
     }
 
   }
