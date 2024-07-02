@@ -1,6 +1,5 @@
 package com.maires.wnet.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.maires.wnet.utils.DateUtil;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -10,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,7 +27,6 @@ public class Customer {
   private String name;
 
   @Column(unique = true)
-
   private String cpf;
 
   private String phone;
@@ -37,9 +36,9 @@ public class Customer {
 
   private String registrationDate;
 
+
   @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-  @JsonIgnore
-  private List<Address> addresses;
+  private List<Address> addresses = new ArrayList<>();
 
   /**
    * Instantiates a new Customer.

@@ -46,7 +46,8 @@ public class CustomerController {
    */
   @GetMapping
   public List<CustomerDto> findAllCustomers() {
-    return customerService.findAllCustomers().stream().map(CustomerDto::fromEntity).toList();
+    return customerService.findAllCustomers().stream().map(CustomerDto::fromEntity)
+        .toList();
   }
 
   /**
@@ -73,7 +74,8 @@ public class CustomerController {
    */
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public CustomerDto createCustomer(@RequestBody CustomerCreationDto customerCreationDto) {
+  public CustomerDto createCustomer(
+      @RequestBody CustomerCreationDto customerCreationDto) {
     Customer newCustomer = customerService.createCustomer(customerCreationDto.toEntity());
     return CustomerDto.fromEntity(newCustomer);
   }
@@ -105,9 +107,10 @@ public class CustomerController {
    * @throws AddressNotFoundException  the address not found exception
    */
   @PostMapping("/{customerId}/addresses/{addressId}")
-  public ResponseEntity<Map<String, String>> addCustomerAddress(@PathVariable Long customerId,
-      @PathVariable Long addressId)
-      throws CustomerNotFoundException, AddressNotFoundException {
+  public ResponseEntity<Map<String, String>> addCustomerAddress(
+      @PathVariable Long customerId,
+      @PathVariable Long addressId
+  ) throws CustomerNotFoundException, AddressNotFoundException {
     return customerService.addCustomerAddress(customerId, addressId);
   }
 }

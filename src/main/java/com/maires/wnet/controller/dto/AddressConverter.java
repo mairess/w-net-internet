@@ -19,8 +19,12 @@ public class AddressConverter {
 
     if (address instanceof UrbanAddress) {
       return UrbanAddressDto.fromEntity((UrbanAddress) address);
+    } else if (address instanceof RuralAddress) {
+
+      return RuralAddressDto.fromEntity((RuralAddress) address);
+    } else {
+      return null;
     }
 
-    return RuralAddressDto.fromEntity((RuralAddress) address);
   }
 }

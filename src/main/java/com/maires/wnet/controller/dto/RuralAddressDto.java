@@ -13,7 +13,8 @@ public record RuralAddressDto(
     String village,
     String city,
     String state,
-    String zipCode
+    String zipCode,
+    InstallationDto installation
 ) implements AddressDto {
 
 
@@ -30,14 +31,12 @@ public record RuralAddressDto(
         ruralAddress.getVillage(),
         ruralAddress.getCity(),
         ruralAddress.getState(),
-        ruralAddress.getZipCode()
+        ruralAddress.getZipCode(),
+        ruralAddress.getInstallation() == null ? null
+            : InstallationDto.fromEntity(ruralAddress.getInstallation())
     );
   }
 
-  @Override
-  public Long getId() {
-    return id;
-  }
 
   @Override
   public String getCity() {
@@ -53,4 +52,5 @@ public record RuralAddressDto(
   public String getZipCode() {
     return zipCode;
   }
+
 }

@@ -15,7 +15,8 @@ public record UrbanAddressDto(
     String neighborhood,
     String city,
     String state,
-    String zipCode
+    String zipCode,
+    InstallationDto installation
 ) implements AddressDto {
 
 
@@ -34,14 +35,12 @@ public record UrbanAddressDto(
         urbanAddress.getNeighborhood(),
         urbanAddress.getCity(),
         urbanAddress.getState(),
-        urbanAddress.getZipCode()
+        urbanAddress.getZipCode(),
+        urbanAddress.getInstallation() == null ? null
+            : InstallationDto.fromEntity(urbanAddress.getInstallation())
     );
   }
 
-  @Override
-  public Long getId() {
-    return id;
-  }
 
   @Override
   public String getCity() {

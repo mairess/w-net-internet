@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class Technician {
   private String email;
 
   @OneToMany(mappedBy = "technician", cascade = CascadeType.ALL)
-  private List<Installation> installations;
+  private List<Installation> installations = new ArrayList<>();
 
   /**
    * Instantiates a new Technician.

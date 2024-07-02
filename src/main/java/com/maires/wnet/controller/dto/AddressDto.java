@@ -1,16 +1,9 @@
 package com.maires.wnet.controller.dto;
 
 /**
- * The interface Address dto.
+ * The interface Address without id dto.
  */
 public interface AddressDto {
-
-  /**
-   * Gets id.
-   *
-   * @return the id
-   */
-  Long getId();
 
   /**
    * Gets city.
@@ -32,4 +25,5 @@ public interface AddressDto {
    * @return the zip code
    */
   String getZipCode();
+
 }

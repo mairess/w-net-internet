@@ -48,7 +48,8 @@ public class InstallationController {
    */
   @GetMapping
   public List<InstallationDto> findAllInstallations() {
-    return installationService.findAllInstallations().stream().map(InstallationDto::fromEntity)
+    return installationService.findAllInstallations().stream()
+        .map(InstallationDto::fromEntity)
         .toList();
   }
 

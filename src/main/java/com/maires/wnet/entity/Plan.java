@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,10 +27,8 @@ public class Plan {
 
   private Double price;
 
-  private boolean isActive;
-
   @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
-  private List<Installation> installations;
+  private List<Installation> installations = new ArrayList<>();
 
   /**
    * Instantiates a new Plan.
@@ -41,16 +40,14 @@ public class Plan {
   /**
    * Instantiates a new Plan.
    *
-   * @param name     the name
-   * @param speed    the speed
-   * @param price    the price
-   * @param isActive the is active
+   * @param name  the name
+   * @param speed the speed
+   * @param price the price
    */
-  public Plan(String name, Integer speed, Double price, boolean isActive) {
+  public Plan(String name, Integer speed, Double price) {
     this.name = name;
     this.speed = speed;
     this.price = price;
-    this.isActive = isActive;
   }
 
   /**
@@ -123,24 +120,6 @@ public class Plan {
    */
   public void setPrice(Double price) {
     this.price = price;
-  }
-
-  /**
-   * Is active boolean.
-   *
-   * @return the boolean
-   */
-  public boolean isActive() {
-    return isActive;
-  }
-
-  /**
-   * Sets active.
-   *
-   * @param active the active
-   */
-  public void setActive(boolean active) {
-    isActive = active;
   }
 
   /**

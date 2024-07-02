@@ -137,6 +137,10 @@ public class InstallationService {
 
     Installation newInstallation = new Installation(address, plan, technician, equipmentList);
 
+    for (Equipment equipment : equipmentList) {
+      equipment.setInstallation(newInstallation);
+    }
+
     return installationRepository.save(newInstallation);
   }
 
