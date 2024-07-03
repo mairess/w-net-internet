@@ -7,12 +7,9 @@ import com.maires.wnet.controller.dto.UrbanAddressCreationDto;
 import com.maires.wnet.entity.Address;
 import com.maires.wnet.service.AddressService;
 import com.maires.wnet.service.exception.AddressNotFoundException;
-import com.maires.wnet.service.exception.InstallationNotFoundException;
 import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -119,23 +116,6 @@ public class AddressController {
       throws AddressNotFoundException {
     Address address = addressService.removeAddressById(addressId);
     return AddressConverter.returnAddressType(address);
-  }
-
-  /**
-   * Add address installation response entity.
-   *
-   * @param addressId      the address id
-   * @param installationId the installation id
-   * @return the response entity
-   * @throws AddressNotFoundException      the address not found exception
-   * @throws InstallationNotFoundException the installation not found exception
-   */
-  @PostMapping("/{addressId}/installations/{installationId}")
-  public ResponseEntity<Map<String, String>> addAddressInstallation(
-      @PathVariable Long addressId,
-      @PathVariable Long installationId
-  ) throws AddressNotFoundException, InstallationNotFoundException {
-    return addressService.addAddressInstallation(addressId, installationId);
   }
 
 }

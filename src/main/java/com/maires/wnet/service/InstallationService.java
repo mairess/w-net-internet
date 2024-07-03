@@ -123,8 +123,7 @@ public class InstallationService {
 
     for (Long id : equipmentIds) {
 
-      Equipment equipment = equipmentRepository
-          .findById(id)
+      Equipment equipment = equipmentRepository.findById(id)
           .orElseThrow(EquipmentNotFoundException::new);
 
       if (equipment.getInstallation() != null) {
@@ -134,6 +133,7 @@ public class InstallationService {
     }
 
     Installation newInstallation = new Installation(address, plan, technician, equipmentList);
+    address.setInstallation(newInstallation);
 
     for (Equipment equipment : equipmentList) {
       equipment.setInstallation(newInstallation);
