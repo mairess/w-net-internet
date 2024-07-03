@@ -1,11 +1,13 @@
 package com.maires.wnet.service;
 
 import com.maires.wnet.entity.Address;
+import com.maires.wnet.entity.Customer;
 import com.maires.wnet.entity.Equipment;
 import com.maires.wnet.repository.AddressRepository;
+import com.maires.wnet.repository.CustomerRepository;
 import com.maires.wnet.repository.EquipmentRepository;
-import com.maires.wnet.repository.InstallationRepository;
 import com.maires.wnet.service.exception.AddressNotFoundException;
+import com.maires.wnet.service.exception.CustomerNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,26 +20,26 @@ import org.springframework.stereotype.Service;
 public class AddressService {
 
   private final AddressRepository addressRepository;
-  private final InstallationRepository installationRepository;
   private final EquipmentRepository equipmentRepository;
+  private final CustomerRepository customerRepository;
 
 
   /**
    * Instantiates a new Address service.
    *
-   * @param addressRepository      the address repository
-   * @param installationRepository the installation repository
-   * @param equipmentRepository    the equipment repository
+   * @param addressRepository   the address repository
+   * @param equipmentRepository the equipment repository
+   * @param customerRepository  the customer repository
    */
   @Autowired
   public AddressService(
       AddressRepository addressRepository,
-      InstallationRepository installationRepository,
-      EquipmentRepository equipmentRepository
+      EquipmentRepository equipmentRepository,
+      CustomerRepository customerRepository
   ) {
     this.addressRepository = addressRepository;
-    this.installationRepository = installationRepository;
     this.equipmentRepository = equipmentRepository;
+    this.customerRepository = customerRepository;
   }
 
   /**
@@ -63,13 +65,21 @@ public class AddressService {
 
 
   /**
-   * Create address t.
+   * Create address.
    *
-   * @param <T>     the type parameter
-   * @param address the address
-   * @return the t
+   * @param address    the address
+   * @param customerId the customer id
+   * @return the address
+   * @throws CustomerNotFoundException the customer not found exception
    */
-  public <T extends Address> T createAddress(T address) {
+  public Address createAddress(Address address, Long customerId)
+      throws CustomerNotFoundException {
+
+    Customer customer = customerRepository.findById(customerId)
+        .orElseThrow(CustomerNotFoundException::new);
+
+    address.setCustomer(customer);
+
     return addressRepository.save(address);
   }
 
@@ -85,11 +95,13 @@ public class AddressService {
   public Address removeAddressById(Long addressId) throws AddressNotFoundException {
     Address deletedAddress = findAddressById(addressId);
 
-    List<Equipment> equipmentList = deletedAddress.getInstallation().getEquipments();
+    if (deletedAddress.getInstallation() != null) {
+      List<Equipment> equipmentList = deletedAddress.getInstallation().getEquipments();
 
-    for (Equipment equipment : equipmentList) {
-      equipment.setInstallation(null);
-      equipmentRepository.save(equipment);
+      for (Equipment equipment : equipmentList) {
+        equipment.setInstallation(null);
+        equipmentRepository.save(equipment);
+      }
     }
     addressRepository.delete(deletedAddress);
     return deletedAddress;
