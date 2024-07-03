@@ -85,6 +85,7 @@ public class CustomerService {
    * @return the customer
    * @throws CustomerNotFoundException the customer not found exception
    */
+  @Transactional
   public Customer removeCustomerById(Long customerId) throws CustomerNotFoundException {
     Customer deletedCustomer = findCustomerById(customerId);
 

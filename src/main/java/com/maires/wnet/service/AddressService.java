@@ -8,6 +8,7 @@ import com.maires.wnet.repository.EquipmentRepository;
 import com.maires.wnet.repository.InstallationRepository;
 import com.maires.wnet.service.exception.AddressNotFoundException;
 import com.maires.wnet.service.exception.InstallationNotFoundException;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +86,7 @@ public class AddressService {
    * @return the address
    * @throws AddressNotFoundException the address not found exception
    */
+  @Transactional
   public Address removeAddressById(Long addressId) throws AddressNotFoundException {
     Address deletedAddress = findAddressById(addressId);
 
@@ -107,6 +109,7 @@ public class AddressService {
    * @throws AddressNotFoundException      the address not found exception
    * @throws InstallationNotFoundException the installation not found exception
    */
+  @Transactional
   public ResponseEntity<Map<String, String>> addAddressInstallation(Long addressId,
       Long installationId)
       throws AddressNotFoundException, InstallationNotFoundException {

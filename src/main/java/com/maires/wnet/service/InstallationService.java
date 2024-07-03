@@ -149,6 +149,7 @@ public class InstallationService {
    * @return the installation
    * @throws InstallationNotFoundException the installation not found exception
    */
+  @Transactional
   public Installation removeInstallationById(Long installationId)
       throws InstallationNotFoundException {
 
@@ -157,12 +158,14 @@ public class InstallationService {
 
     if (address != null) {
       address.setInstallation(null);
+      addressRepository.save(address);
     }
 
     List<Equipment> equipmentList = deletedInstallation.getEquipments();
 
     for (Equipment equipment : equipmentList) {
       equipment.setInstallation(null);
+      equipmentRepository.save(equipment);
     }
 
     installationRepository.delete(deletedInstallation);
