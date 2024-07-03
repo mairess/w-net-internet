@@ -1,6 +1,5 @@
 package com.maires.wnet.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,7 +28,7 @@ public class Technician {
   @Column(unique = true)
   private String email;
 
-  @OneToMany(mappedBy = "technician", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "technician")
   private List<Installation> installations = new ArrayList<>();
 
   /**

@@ -4,6 +4,7 @@ import com.maires.wnet.controller.dto.PlanCreationDto;
 import com.maires.wnet.controller.dto.PlanDto;
 import com.maires.wnet.entity.Plan;
 import com.maires.wnet.service.PlanService;
+import com.maires.wnet.service.exception.PlanCannotBeExcludedException;
 import com.maires.wnet.service.exception.PlanNotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +84,7 @@ public class PlanController {
    */
   @DeleteMapping("/{planId}")
   public PlanDto removePlanById(@PathVariable Long planId)
-      throws PlanNotFoundException {
+      throws PlanNotFoundException, PlanCannotBeExcludedException {
     return PlanDto.fromEntity(
         planService.removePlanById(planId)
     );

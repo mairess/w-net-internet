@@ -2,7 +2,6 @@ package com.maires.wnet.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.maires.wnet.utils.DateUtil;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,11 +29,11 @@ public class Installation {
 
   private boolean isActive;
 
-  @OneToOne(mappedBy = "installation", cascade = CascadeType.ALL)
+  @OneToOne(mappedBy = "installation")
   @JsonIgnore
   private Address address;
 
-  @OneToMany(mappedBy = "installation", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "installation")
   private List<Equipment> equipments = new ArrayList<>();
 
   @ManyToOne

@@ -1,6 +1,7 @@
 package com.maires.wnet.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
@@ -37,7 +38,7 @@ public class Address {
   @JsonIgnore
   private Customer customer;
 
-  @OneToOne
+  @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "installation_id")
   private Installation installation;
 

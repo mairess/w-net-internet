@@ -20,7 +20,6 @@ import com.maires.wnet.service.exception.TechnicianNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 /**
@@ -123,11 +122,10 @@ public class InstallationService {
     List<Equipment> equipmentList = new ArrayList<>();
 
     for (Long id : equipmentIds) {
-      Optional<Equipment> equipmentOptional = equipmentRepository.findById(id);
-      if (equipmentOptional.isEmpty()) {
-        throw new EquipmentNotFoundException();
-      }
-      Equipment equipment = equipmentOptional.get();
+
+      Equipment equipment = equipmentRepository
+          .findById(id)
+          .orElseThrow(EquipmentNotFoundException::new);
 
       if (equipment.getInstallation() != null) {
         throw new EquipmentAlreadyAssociatedException();
@@ -151,11 +149,28 @@ public class InstallationService {
    * @return the installation
    * @throws InstallationNotFoundException the installation not found exception
    */
+  @Transactional
   public Installation removeInstallationById(Long installationId)
       throws InstallationNotFoundException {
+
     Installation deletedInstallation = findInstallationById(installationId);
+    Address address = deletedInstallation.getAddress();
+
+    if (address != null) {
+      address.setInstallation(null);
+      addressRepository.save(address);
+    }
+
+    List<Equipment> equipmentList = deletedInstallation.getEquipments();
+
+    for (Equipment equipment : equipmentList) {
+      equipment.setInstallation(null);
+      equipmentRepository.save(equipment);
+    }
+
     installationRepository.delete(deletedInstallation);
     return deletedInstallation;
+
   }
 
 }
