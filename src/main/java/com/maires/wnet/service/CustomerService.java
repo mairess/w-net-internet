@@ -2,8 +2,10 @@ package com.maires.wnet.service;
 
 import com.maires.wnet.entity.Address;
 import com.maires.wnet.entity.Customer;
+import com.maires.wnet.entity.Equipment;
 import com.maires.wnet.repository.AddressRepository;
 import com.maires.wnet.repository.CustomerRepository;
+import com.maires.wnet.repository.EquipmentRepository;
 import com.maires.wnet.service.exception.AddressNotFoundException;
 import com.maires.wnet.service.exception.CustomerNotFoundException;
 import jakarta.transaction.Transactional;
@@ -22,18 +24,25 @@ public class CustomerService {
 
   private final CustomerRepository customerRepository;
   private final AddressRepository addressRepository;
+  private final EquipmentRepository equipmentRepository;
+
 
   /**
    * Instantiates a new Customer service.
    *
-   * @param customerRepository the customer repository
-   * @param addressRepository  the address repository
+   * @param customerRepository  the customer repository
+   * @param addressRepository   the address repository
+   * @param equipmentRepository the equipment repository
    */
   @Autowired
-  public CustomerService(CustomerRepository customerRepository,
-      AddressRepository addressRepository) {
+  public CustomerService(
+      CustomerRepository customerRepository,
+      AddressRepository addressRepository,
+      EquipmentRepository equipmentRepository
+  ) {
     this.customerRepository = customerRepository;
     this.addressRepository = addressRepository;
+    this.equipmentRepository = equipmentRepository;
   }
 
 
@@ -68,6 +77,7 @@ public class CustomerService {
     return customerRepository.save(customer);
   }
 
+
   /**
    * Remove customer by id customer.
    *
@@ -77,6 +87,19 @@ public class CustomerService {
    */
   public Customer removeCustomerById(Long customerId) throws CustomerNotFoundException {
     Customer deletedCustomer = findCustomerById(customerId);
+
+    List<Address> addressList = deletedCustomer.getAddresses();
+
+    for (Address address : addressList) {
+      List<Equipment> equipmentList = address.getInstallation().getEquipments();
+
+      for (Equipment equipment : equipmentList) {
+        equipment.setInstallation(null);
+        equipmentRepository.save(equipment);
+      }
+
+    }
+
     customerRepository.delete(deletedCustomer);
     return deletedCustomer;
   }

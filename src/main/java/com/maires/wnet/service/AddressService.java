@@ -37,7 +37,8 @@ public class AddressService {
   public AddressService(
       AddressRepository addressRepository,
       InstallationRepository installationRepository,
-      EquipmentRepository equipmentRepository) {
+      EquipmentRepository equipmentRepository
+  ) {
     this.addressRepository = addressRepository;
     this.installationRepository = installationRepository;
     this.equipmentRepository = equipmentRepository;
