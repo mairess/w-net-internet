@@ -2,6 +2,7 @@ package com.maires.wnet.service;
 
 import com.maires.wnet.entity.Plan;
 import com.maires.wnet.repository.PlanRepository;
+import com.maires.wnet.service.exception.PlanCannotBeExcludedException;
 import com.maires.wnet.service.exception.PlanNotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +64,13 @@ public class PlanService {
    * @return the plan
    * @throws PlanNotFoundException the plan not found exception
    */
-  public Plan removePlanById(Long planId) throws PlanNotFoundException {
+  public Plan removePlanById(Long planId)
+      throws PlanNotFoundException, PlanCannotBeExcludedException {
     Plan deletedPlan = findPlanById(planId);
+
+    if (!deletedPlan.getInstallations().isEmpty()) {
+      throw new PlanCannotBeExcludedException();
+    }
     planRepository.delete(deletedPlan);
     return deletedPlan;
   }

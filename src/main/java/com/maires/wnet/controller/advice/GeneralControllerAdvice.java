@@ -1,6 +1,7 @@
 package com.maires.wnet.controller.advice;
 
 import com.maires.wnet.service.exception.AlreadyAssociatedException;
+import com.maires.wnet.service.exception.CannotBeExcludedException;
 import com.maires.wnet.service.exception.NotFoundException;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,19 @@ public class GeneralControllerAdvice {
   @ExceptionHandler(AlreadyAssociatedException.class)
   public ResponseEntity<Map<String, String>> handleAlreadyAssociated(
       AlreadyAssociatedException exception) {
+    Map<String, String> response = Map.of("message", exception.getMessage());
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+  }
+
+  /**
+   * Handle cannot be excluded exception response entity.
+   *
+   * @param exception the exception
+   * @return the response entity
+   */
+  @ExceptionHandler(CannotBeExcludedException.class)
+  public ResponseEntity<Map<String, String>> handleCannotBeExcludedException(
+      CannotBeExcludedException exception) {
     Map<String, String> response = Map.of("message", exception.getMessage());
     return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
   }

@@ -4,6 +4,7 @@ import com.maires.wnet.controller.dto.TechnicianCreationDto;
 import com.maires.wnet.controller.dto.TechnicianDto;
 import com.maires.wnet.entity.Technician;
 import com.maires.wnet.service.TechnicianService;
+import com.maires.wnet.service.exception.TechnicianCannotBeExcludedException;
 import com.maires.wnet.service.exception.TechnicianNotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +85,7 @@ public class TechnicianController {
    */
   @DeleteMapping("/{technicianId}")
   public TechnicianDto removeTechnicianById(@PathVariable Long technicianId)
-      throws TechnicianNotFoundException {
+      throws TechnicianNotFoundException, TechnicianCannotBeExcludedException {
     return TechnicianDto.fromEntity(
         technicianService.removeTechnicianById(technicianId)
     );

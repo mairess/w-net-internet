@@ -4,6 +4,7 @@ import com.maires.wnet.controller.dto.EquipmentCreationDto;
 import com.maires.wnet.controller.dto.EquipmentDto;
 import com.maires.wnet.entity.Equipment;
 import com.maires.wnet.service.EquipmentService;
+import com.maires.wnet.service.exception.EquipmentCannotBeExcludedException;
 import com.maires.wnet.service.exception.EquipmentNotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +84,7 @@ public class EquipmentController {
    */
   @DeleteMapping("/{equipmentId}")
   public EquipmentDto removeEquipmentById(@PathVariable Long equipmentId)
-      throws EquipmentNotFoundException {
+      throws EquipmentNotFoundException, EquipmentCannotBeExcludedException {
     return EquipmentDto.fromEntity(
         equipmentService.removeEquipmentById(equipmentId)
     );

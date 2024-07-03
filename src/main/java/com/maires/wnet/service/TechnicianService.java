@@ -2,6 +2,7 @@ package com.maires.wnet.service;
 
 import com.maires.wnet.entity.Technician;
 import com.maires.wnet.repository.TechnicianRepository;
+import com.maires.wnet.service.exception.TechnicianCannotBeExcludedException;
 import com.maires.wnet.service.exception.TechnicianNotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,8 +65,14 @@ public class TechnicianService {
    * @return the technician
    * @throws TechnicianNotFoundException the technician not found exception
    */
-  public Technician removeTechnicianById(Long technicianId) throws TechnicianNotFoundException {
+  public Technician removeTechnicianById(Long technicianId)
+      throws TechnicianNotFoundException, TechnicianCannotBeExcludedException {
     Technician deletedTechnician = findTechnicianById(technicianId);
+
+    if (!deletedTechnician.getInstallations().isEmpty()) {
+      throw new TechnicianCannotBeExcludedException();
+    }
+
     technicianRepository.delete(deletedTechnician);
     return deletedTechnician;
   }

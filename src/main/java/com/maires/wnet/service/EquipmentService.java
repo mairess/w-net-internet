@@ -2,6 +2,7 @@ package com.maires.wnet.service;
 
 import com.maires.wnet.entity.Equipment;
 import com.maires.wnet.repository.EquipmentRepository;
+import com.maires.wnet.service.exception.EquipmentCannotBeExcludedException;
 import com.maires.wnet.service.exception.EquipmentNotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,8 +63,15 @@ public class EquipmentService {
    * @return the equipment
    * @throws EquipmentNotFoundException the equipment not found exception
    */
-  public Equipment removeEquipmentById(Long equipmentId) throws EquipmentNotFoundException {
+  public Equipment removeEquipmentById(Long equipmentId)
+      throws EquipmentNotFoundException, EquipmentCannotBeExcludedException {
+
     Equipment deletedEquipment = findEquipmentById(equipmentId);
+
+    if (deletedEquipment.getInstallation() != null) {
+      throw new EquipmentCannotBeExcludedException();
+    }
+
     equipmentRepository.delete(deletedEquipment);
     return deletedEquipment;
   }
