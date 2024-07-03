@@ -153,9 +153,23 @@ public class InstallationService {
    */
   public Installation removeInstallationById(Long installationId)
       throws InstallationNotFoundException {
+
     Installation deletedInstallation = findInstallationById(installationId);
+    Address address = deletedInstallation.getAddress();
+
+    if (address != null) {
+      address.setInstallation(null);
+    }
+
+    List<Equipment> equipmentList = deletedInstallation.getEquipments();
+
+    for (Equipment equipment : equipmentList) {
+      equipment.setInstallation(null);
+    }
+
     installationRepository.delete(deletedInstallation);
     return deletedInstallation;
+
   }
 
 }

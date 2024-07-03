@@ -1,8 +1,10 @@
 package com.maires.wnet.service;
 
 import com.maires.wnet.entity.Address;
+import com.maires.wnet.entity.Equipment;
 import com.maires.wnet.entity.Installation;
 import com.maires.wnet.repository.AddressRepository;
+import com.maires.wnet.repository.EquipmentRepository;
 import com.maires.wnet.repository.InstallationRepository;
 import com.maires.wnet.service.exception.AddressNotFoundException;
 import com.maires.wnet.service.exception.InstallationNotFoundException;
@@ -21,18 +23,24 @@ public class AddressService {
 
   private final AddressRepository addressRepository;
   private final InstallationRepository installationRepository;
+  private final EquipmentRepository equipmentRepository;
+
 
   /**
    * Instantiates a new Address service.
    *
    * @param addressRepository      the address repository
    * @param installationRepository the installation repository
+   * @param equipmentRepository    the equipment repository
    */
   @Autowired
-  public AddressService(AddressRepository addressRepository,
-      InstallationRepository installationRepository) {
+  public AddressService(
+      AddressRepository addressRepository,
+      InstallationRepository installationRepository,
+      EquipmentRepository equipmentRepository) {
     this.addressRepository = addressRepository;
     this.installationRepository = installationRepository;
+    this.equipmentRepository = equipmentRepository;
   }
 
   /**
@@ -68,6 +76,7 @@ public class AddressService {
     return addressRepository.save(address);
   }
 
+
   /**
    * Remove address by id address.
    *
@@ -77,6 +86,13 @@ public class AddressService {
    */
   public Address removeAddressById(Long addressId) throws AddressNotFoundException {
     Address deletedAddress = findAddressById(addressId);
+
+    List<Equipment> equipmentList = deletedAddress.getInstallation().getEquipments();
+
+    for (Equipment equipment : equipmentList) {
+      equipment.setInstallation(null);
+      equipmentRepository.save(equipment);
+    }
     addressRepository.delete(deletedAddress);
     return deletedAddress;
   }
