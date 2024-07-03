@@ -7,8 +7,10 @@ import com.maires.wnet.service.EquipmentService;
 import com.maires.wnet.service.exception.EquipmentCannotBeExcludedException;
 import com.maires.wnet.service.exception.EquipmentNotFoundException;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -80,7 +82,8 @@ public class EquipmentController {
    *
    * @param equipmentId the equipment id
    * @return the equipment dto
-   * @throws EquipmentNotFoundException the equipment not found exception
+   * @throws EquipmentNotFoundException         the equipment not found exception
+   * @throws EquipmentCannotBeExcludedException the equipment cannot be excluded exception
    */
   @DeleteMapping("/{equipmentId}")
   public EquipmentDto removeEquipmentById(@PathVariable Long equipmentId)
@@ -88,6 +91,19 @@ public class EquipmentController {
     return EquipmentDto.fromEntity(
         equipmentService.removeEquipmentById(equipmentId)
     );
+  }
+
+  /**
+   * Dissociate equipment response entity.
+   *
+   * @param equipmentId the equipment id
+   * @return the response entity
+   * @throws EquipmentNotFoundException the equipment not found exception
+   */
+  @PostMapping("/{equipmentId}")
+  public ResponseEntity<Map<String, String>> dissociateEquipment(@PathVariable Long equipmentId)
+      throws EquipmentNotFoundException {
+    return equipmentService.dissociateEquipment(equipmentId);
   }
 
 }

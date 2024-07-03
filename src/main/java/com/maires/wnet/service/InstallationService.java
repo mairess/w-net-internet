@@ -20,7 +20,6 @@ import com.maires.wnet.service.exception.TechnicianNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 /**
@@ -123,11 +122,10 @@ public class InstallationService {
     List<Equipment> equipmentList = new ArrayList<>();
 
     for (Long id : equipmentIds) {
-      Optional<Equipment> equipmentOptional = equipmentRepository.findById(id);
-      if (equipmentOptional.isEmpty()) {
-        throw new EquipmentNotFoundException();
-      }
-      Equipment equipment = equipmentOptional.get();
+
+      Equipment equipment = equipmentRepository
+          .findById(id)
+          .orElseThrow(EquipmentNotFoundException::new);
 
       if (equipment.getInstallation() != null) {
         throw new EquipmentAlreadyAssociatedException();

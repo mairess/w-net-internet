@@ -2,10 +2,13 @@ package com.maires.wnet.service;
 
 import com.maires.wnet.entity.Equipment;
 import com.maires.wnet.repository.EquipmentRepository;
+import com.maires.wnet.repository.InstallationRepository;
 import com.maires.wnet.service.exception.EquipmentCannotBeExcludedException;
 import com.maires.wnet.service.exception.EquipmentNotFoundException;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,10 +22,12 @@ public class EquipmentService {
   /**
    * Instantiates a new Equipment service.
    *
-   * @param equipmentRepository the equipment repository
+   * @param equipmentRepository    the equipment repository
+   * @param installationRepository the installation repository
    */
   @Autowired
-  public EquipmentService(EquipmentRepository equipmentRepository) {
+  public EquipmentService(EquipmentRepository equipmentRepository,
+      InstallationRepository installationRepository) {
     this.equipmentRepository = equipmentRepository;
   }
 
@@ -61,7 +66,8 @@ public class EquipmentService {
    *
    * @param equipmentId the equipment id
    * @return the equipment
-   * @throws EquipmentNotFoundException the equipment not found exception
+   * @throws EquipmentNotFoundException         the equipment not found exception
+   * @throws EquipmentCannotBeExcludedException the equipment cannot be excluded exception
    */
   public Equipment removeEquipmentById(Long equipmentId)
       throws EquipmentNotFoundException, EquipmentCannotBeExcludedException {
@@ -76,4 +82,22 @@ public class EquipmentService {
     return deletedEquipment;
   }
 
+  /**
+   * Dissociate equipment response entity.
+   *
+   * @param equipmentId the equipment id
+   * @return the response entity
+   * @throws EquipmentNotFoundException the equipment not found exception
+   */
+  public ResponseEntity<Map<String, String>> dissociateEquipment(Long equipmentId)
+      throws EquipmentNotFoundException {
+
+    Equipment equipment = findEquipmentById(equipmentId);
+
+    equipment.setInstallation(null);
+    equipmentRepository.save(equipment);
+
+    Map<String, String> response = Map.of("message", "Equipment successful dissociated!");
+    return ResponseEntity.ok(response);
+  }
 }
