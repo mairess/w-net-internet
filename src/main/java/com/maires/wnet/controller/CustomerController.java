@@ -49,8 +49,8 @@ public class CustomerController {
    */
   @GetMapping
   public List<CustomerDto> findAllCustomers() {
-    return customerService.findAllCustomers().stream().map(CustomerDto::fromEntity)
-        .toList();
+    return customerService.findAllCustomers()
+        .stream().map(CustomerDto::fromEntity).toList();
   }
 
   /**
@@ -63,9 +63,7 @@ public class CustomerController {
   @GetMapping("/{customerId}")
   public CustomerDto findCustomerById(@PathVariable Long customerId)
       throws CustomerNotFoundException {
-    return CustomerDto.fromEntity(
-        customerService.findCustomerById(customerId)
-    );
+    return CustomerDto.fromEntity(customerService.findCustomerById(customerId));
   }
 
   /**
@@ -150,8 +148,6 @@ public class CustomerController {
   @DeleteMapping("/{customerId}")
   public CustomerDto removeCustomerById(@PathVariable Long customerId)
       throws CustomerNotFoundException {
-    return CustomerDto.fromEntity(
-        customerService.removeCustomerById(customerId)
-    );
+    return CustomerDto.fromEntity(customerService.removeCustomerById(customerId));
   }
 }

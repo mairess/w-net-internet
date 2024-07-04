@@ -38,8 +38,7 @@ public class InstallationController {
   @GetMapping
   public List<InstallationDto> findAllInstallations() {
     return installationService.findAllInstallations().stream()
-        .map(InstallationDto::fromEntity)
-        .toList();
+        .map(InstallationDto::fromEntity).toList();
   }
 
   /**
@@ -52,9 +51,7 @@ public class InstallationController {
   @GetMapping("/{installationId}")
   public InstallationDto findInstallationById(@PathVariable Long installationId)
       throws InstallationNotFoundException {
-    return InstallationDto.fromEntity(
-        installationService.findInstallationById(installationId)
-    );
+    return InstallationDto.fromEntity(installationService.findInstallationById(installationId));
   }
 
 
@@ -68,10 +65,7 @@ public class InstallationController {
   @DeleteMapping("/{installationId}")
   public InstallationDto removeInstallationById(@PathVariable Long installationId)
       throws InstallationNotFoundException {
-    InstallationController planService;
-    return InstallationDto.fromEntity(
-        installationService.removeInstallationById(installationId)
-    );
+    return InstallationDto.fromEntity(installationService.removeInstallationById(installationId));
   }
 
 

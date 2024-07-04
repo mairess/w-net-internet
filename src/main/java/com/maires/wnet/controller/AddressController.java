@@ -7,8 +7,6 @@ import com.maires.wnet.controller.dto.InstallationDto;
 import com.maires.wnet.entity.Address;
 import com.maires.wnet.entity.Installation;
 import com.maires.wnet.service.AddressService;
-import com.maires.wnet.service.PlanService;
-import com.maires.wnet.service.TechnicianService;
 import com.maires.wnet.service.exception.AddressAlreadyAssociatedException;
 import com.maires.wnet.service.exception.AddressNotFoundException;
 import com.maires.wnet.service.exception.EquipmentAlreadyAssociatedException;
@@ -36,8 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AddressController {
 
   private final AddressService addressService;
-  private final PlanService planService;
-  private final TechnicianService technicianService;
 
 
   /**
@@ -46,14 +42,8 @@ public class AddressController {
    * @param addressService the address service
    */
   @Autowired
-  public AddressController(
-      AddressService addressService,
-      PlanService planService,
-      TechnicianService technicianService
-  ) {
+  public AddressController(AddressService addressService) {
     this.addressService = addressService;
-    this.planService = planService;
-    this.technicianService = technicianService;
   }
 
 

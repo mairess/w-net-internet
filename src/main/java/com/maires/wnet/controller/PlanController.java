@@ -58,9 +58,7 @@ public class PlanController {
   @GetMapping("/{planId}")
   public PlanDto findPlanById(@PathVariable Long planId)
       throws PlanNotFoundException {
-    return PlanDto.fromEntity(
-        planService.findPlanById(planId)
-    );
+    return PlanDto.fromEntity(planService.findPlanById(planId));
   }
 
   /**
@@ -87,9 +85,7 @@ public class PlanController {
   @DeleteMapping("/{planId}")
   public PlanDto removePlanById(@PathVariable Long planId)
       throws PlanNotFoundException, PlanCannotBeExcludedException {
-    return PlanDto.fromEntity(
-        planService.removePlanById(planId)
-    );
+    return PlanDto.fromEntity(planService.removePlanById(planId));
   }
 
   /**
@@ -105,9 +101,7 @@ public class PlanController {
       @PathVariable Long planId,
       @RequestBody PlanCreationDto planCreationDto
   ) throws PlanNotFoundException {
-
     Plan planToUpdate = planService.updatePlan(planId, planCreationDto.toEntity());
-
     return PlanDto.fromEntity(planToUpdate);
   }
 }
