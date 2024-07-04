@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -95,6 +96,21 @@ public class CustomerController {
     return CustomerDto.fromEntity(newCustomer);
   }
 
+  /**
+   * Update customer customer dto.
+   *
+   * @param customerId the customer id
+   * @param customer   the customer
+   * @return the customer dto
+   * @throws CustomerNotFoundException the customer not found exception
+   */
+  @PutMapping("/{customerId}")
+  public CustomerDto updateCustomer(
+      @PathVariable Long customerId,
+      @RequestBody Customer customer
+  ) throws CustomerNotFoundException {
+    return CustomerDto.fromEntity(customerService.updateCustomer(customerId, customer));
+  }
 
   /**
    * Create customer urban address dto.
