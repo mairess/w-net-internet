@@ -3,6 +3,7 @@ package com.maires.wnet.service;
 import com.maires.wnet.entity.Address;
 import com.maires.wnet.entity.Customer;
 import com.maires.wnet.entity.Equipment;
+import com.maires.wnet.repository.AddressRepository;
 import com.maires.wnet.repository.CustomerRepository;
 import com.maires.wnet.repository.EquipmentRepository;
 import com.maires.wnet.service.exception.CustomerNotFoundException;
@@ -19,6 +20,7 @@ public class CustomerService {
 
   private final CustomerRepository customerRepository;
   private final EquipmentRepository equipmentRepository;
+  private final AddressRepository addressRepository;
 
 
   /**
@@ -26,14 +28,17 @@ public class CustomerService {
    *
    * @param customerRepository  the customer repository
    * @param equipmentRepository the equipment repository
+   * @param addressRepository   the address repository
    */
   @Autowired
   public CustomerService(
       CustomerRepository customerRepository,
-      EquipmentRepository equipmentRepository
+      EquipmentRepository equipmentRepository,
+      AddressRepository addressRepository
   ) {
     this.customerRepository = customerRepository;
     this.equipmentRepository = equipmentRepository;
+    this.addressRepository = addressRepository;
   }
 
 
@@ -68,6 +73,25 @@ public class CustomerService {
     return customerRepository.save(customer);
   }
 
+
+  /**
+   * Create customer address.
+   *
+   * @param customerId the customer id
+   * @param address    the address
+   * @return the address
+   * @throws CustomerNotFoundException the customer not found exception
+   */
+  public Address createCustomerAddress(Long customerId, Address address)
+      throws CustomerNotFoundException {
+
+    Customer customer = customerRepository.findById(customerId)
+        .orElseThrow(CustomerNotFoundException::new);
+
+    address.setCustomer(customer);
+
+    return addressRepository.save(address);
+  }
 
   /**
    * Remove customer by id customer.

@@ -1,7 +1,11 @@
 package com.maires.wnet.controller;
 
+import com.maires.wnet.controller.dto.AddressConverter;
+import com.maires.wnet.controller.dto.AddressDto;
 import com.maires.wnet.controller.dto.CustomerCreationDto;
 import com.maires.wnet.controller.dto.CustomerDto;
+import com.maires.wnet.controller.dto.RuralAddressCreationDto;
+import com.maires.wnet.controller.dto.UrbanAddressCreationDto;
 import com.maires.wnet.entity.Customer;
 import com.maires.wnet.service.CustomerService;
 import com.maires.wnet.service.exception.CustomerNotFoundException;
@@ -25,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CustomerController {
 
   private final CustomerService customerService;
+
 
   /**
    * Instantiates a new Customer controller.
@@ -75,6 +80,48 @@ public class CustomerController {
       @RequestBody CustomerCreationDto customerCreationDto) {
     Customer newCustomer = customerService.createCustomer(customerCreationDto.toEntity());
     return CustomerDto.fromEntity(newCustomer);
+  }
+
+
+  /**
+   * Create customer urban address dto.
+   *
+   * @param customerId              the customer id
+   * @param urbanAddressCreationDto the urban address creation dto
+   * @return the address dto
+   * @throws CustomerNotFoundException the customer not found exception
+   */
+  @PostMapping("/{customerId}/addresses/urban")
+  @ResponseStatus(HttpStatus.CREATED)
+  public AddressDto createCustomerUrbanAddress(
+      @PathVariable Long customerId,
+      @RequestBody UrbanAddressCreationDto urbanAddressCreationDto
+  ) throws CustomerNotFoundException {
+
+    return AddressConverter.returnAddressType(
+        customerService.createCustomerAddress(customerId, urbanAddressCreationDto.toEntity())
+    );
+  }
+
+  /**
+   * Create customer rural address dto.
+   *
+   * @param customerId              the customer id
+   * @param ruralAddressCreationDto the rural address creation dto
+   * @return the address dto
+   * @throws CustomerNotFoundException the customer not found exception
+   */
+  @PostMapping("{customerId}/addresses/rural")
+  @ResponseStatus(HttpStatus.CREATED)
+  public AddressDto createCustomerRuralAddress(
+      @PathVariable Long customerId,
+      @RequestBody RuralAddressCreationDto ruralAddressCreationDto
+  ) throws CustomerNotFoundException {
+
+    return AddressConverter.returnAddressType(
+        customerService.createCustomerAddress(customerId, ruralAddressCreationDto.toEntity())
+    );
+
   }
 
 
