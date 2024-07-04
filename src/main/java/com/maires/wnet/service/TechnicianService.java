@@ -63,7 +63,8 @@ public class TechnicianService {
    *
    * @param technicianId the technician id
    * @return the technician
-   * @throws TechnicianNotFoundException the technician not found exception
+   * @throws TechnicianNotFoundException         the technician not found exception
+   * @throws TechnicianCannotBeExcludedException the technician cannot be excluded exception
    */
   public Technician removeTechnicianById(Long technicianId)
       throws TechnicianNotFoundException, TechnicianCannotBeExcludedException {
@@ -75,5 +76,25 @@ public class TechnicianService {
 
     technicianRepository.delete(deletedTechnician);
     return deletedTechnician;
+  }
+
+  /**
+   * Update technician technician.
+   *
+   * @param technicianId the technician id
+   * @param technician   the technician
+   * @return the technician
+   * @throws TechnicianNotFoundException the technician not found exception
+   */
+  public Technician updateTechnician(Long technicianId, Technician technician)
+      throws TechnicianNotFoundException {
+
+    Technician technicianToUpdate = findTechnicianById(technicianId);
+
+    technicianToUpdate.setName(technician.getName());
+    technicianToUpdate.setPhone(technician.getPhone());
+    technicianToUpdate.setEmail(technician.getEmail());
+
+    return technicianRepository.save(technicianToUpdate);
   }
 }

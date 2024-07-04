@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -104,6 +105,26 @@ public class EquipmentController {
   public ResponseEntity<Map<String, String>> dissociateEquipment(@PathVariable Long equipmentId)
       throws EquipmentNotFoundException {
     return equipmentService.dissociateEquipment(equipmentId);
+  }
+
+  /**
+   * Update equipment dto.
+   *
+   * @param equipmentId          the equipment id
+   * @param equipmentCreationDto the equipment creation dto
+   * @return the equipment dto
+   * @throws EquipmentNotFoundException the equipment not found exception
+   */
+  @PutMapping("/{equipmentId}")
+  public EquipmentDto updateEquipment(
+      @PathVariable Long equipmentId,
+      @RequestBody EquipmentCreationDto equipmentCreationDto
+  ) throws EquipmentNotFoundException {
+
+    Equipment equipmentToUpdate = equipmentService.updateEquipment(equipmentId,
+        equipmentCreationDto.toEntity());
+
+    return EquipmentDto.fromEntity(equipmentToUpdate);
   }
 
 }

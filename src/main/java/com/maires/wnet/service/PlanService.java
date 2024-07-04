@@ -62,7 +62,8 @@ public class PlanService {
    *
    * @param planId the plan id
    * @return the plan
-   * @throws PlanNotFoundException the plan not found exception
+   * @throws PlanNotFoundException         the plan not found exception
+   * @throws PlanCannotBeExcludedException the plan cannot be excluded exception
    */
   public Plan removePlanById(Long planId)
       throws PlanNotFoundException, PlanCannotBeExcludedException {
@@ -73,5 +74,23 @@ public class PlanService {
     }
     planRepository.delete(deletedPlan);
     return deletedPlan;
+  }
+
+  /**
+   * Update plan plan.
+   *
+   * @param planId the plan id
+   * @param plan   the plan
+   * @return the plan
+   * @throws PlanNotFoundException the plan not found exception
+   */
+  public Plan updatePlan(Long planId, Plan plan) throws PlanNotFoundException {
+    Plan planToUpdate = findPlanById(planId);
+
+    planToUpdate.setName(plan.getName());
+    planToUpdate.setSpeed(plan.getSpeed());
+    planToUpdate.setPrice(plan.getPrice());
+
+    return planRepository.save(planToUpdate);
   }
 }
