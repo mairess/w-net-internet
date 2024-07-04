@@ -2,12 +2,17 @@ package com.maires.wnet.controller;
 
 import com.maires.wnet.controller.dto.AddressConverter;
 import com.maires.wnet.controller.dto.AddressDto;
-import com.maires.wnet.controller.dto.RuralAddressCreationDto;
-import com.maires.wnet.controller.dto.UrbanAddressCreationDto;
+import com.maires.wnet.controller.dto.InstallationCreationDto;
+import com.maires.wnet.controller.dto.InstallationDto;
 import com.maires.wnet.entity.Address;
+import com.maires.wnet.entity.Installation;
 import com.maires.wnet.service.AddressService;
+import com.maires.wnet.service.exception.AddressAlreadyAssociatedException;
 import com.maires.wnet.service.exception.AddressNotFoundException;
-import com.maires.wnet.service.exception.CustomerNotFoundException;
+import com.maires.wnet.service.exception.EquipmentAlreadyAssociatedException;
+import com.maires.wnet.service.exception.EquipmentNotFoundException;
+import com.maires.wnet.service.exception.PlanNotFoundException;
+import com.maires.wnet.service.exception.TechnicianNotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,7 +59,6 @@ public class AddressController {
     return allAddresses.stream().map(AddressConverter::returnAddressType).toList();
   }
 
-
   /**
    * Find address by id record.
    *
@@ -69,47 +73,39 @@ public class AddressController {
     return AddressConverter.returnAddressType(address);
   }
 
-
   /**
-   * Create rural address dto.
+   * Create address installation installation dto.
    *
-   * @param ruralAddressCreationDto the rural address creation dto
-   * @param customerId              the customer id
-   * @return the address dto
-   * @throws CustomerNotFoundException the customer not found exception
+   * @param installationCreationDto the installation creation dto
+   * @return the installation dto
+   * @throws AddressNotFoundException            the address not found exception
+   * @throws PlanNotFoundException               the plan not found exception
+   * @throws TechnicianNotFoundException         the technician not found exception
+   * @throws AddressAlreadyAssociatedException   the address already associated exception
+   * @throws EquipmentAlreadyAssociatedException the equipment already associated exception
+   * @throws EquipmentNotFoundException          the equipment not found exception
    */
-  @PostMapping("/rural/customers/{customerId}")
+  @PostMapping("/{addressId}/installations")
   @ResponseStatus(HttpStatus.CREATED)
-  public AddressDto createRuralAddress(
-      @RequestBody RuralAddressCreationDto ruralAddressCreationDto,
-      @PathVariable Long customerId
-  ) throws CustomerNotFoundException {
+  public InstallationDto createAddressInstallation(
+      @PathVariable Long addressId,
+      @RequestBody InstallationCreationDto installationCreationDto)
+      throws
+      AddressAlreadyAssociatedException,
+      EquipmentAlreadyAssociatedException,
+      AddressNotFoundException,
+      EquipmentNotFoundException,
+      TechnicianNotFoundException,
+      PlanNotFoundException {
 
-    return AddressConverter.returnAddressType(
-        addressService.createAddress(ruralAddressCreationDto.toEntity(), customerId)
+    Installation newInstallation = addressService.createAddressInstallation(
+        addressId,
+        installationCreationDto.planId(),
+        installationCreationDto.technicianId(),
+        installationCreationDto.equipmentIds()
     );
 
-  }
-
-
-  /**
-   * Create urban address dto.
-   *
-   * @param urbanAddressCreationDto the urban address creation dto
-   * @param customerId              the customer id
-   * @return the address dto
-   * @throws CustomerNotFoundException the customer not found exception
-   */
-  @PostMapping("/urban/customers/{customerId}")
-  @ResponseStatus(HttpStatus.CREATED)
-  public AddressDto createUrbanAddress(
-      @RequestBody UrbanAddressCreationDto urbanAddressCreationDto,
-      @PathVariable Long customerId
-  ) throws CustomerNotFoundException {
-
-    return AddressConverter.returnAddressType(
-        addressService.createAddress(urbanAddressCreationDto.toEntity(), customerId)
-    );
+    return InstallationDto.fromEntity(newInstallation);
   }
 
 

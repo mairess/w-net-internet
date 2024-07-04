@@ -60,9 +60,7 @@ public class EquipmentController {
   @GetMapping("/{equipmentId}")
   public EquipmentDto findEquipmentById(@PathVariable Long equipmentId)
       throws EquipmentNotFoundException {
-    return EquipmentDto.fromEntity(
-        equipmentService.findEquipmentById(equipmentId)
-    );
+    return EquipmentDto.fromEntity(equipmentService.findEquipmentById(equipmentId));
   }
 
   /**
@@ -89,9 +87,7 @@ public class EquipmentController {
   @DeleteMapping("/{equipmentId}")
   public EquipmentDto removeEquipmentById(@PathVariable Long equipmentId)
       throws EquipmentNotFoundException, EquipmentCannotBeExcludedException {
-    return EquipmentDto.fromEntity(
-        equipmentService.removeEquipmentById(equipmentId)
-    );
+    return EquipmentDto.fromEntity(equipmentService.removeEquipmentById(equipmentId));
   }
 
   /**
@@ -120,10 +116,8 @@ public class EquipmentController {
       @PathVariable Long equipmentId,
       @RequestBody EquipmentCreationDto equipmentCreationDto
   ) throws EquipmentNotFoundException {
-
     Equipment equipmentToUpdate = equipmentService.updateEquipment(equipmentId,
         equipmentCreationDto.toEntity());
-
     return EquipmentDto.fromEntity(equipmentToUpdate);
   }
 

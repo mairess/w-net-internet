@@ -58,9 +58,7 @@ public class TechnicianController {
   @GetMapping("/{technicianId}")
   public TechnicianDto findTechnicianById(@PathVariable Long technicianId)
       throws TechnicianNotFoundException {
-    return TechnicianDto.fromEntity(
-        technicianService.findTechnicianById(technicianId)
-    );
+    return TechnicianDto.fromEntity(technicianService.findTechnicianById(technicianId));
   }
 
   /**
@@ -72,8 +70,7 @@ public class TechnicianController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public TechnicianDto createTechnician(@RequestBody TechnicianCreationDto technicianCreationDto) {
-    Technician newTechnician = technicianService.createTechnician(
-        technicianCreationDto.toEntity());
+    Technician newTechnician = technicianService.createTechnician(technicianCreationDto.toEntity());
     return TechnicianDto.fromEntity(newTechnician);
   }
 
@@ -88,9 +85,7 @@ public class TechnicianController {
   @DeleteMapping("/{technicianId}")
   public TechnicianDto removeTechnicianById(@PathVariable Long technicianId)
       throws TechnicianNotFoundException, TechnicianCannotBeExcludedException {
-    return TechnicianDto.fromEntity(
-        technicianService.removeTechnicianById(technicianId)
-    );
+    return TechnicianDto.fromEntity(technicianService.removeTechnicianById(technicianId));
   }
 
   /**
@@ -106,10 +101,8 @@ public class TechnicianController {
       @PathVariable Long technicianId,
       @RequestBody TechnicianCreationDto technicianCreationDto
   ) throws TechnicianNotFoundException {
-
-    Technician updatedTechnician = technicianService.updateTechnician(technicianId,
-        technicianCreationDto.toEntity());
-
+    Technician updatedTechnician = technicianService
+        .updateTechnician(technicianId, technicianCreationDto.toEntity());
     return TechnicianDto.fromEntity(updatedTechnician);
   }
 
