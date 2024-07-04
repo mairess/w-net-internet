@@ -68,7 +68,7 @@ public class UrbanAddress extends Address {
    *
    * @return the street number
    */
-  public int getStreetNumber() {
+  public Integer getStreetNumber() {
     return streetNumber;
   }
 
@@ -77,7 +77,7 @@ public class UrbanAddress extends Address {
    *
    * @param streetNumber the street number
    */
-  public void setStreetNumber(int streetNumber) {
+  public void setStreetNumber(Integer streetNumber) {
     this.streetNumber = streetNumber;
   }
 
