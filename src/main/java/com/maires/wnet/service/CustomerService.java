@@ -2,7 +2,7 @@ package com.maires.wnet.service;
 
 import com.maires.wnet.entity.Address;
 import com.maires.wnet.entity.Customer;
-import com.maires.wnet.entity.Equipment;
+import com.maires.wnet.entity.Installation;
 import com.maires.wnet.repository.AddressRepository;
 import com.maires.wnet.repository.CustomerRepository;
 import com.maires.wnet.repository.EquipmentRepository;
@@ -64,6 +64,22 @@ public class CustomerService {
   }
 
   /**
+   * Find customer addresses list.
+   *
+   * @param customerId the customer id
+   * @return the list
+   * @throws CustomerNotFoundException the customer not found exception
+   */
+  public List<Address> findCustomerAddresses(Long customerId) throws CustomerNotFoundException {
+
+    Customer customer = customerRepository
+        .findById(customerId)
+        .orElseThrow(CustomerNotFoundException::new);
+
+    return customer.getAddresses();
+  }
+
+  /**
    * Create customer customer.
    *
    * @param customer the customer
@@ -104,17 +120,14 @@ public class CustomerService {
   public Customer removeCustomerById(Long customerId) throws CustomerNotFoundException {
     Customer deletedCustomer = findCustomerById(customerId);
 
-    List<Address> addressList = deletedCustomer.getAddresses();
-
-    for (Address address : addressList) {
-      List<Equipment> equipmentList = address.getInstallation().getEquipments();
-
-      for (Equipment equipment : equipmentList) {
-        equipment.setInstallation(null);
-        equipmentRepository.save(equipment);
-      }
-
-    }
+    deletedCustomer.getAddresses().stream()
+        .map(Address::getInstallation)
+        .map(Installation::getEquipments)
+        .flatMap(List::stream)
+        .forEach(equipment -> {
+          equipment.setInstallation(null);
+          equipmentRepository.save(equipment);
+        });
 
     customerRepository.delete(deletedCustomer);
     return deletedCustomer;

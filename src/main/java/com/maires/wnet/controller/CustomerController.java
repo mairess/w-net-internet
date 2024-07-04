@@ -6,6 +6,7 @@ import com.maires.wnet.controller.dto.CustomerCreationDto;
 import com.maires.wnet.controller.dto.CustomerDto;
 import com.maires.wnet.controller.dto.RuralAddressCreationDto;
 import com.maires.wnet.controller.dto.UrbanAddressCreationDto;
+import com.maires.wnet.entity.Address;
 import com.maires.wnet.entity.Customer;
 import com.maires.wnet.service.CustomerService;
 import com.maires.wnet.service.exception.CustomerNotFoundException;
@@ -65,6 +66,20 @@ public class CustomerController {
     return CustomerDto.fromEntity(
         customerService.findCustomerById(customerId)
     );
+  }
+
+  /**
+   * Find customer addresses list.
+   *
+   * @param customerId the customer id
+   * @return the list
+   * @throws CustomerNotFoundException the customer not found exception
+   */
+  @GetMapping("/{customerId}/addresses")
+  public List<AddressDto> findCustomerAddresses(@PathVariable Long customerId)
+      throws CustomerNotFoundException {
+    List<Address> addresses = customerService.findCustomerAddresses(customerId);
+    return addresses.stream().map(AddressConverter::returnAddressType).toList();
   }
 
 
