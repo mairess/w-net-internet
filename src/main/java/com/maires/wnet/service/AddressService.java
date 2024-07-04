@@ -59,8 +59,7 @@ public class AddressService {
    * @throws AddressNotFoundException the address not found exception
    */
   public Address findAddressById(Long addressId) throws AddressNotFoundException {
-    return addressRepository.findById(addressId)
-        .orElseThrow(AddressNotFoundException::new);
+    return addressRepository.findById(addressId).orElseThrow(AddressNotFoundException::new);
   }
 
 
