@@ -58,7 +58,7 @@ public class AddressController {
   @GetMapping("/{addressId}")
   public AddressDto findAddressById(@PathVariable Long addressId)
       throws AddressNotFoundException {
-    Address address = addressService.removeAddressById(addressId);
+    Address address = addressService.findAddressById(addressId);
     return AddressConverter.returnAddressType(address);
   }
 
