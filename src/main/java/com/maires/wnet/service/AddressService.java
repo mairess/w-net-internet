@@ -137,9 +137,7 @@ public class AddressService {
     Installation newInstallation = new Installation(address, plan, technician, equipmentList);
     address.setInstallation(newInstallation);
 
-    for (Equipment equipment : equipmentList) {
-      equipment.setInstallation(newInstallation);
-    }
+    equipmentList.forEach(equipment -> equipment.setInstallation(newInstallation));
 
     return installationRepository.save(newInstallation);
   }
@@ -159,10 +157,11 @@ public class AddressService {
     if (deletedAddress.getInstallation() != null) {
       List<Equipment> equipmentList = deletedAddress.getInstallation().getEquipments();
 
-      for (Equipment equipment : equipmentList) {
+      equipmentList.forEach(equipment -> {
         equipment.setInstallation(null);
         equipmentRepository.save(equipment);
-      }
+      });
+
     }
     addressRepository.delete(deletedAddress);
     return deletedAddress;
