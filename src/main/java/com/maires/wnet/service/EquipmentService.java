@@ -100,4 +100,26 @@ public class EquipmentService {
     Map<String, String> response = Map.of("message", "Equipment successful dissociated!");
     return ResponseEntity.ok(response);
   }
+
+
+  /**
+   * Update equipment.
+   *
+   * @param equipmentId the equipment id
+   * @param equipment   the equipment
+   * @return the equipment
+   * @throws EquipmentNotFoundException the equipment not found exception
+   */
+  public Equipment updateEquipment(Long equipmentId, Equipment equipment)
+      throws EquipmentNotFoundException {
+    Equipment equipmentToUpdate = findEquipmentById(equipmentId);
+
+    equipmentToUpdate.setType(equipment.getType());
+    equipmentToUpdate.setModel(equipment.getModel());
+    equipmentToUpdate.setSerialNumber(equipment.getSerialNumber());
+    equipmentToUpdate.setManufacturer(equipment.getManufacturer());
+
+    return equipmentRepository.save(equipmentToUpdate);
+
+  }
 }
