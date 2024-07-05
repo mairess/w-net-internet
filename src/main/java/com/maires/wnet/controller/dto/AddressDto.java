@@ -33,7 +33,8 @@ public record AddressDto(
         address.getStreetNumber(),
         address.getNeighborhood(),
         address.getComplement(),
-        InstallationDto.fromEntity(address.getInstallation())
+        address.getInstallation() != null ? InstallationDto.fromEntity(address.getInstallation())
+            : null
     );
   }
 
