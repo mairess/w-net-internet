@@ -1,12 +1,9 @@
 package com.maires.wnet.controller;
 
-import com.maires.wnet.controller.dto.AddressConverter;
+import com.maires.wnet.controller.dto.AddressCreationDto;
 import com.maires.wnet.controller.dto.AddressDto;
 import com.maires.wnet.controller.dto.CustomerCreationDto;
 import com.maires.wnet.controller.dto.CustomerDto;
-import com.maires.wnet.controller.dto.RuralAddressCreationDto;
-import com.maires.wnet.controller.dto.UrbanAddressCreationDto;
-import com.maires.wnet.entity.Address;
 import com.maires.wnet.entity.Customer;
 import com.maires.wnet.service.CustomerService;
 import com.maires.wnet.service.exception.CustomerNotFoundException;
@@ -77,8 +74,8 @@ public class CustomerController {
   @GetMapping("/{customerId}/addresses")
   public List<AddressDto> findCustomerAddresses(@PathVariable Long customerId)
       throws CustomerNotFoundException {
-    List<Address> addresses = customerService.findCustomerAddresses(customerId);
-    return addresses.stream().map(AddressConverter::returnAddressType).toList();
+    return customerService.findCustomerAddresses(customerId).stream().map(AddressDto::fromEntity)
+        .toList();
   }
 
 
@@ -91,10 +88,11 @@ public class CustomerController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public CustomerDto createCustomer(
-      @RequestBody CustomerCreationDto customerCreationDto) {
-    Customer newCustomer = customerService.createCustomer(customerCreationDto.toEntity());
-    return CustomerDto.fromEntity(newCustomer);
+      @RequestBody CustomerCreationDto customerCreationDto
+  ) {
+    return CustomerDto.fromEntity(customerService.createCustomer(customerCreationDto.toEntity()));
   }
+
 
   /**
    * Update customer customer dto.
@@ -112,47 +110,25 @@ public class CustomerController {
     return CustomerDto.fromEntity(customerService.updateCustomer(customerId, customer));
   }
 
+
   /**
-   * Create customer urban address dto.
+   * Create customer address address dto.
    *
-   * @param customerId              the customer id
-   * @param urbanAddressCreationDto the urban address creation dto
+   * @param customerId         the customer id
+   * @param addressCreationDto the address creation dto
    * @return the address dto
    * @throws CustomerNotFoundException the customer not found exception
    */
-  @PostMapping("/{customerId}/addresses/urban")
+  @PostMapping("/{customerId}/addresses")
   @ResponseStatus(HttpStatus.CREATED)
-  public AddressDto createCustomerUrbanAddress(
+  public AddressDto createCustomerAddress(
       @PathVariable Long customerId,
-      @RequestBody UrbanAddressCreationDto urbanAddressCreationDto
+      @RequestBody AddressCreationDto addressCreationDto
   ) throws CustomerNotFoundException {
 
-    return AddressConverter.returnAddressType(
-        customerService.createCustomerAddress(customerId, urbanAddressCreationDto.toEntity())
-    );
+    return AddressDto.fromEntity(
+        customerService.createCustomerAddress(customerId, addressCreationDto.toEntity()));
   }
-
-  /**
-   * Create customer rural address dto.
-   *
-   * @param customerId              the customer id
-   * @param ruralAddressCreationDto the rural address creation dto
-   * @return the address dto
-   * @throws CustomerNotFoundException the customer not found exception
-   */
-  @PostMapping("{customerId}/addresses/rural")
-  @ResponseStatus(HttpStatus.CREATED)
-  public AddressDto createCustomerRuralAddress(
-      @PathVariable Long customerId,
-      @RequestBody RuralAddressCreationDto ruralAddressCreationDto
-  ) throws CustomerNotFoundException {
-
-    return AddressConverter.returnAddressType(
-        customerService.createCustomerAddress(customerId, ruralAddressCreationDto.toEntity())
-    );
-
-  }
-
 
   /**
    * Remove customer by id customer dto.

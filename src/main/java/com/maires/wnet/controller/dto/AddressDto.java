@@ -1,29 +1,36 @@
 package com.maires.wnet.controller.dto;
 
+import com.maires.wnet.entity.Address;
+
 /**
  * The interface Address without id dto.
  */
-public interface AddressDto {
+public record AddressDto(
+    String city,
+    String state,
+    String zipCode,
+    String street,
+    Integer streetNumber,
+    String neighborhood,
+    String complement
+) {
 
   /**
-   * Gets city.
+   * From entity address dto.
    *
-   * @return the city
+   * @param address the address
+   * @return the address dto
    */
-  String getCity();
-
-  /**
-   * Gets state.
-   *
-   * @return the state
-   */
-  String getState();
-
-  /**
-   * Gets zip code.
-   *
-   * @return the zip code
-   */
-  String getZipCode();
+  public static AddressDto fromEntity(Address address) {
+    return new AddressDto(
+        address.getCity(),
+        address.getState(),
+        address.getZipCode(),
+        address.getStreet(),
+        address.getStreetNumber(),
+        address.getNeighborhood(),
+        address.getComplement()
+    );
+  }
 
 }
