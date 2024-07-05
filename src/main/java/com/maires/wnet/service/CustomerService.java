@@ -89,6 +89,26 @@ public class CustomerService {
     return customerRepository.save(customer);
   }
 
+  /**
+   * Update customer customer.
+   *
+   * @param customerId the customer id
+   * @param customer   the customer
+   * @return the customer
+   * @throws CustomerNotFoundException the customer not found exception
+   */
+  public Customer updateCustomer(Long customerId, Customer customer)
+      throws CustomerNotFoundException {
+    Customer customerToUpdate = findCustomerById(customerId);
+
+    customerToUpdate.setName(customer.getName());
+    customerToUpdate.setCpf(customer.getCpf());
+    customerToUpdate.setPhone(customer.getPhone());
+    customerToUpdate.setEmail(customer.getEmail());
+
+    return customerRepository.save(customerToUpdate);
+  }
+
 
   /**
    * Create customer address.
