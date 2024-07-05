@@ -6,13 +6,15 @@ import com.maires.wnet.entity.Address;
  * The interface Address without id dto.
  */
 public record AddressDto(
+    Long id,
     String city,
     String state,
     String zipCode,
     String street,
     Integer streetNumber,
     String neighborhood,
-    String complement
+    String complement,
+    InstallationDto installation
 ) {
 
   /**
@@ -23,13 +25,15 @@ public record AddressDto(
    */
   public static AddressDto fromEntity(Address address) {
     return new AddressDto(
+        address.getId(),
         address.getCity(),
         address.getState(),
         address.getZipCode(),
         address.getStreet(),
         address.getStreetNumber(),
         address.getNeighborhood(),
-        address.getComplement()
+        address.getComplement(),
+        InstallationDto.fromEntity(address.getInstallation())
     );
   }
 
