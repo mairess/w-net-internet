@@ -81,11 +81,14 @@
     </plugins>
   </build>
   <dependencies>
+    <!-- documentation -->
     <dependency>
       <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
       <groupId>org.springdoc</groupId>
       <version>2.3.0</version>
     </dependency>
+
+    <!-- database -->
     <dependency>
       <artifactId>postgresql</artifactId>
       <groupId>org.postgresql</groupId>
@@ -95,15 +98,14 @@
       <artifactId>spring-boot-starter-data-jpa</artifactId>
       <groupId>org.springframework.boot</groupId>
     </dependency>
-    <!--    <dependency>-->
-    <!--      <artifactId>spring-boot-starter-security</artifactId>-->
-    <!--      <groupId>org.springframework.boot</groupId>-->
-    <!--    </dependency>-->
+
+    <!-- web -->
     <dependency>
       <artifactId>spring-boot-starter-web</artifactId>
       <groupId>org.springframework.boot</groupId>
     </dependency>
 
+    <!-- test -->
     <dependency>
       <artifactId>spring-boot-starter-test</artifactId>
       <groupId>org.springframework.boot</groupId>
@@ -132,6 +134,17 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <groupId>org.junit.jupiter</groupId>
       <scope>test</scope>
+    </dependency>
+
+    <!-- security -->
+    <dependency>
+      <artifactId>spring-boot-starter-security</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>java-jwt</artifactId>
+      <groupId>com.auth0</groupId>
+      <version>4.4.0</version>
     </dependency>
   </dependencies>
   <description>A simple API for internet provider</description>
