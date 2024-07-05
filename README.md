@@ -6,7 +6,7 @@ This is an internet provider management system.
 
 # ER Diagram
 
-<img src="/images/W-net Internet.svg" alt="Description of image" style="height: 400px; width: 600px;" />
+<img src="/images/w-net-diagram.svg" alt="Description of image" style="height: 500px; width: 600px;" />
 
 ## Run project locally
 
