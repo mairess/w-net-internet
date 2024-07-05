@@ -1,10 +1,8 @@
 package com.maires.wnet.controller;
 
-import com.maires.wnet.controller.dto.AddressConverter;
 import com.maires.wnet.controller.dto.AddressDto;
 import com.maires.wnet.controller.dto.InstallationCreationDto;
 import com.maires.wnet.controller.dto.InstallationDto;
-import com.maires.wnet.entity.Address;
 import com.maires.wnet.entity.Installation;
 import com.maires.wnet.service.AddressService;
 import com.maires.wnet.service.exception.AddressAlreadyAssociatedException;
@@ -54,36 +52,36 @@ public class AddressController {
    */
   @GetMapping
   public List<AddressDto> findAllAddresses() {
-    List<Address> allAddresses = addressService.findAllAddresses();
-
-    return allAddresses.stream().map(AddressConverter::returnAddressType).toList();
+    return addressService.findAllAddresses().stream().map(AddressDto::fromEntity).toList();
   }
 
+
   /**
-   * Find address by id record.
+   * Find address by id address dto.
    *
    * @param addressId the address id
-   * @return the record
+   * @return the address dto
    * @throws AddressNotFoundException the address not found exception
    */
   @GetMapping("/{addressId}")
   public AddressDto findAddressById(@PathVariable Long addressId)
       throws AddressNotFoundException {
-    Address address = addressService.findAddressById(addressId);
-    return AddressConverter.returnAddressType(address);
+    return AddressDto.fromEntity(addressService.findAddressById(addressId));
   }
+
 
   /**
    * Create address installation installation dto.
    *
+   * @param addressId               the address id
    * @param installationCreationDto the installation creation dto
    * @return the installation dto
-   * @throws AddressNotFoundException            the address not found exception
-   * @throws PlanNotFoundException               the plan not found exception
-   * @throws TechnicianNotFoundException         the technician not found exception
    * @throws AddressAlreadyAssociatedException   the address already associated exception
    * @throws EquipmentAlreadyAssociatedException the equipment already associated exception
+   * @throws AddressNotFoundException            the address not found exception
    * @throws EquipmentNotFoundException          the equipment not found exception
+   * @throws TechnicianNotFoundException         the technician not found exception
+   * @throws PlanNotFoundException               the plan not found exception
    */
   @PostMapping("/{addressId}/installations")
   @ResponseStatus(HttpStatus.CREATED)
@@ -119,8 +117,7 @@ public class AddressController {
   @DeleteMapping("/{addressId}")
   public AddressDto removeAddressById(@PathVariable Long addressId)
       throws AddressNotFoundException {
-    Address address = addressService.removeAddressById(addressId);
-    return AddressConverter.returnAddressType(address);
+    return AddressDto.fromEntity(addressService.removeAddressById(addressId));
   }
 
 }

@@ -31,8 +31,7 @@ public record CustomerDto(
         customer.getPhone(),
         customer.getEmail(),
         customer.getRegistrationDate(),
-        customer.getAddresses().stream().map(AddressConverter::returnAddressType)
-            .toList()
+        customer.getAddresses().stream().map(AddressDto::fromEntity).toList()
     );
   }
 }
