@@ -10,6 +10,7 @@ import java.util.List;
 public record InstallationDto(
     Long id,
     String installationDate,
+    boolean isActive,
     PlanDto plan,
     TechnicianDto technician,
     List<EquipmentDto> equipments
@@ -26,6 +27,7 @@ public record InstallationDto(
     return new InstallationDto(
         installation.getId(),
         installation.getInstallationDate(),
+        installation.isActive(),
         PlanDto.fromEntity(installation.getPlan()),
         TechnicianDto.fromEntity(installation.getTechnician()),
         installation.getEquipments().stream().map(EquipmentDto::fromEntity).toList()

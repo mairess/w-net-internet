@@ -1,5 +1,6 @@
 package com.maires.wnet.controller;
 
+import com.maires.wnet.controller.dto.AddressCreationDto;
 import com.maires.wnet.controller.dto.AddressDto;
 import com.maires.wnet.controller.dto.InstallationCreationDto;
 import com.maires.wnet.controller.dto.InstallationDto;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -104,6 +106,23 @@ public class AddressController {
     );
 
     return InstallationDto.fromEntity(newInstallation);
+  }
+
+  /**
+   * Update address dto.
+   *
+   * @param addressId          the address id
+   * @param addressCreationDto the address creation dto
+   * @return the address dto
+   * @throws AddressNotFoundException the address not found exception
+   */
+  @PutMapping("/{addressId}")
+  public AddressDto updateAddress(
+      @PathVariable Long addressId,
+      @RequestBody AddressCreationDto addressCreationDto
+  ) throws AddressNotFoundException {
+    return AddressDto.fromEntity(
+        addressService.updateAddress(addressId, addressCreationDto.toEntity()));
   }
 
 
