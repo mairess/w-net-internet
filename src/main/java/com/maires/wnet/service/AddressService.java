@@ -142,6 +142,28 @@ public class AddressService {
     return installationRepository.save(newInstallation);
   }
 
+  /**
+   * Update address.
+   *
+   * @param addressId the address id
+   * @param address   the address
+   * @return the address
+   * @throws AddressNotFoundException the address not found exception
+   */
+  public Address updateAddress(Long addressId, Address address) throws AddressNotFoundException {
+    Address addressToUpdate = findAddressById(addressId);
+
+    addressToUpdate.setCity(address.getCity());
+    addressToUpdate.setState(address.getState());
+    addressToUpdate.setZipCode(address.getZipCode());
+    addressToUpdate.setStreet(addressToUpdate.getStreet());
+    addressToUpdate.setStreetNumber(address.getStreetNumber());
+    addressToUpdate.setNeighborhood(address.getNeighborhood());
+    addressToUpdate.setComplement(address.getComplement());
+
+    return addressRepository.save(addressToUpdate);
+  }
+
 
   /**
    * Remove address by id address.
