@@ -1,12 +1,12 @@
 package com.maires.wnet.controller.dto;
 
-import com.maires.wnet.entity.Person;
+import com.maires.wnet.entity.User;
 import com.maires.wnet.security.Role;
 
 /**
  * The type Person creation dto.
  */
-public record PersonCreationDto(
+public record UserCreationDto(
     String fullName,
     String email,
     String username,
@@ -19,7 +19,7 @@ public record PersonCreationDto(
    *
    * @return the person
    */
-  public Person toEntity() {
-    return new Person(null, fullName, email, username, password, role);
+  public User toEntity() {
+    return new User(null, fullName, email, username, password, role);
   }
 }

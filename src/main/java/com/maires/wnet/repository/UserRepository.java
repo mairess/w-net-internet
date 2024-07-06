@@ -1,6 +1,6 @@
 package com.maires.wnet.repository;
 
-import com.maires.wnet.entity.Person;
+import com.maires.wnet.entity.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
  * The interface Person repository.
  */
 @Repository
-public interface PersonRepository extends JpaRepository<Person, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
   /**
    * Find by username optional.
@@ -17,6 +17,6 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
    * @param username the username
    * @return the optional
    */
-  Optional<Person> findByUsername(String username);
+  Optional<User> findByUsername(String username);
 
 }

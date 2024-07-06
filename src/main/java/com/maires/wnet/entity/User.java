@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -17,24 +18,30 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 @Entity
 @Table(name = "persons")
-public class Person implements UserDetails {
+public class User implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   private String fullName;
+
   @Column(unique = true)
+
   private String email;
+
   @Column(unique = true)
+
   private String username;
+
   private String password;
+
   private Role role;
 
   /**
    * Instantiates a new Person.
    */
-  public Person() {
+  public User() {
   }
 
   /**
@@ -44,7 +51,12 @@ public class Person implements UserDetails {
    * @param password the password
    * @param role     the role
    */
-  public Person(Long id, String fullName, String email, String username, String password,
+  public User(
+      Long id,
+      String fullName,
+      String email,
+      String username,
+      String password,
       Role role
   ) {
     this.id = id;
@@ -144,7 +156,7 @@ public class Person implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of();
+    return List.of(new SimpleGrantedAuthority(role.getName()));
   }
 
   public String getPassword() {

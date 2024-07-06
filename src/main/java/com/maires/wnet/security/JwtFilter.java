@@ -1,7 +1,7 @@
 package com.maires.wnet.security;
 
-import com.maires.wnet.service.PersonService;
 import com.maires.wnet.service.TokenService;
+import com.maires.wnet.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,18 +22,18 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtFilter extends OncePerRequestFilter {
 
   private final TokenService tokenService;
-  private final PersonService personService;
+  private final UserService userService;
 
   /**
    * Instantiates a new Jwt filter.
    *
-   * @param tokenService  the token service
-   * @param personService the person service
+   * @param tokenService the token service
+   * @param userService  the person service
    */
   @Autowired
-  public JwtFilter(TokenService tokenService, PersonService personService) {
+  public JwtFilter(TokenService tokenService, UserService userService) {
     this.tokenService = tokenService;
-    this.personService = personService;
+    this.userService = userService;
   }
 
   @Override
@@ -45,7 +45,7 @@ public class JwtFilter extends OncePerRequestFilter {
     if (token.isPresent()) {
       String subject = tokenService.validateToken(token.get());
 
-      UserDetails userDetails = personService.loadUserByUsername(subject);
+      UserDetails userDetails = userService.loadUserByUsername(subject);
 
       UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
           userDetails, null, userDetails.getAuthorities());
