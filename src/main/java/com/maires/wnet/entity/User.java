@@ -3,6 +3,8 @@ package com.maires.wnet.entity;
 import com.maires.wnet.security.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,10 +38,12 @@ public class User implements UserDetails {
 
   private String password;
 
+  @Enumerated(EnumType.STRING)
   private Role role;
 
+
   /**
-   * Instantiates a new Person.
+   * Instantiates a new User.
    */
   public User() {
   }
@@ -47,6 +51,9 @@ public class User implements UserDetails {
   /**
    * Instantiates a new Person.
    *
+   * @param id       the id
+   * @param fullName the full name
+   * @param email    the email
    * @param username the username
    * @param password the password
    * @param role     the role
