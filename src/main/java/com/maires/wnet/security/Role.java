@@ -5,8 +5,7 @@ package com.maires.wnet.security;
  */
 public enum Role {
   ADMIN("ADMIN"),
-  TECHNICIAN("TECHNICIAN"),
-  USER("USER");
+  TECHNICIAN("TECHNICIAN");
 
   private final String name;
 

@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,6 +49,7 @@ public class UserController {
    * @return the list
    */
   @GetMapping
+  @PreAuthorize("hasAuthority('ADMIN')")
   public List<UserDto> findAllUsers() {
     return userService.findAllUsers().stream().map(UserDto::fromEntity).toList();
   }
@@ -60,6 +62,7 @@ public class UserController {
    * @throws UserNotFoundException the user not found exception
    */
   @GetMapping("/{userId}")
+  @PreAuthorize("hasAuthority('ADMIN')")
   public UserDto findUserById(@PathVariable Long userId) throws UserNotFoundException {
     return UserDto.fromEntity(userService.findUserById(userId));
   }
@@ -72,6 +75,7 @@ public class UserController {
    * @throws UserNotFoundException the user not found exception
    */
   @GetMapping("/find")
+  @PreAuthorize("hasAuthority('ADMIN')")
   public UserDto findUserByUsername(@RequestParam String username) throws UserNotFoundException {
     return UserDto.fromEntity(userService.findUserByUsername(username));
   }
@@ -101,6 +105,7 @@ public class UserController {
    * @return the user dto
    * @throws UserNotFoundException the user not found exception
    */
+  @PreAuthorize("hasAuthority('ADMIN')")
   public UserDto updateUser(@PathVariable Long userId, UserCreationDto userCreationDto
   ) throws UserNotFoundException {
     return UserDto.fromEntity(userService.updateUser(userId, userCreationDto.toEntity()));
@@ -114,6 +119,7 @@ public class UserController {
    * @throws UserNotFoundException the user not found exception
    */
   @DeleteMapping("/{userId}")
+  @PreAuthorize("hasAuthority('ADMIN')")
   public UserDto removeUserById(@PathVariable Long userId) throws UserNotFoundException {
     return UserDto.fromEntity(userService.removeUserById(userId));
   }

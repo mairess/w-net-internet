@@ -17,7 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  * The type Person.
  */
 @Entity
-@Table(name = "persons")
+@Table(name = "users")
 public class User implements UserDetails {
 
   @Id
