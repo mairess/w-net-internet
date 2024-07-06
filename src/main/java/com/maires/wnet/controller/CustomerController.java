@@ -10,6 +10,7 @@ import com.maires.wnet.service.exception.CustomerNotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +47,7 @@ public class CustomerController {
    * @return the list
    */
   @GetMapping
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public List<CustomerDto> findAllCustomers() {
     return customerService.findAllCustomers()
         .stream().map(CustomerDto::fromEntity).toList();
@@ -59,6 +61,7 @@ public class CustomerController {
    * @throws CustomerNotFoundException the customer not found exception
    */
   @GetMapping("/{customerId}")
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public CustomerDto findCustomerById(@PathVariable Long customerId)
       throws CustomerNotFoundException {
     return CustomerDto.fromEntity(customerService.findCustomerById(customerId));
@@ -72,6 +75,7 @@ public class CustomerController {
    * @throws CustomerNotFoundException the customer not found exception
    */
   @GetMapping("/{customerId}/addresses")
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public List<AddressDto> findCustomerAddresses(@PathVariable Long customerId)
       throws CustomerNotFoundException {
     return customerService.findCustomerAddresses(customerId).stream().map(AddressDto::fromEntity)
@@ -87,6 +91,7 @@ public class CustomerController {
    */
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public CustomerDto createCustomer(
       @RequestBody CustomerCreationDto customerCreationDto
   ) {
@@ -103,6 +108,7 @@ public class CustomerController {
    * @throws CustomerNotFoundException the customer not found exception
    */
   @PutMapping("/{customerId}")
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public CustomerDto updateCustomer(
       @PathVariable Long customerId,
       @RequestBody Customer customer
@@ -121,6 +127,7 @@ public class CustomerController {
    */
   @PostMapping("/{customerId}/addresses")
   @ResponseStatus(HttpStatus.CREATED)
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public AddressDto createCustomerAddress(
       @PathVariable Long customerId,
       @RequestBody AddressCreationDto addressCreationDto
@@ -138,6 +145,7 @@ public class CustomerController {
    * @throws CustomerNotFoundException the customer not found exception
    */
   @DeleteMapping("/{customerId}")
+  @PreAuthorize("hasAuthority('ADMIN')")
   public CustomerDto removeCustomerById(@PathVariable Long customerId)
       throws CustomerNotFoundException {
     return CustomerDto.fromEntity(customerService.removeCustomerById(customerId));

@@ -9,6 +9,7 @@ import com.maires.wnet.service.exception.PlanNotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +45,7 @@ public class PlanController {
    * @return the list
    */
   @GetMapping
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public List<PlanDto> findAllPlans() {
     return planService.findAllPlans().stream().map(PlanDto::fromEntity).toList();
   }
@@ -56,6 +58,7 @@ public class PlanController {
    * @throws PlanNotFoundException the plan not found exception
    */
   @GetMapping("/{planId}")
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public PlanDto findPlanById(@PathVariable Long planId)
       throws PlanNotFoundException {
     return PlanDto.fromEntity(planService.findPlanById(planId));
@@ -69,6 +72,7 @@ public class PlanController {
    */
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
+  @PreAuthorize("hasAuthority('ADMIN')")
   public PlanDto createPlan(@RequestBody PlanCreationDto planCreationDto) {
     Plan newPlan = planService.createPlan(planCreationDto.toEntity());
     return PlanDto.fromEntity(newPlan);
@@ -83,6 +87,7 @@ public class PlanController {
    * @throws PlanCannotBeExcludedException the plan cannot be excluded exception
    */
   @DeleteMapping("/{planId}")
+  @PreAuthorize("hasAuthority('ADMIN')")
   public PlanDto removePlanById(@PathVariable Long planId)
       throws PlanNotFoundException, PlanCannotBeExcludedException {
     return PlanDto.fromEntity(planService.removePlanById(planId));
@@ -97,6 +102,7 @@ public class PlanController {
    * @throws PlanNotFoundException the plan not found exception
    */
   @PutMapping("/{planId}")
+  @PreAuthorize("hasAuthority('ADMIN')")
   public PlanDto updatePlan(
       @PathVariable Long planId,
       @RequestBody PlanCreationDto planCreationDto

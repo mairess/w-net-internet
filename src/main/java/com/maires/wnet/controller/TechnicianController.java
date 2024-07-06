@@ -9,6 +9,7 @@ import com.maires.wnet.service.exception.TechnicianNotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +45,7 @@ public class TechnicianController {
    * @return the list
    */
   @GetMapping
+  @PreAuthorize("hasAuthority('ADMIN')")
   public List<TechnicianDto> findAllTechnicians() {
     return technicianService.findAllTechnicians().stream().map(TechnicianDto::fromEntity).toList();
   }
@@ -56,6 +58,7 @@ public class TechnicianController {
    * @throws TechnicianNotFoundException the technician not found exception
    */
   @GetMapping("/{technicianId}")
+  @PreAuthorize("hasAuthority('ADMIN')")
   public TechnicianDto findTechnicianById(@PathVariable Long technicianId)
       throws TechnicianNotFoundException {
     return TechnicianDto.fromEntity(technicianService.findTechnicianById(technicianId));
@@ -69,6 +72,7 @@ public class TechnicianController {
    */
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
+  @PreAuthorize("hasAuthority('ADMIN')")
   public TechnicianDto createTechnician(@RequestBody TechnicianCreationDto technicianCreationDto) {
     Technician newTechnician = technicianService.createTechnician(technicianCreationDto.toEntity());
     return TechnicianDto.fromEntity(newTechnician);
@@ -83,6 +87,7 @@ public class TechnicianController {
    * @throws TechnicianCannotBeExcludedException the technician cannot be excluded exception
    */
   @DeleteMapping("/{technicianId}")
+  @PreAuthorize("hasAuthority('ADMIN')")
   public TechnicianDto removeTechnicianById(@PathVariable Long technicianId)
       throws TechnicianNotFoundException, TechnicianCannotBeExcludedException {
     return TechnicianDto.fromEntity(technicianService.removeTechnicianById(technicianId));
@@ -97,6 +102,7 @@ public class TechnicianController {
    * @throws TechnicianNotFoundException the technician not found exception
    */
   @PutMapping("/{technicianId}")
+  @PreAuthorize("hasAuthority('ADMIN')")
   public TechnicianDto updateTechnician(
       @PathVariable Long technicianId,
       @RequestBody TechnicianCreationDto technicianCreationDto

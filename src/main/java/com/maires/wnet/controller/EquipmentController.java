@@ -9,6 +9,7 @@ import com.maires.wnet.service.exception.EquipmentNotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +45,7 @@ public class EquipmentController {
    * @return the list
    */
   @GetMapping
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public List<EquipmentDto> findAllEquipments() {
     return equipmentService.findAllEquipments().stream().map(EquipmentDto::fromEntity).toList();
   }
@@ -56,6 +58,7 @@ public class EquipmentController {
    * @throws EquipmentNotFoundException the equipment not found exception
    */
   @GetMapping("/{equipmentId}")
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public EquipmentDto findEquipmentById(@PathVariable Long equipmentId)
       throws EquipmentNotFoundException {
     return EquipmentDto.fromEntity(equipmentService.findEquipmentById(equipmentId));
@@ -69,23 +72,10 @@ public class EquipmentController {
    */
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public EquipmentDto createEquipment(@RequestBody EquipmentCreationDto equipmentCreationDto) {
     Equipment newEquipment = equipmentService.createEquipment(equipmentCreationDto.toEntity());
     return EquipmentDto.fromEntity(newEquipment);
-  }
-
-  /**
-   * Remove equipment by id equipment dto.
-   *
-   * @param equipmentId the equipment id
-   * @return the equipment dto
-   * @throws EquipmentNotFoundException         the equipment not found exception
-   * @throws EquipmentCannotBeExcludedException the equipment cannot be excluded exception
-   */
-  @DeleteMapping("/{equipmentId}")
-  public EquipmentDto removeEquipmentById(@PathVariable Long equipmentId)
-      throws EquipmentNotFoundException, EquipmentCannotBeExcludedException {
-    return EquipmentDto.fromEntity(equipmentService.removeEquipmentById(equipmentId));
   }
 
   /**
@@ -97,6 +87,7 @@ public class EquipmentController {
    * @throws EquipmentNotFoundException the equipment not found exception
    */
   @PutMapping("/{equipmentId}")
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public EquipmentDto updateEquipment(
       @PathVariable Long equipmentId,
       @RequestBody EquipmentCreationDto equipmentCreationDto
@@ -104,6 +95,21 @@ public class EquipmentController {
     Equipment equipmentToUpdate = equipmentService.updateEquipment(equipmentId,
         equipmentCreationDto.toEntity());
     return EquipmentDto.fromEntity(equipmentToUpdate);
+  }
+
+  /**
+   * Remove equipment by id equipment dto.
+   *
+   * @param equipmentId the equipment id
+   * @return the equipment dto
+   * @throws EquipmentNotFoundException         the equipment not found exception
+   * @throws EquipmentCannotBeExcludedException the equipment cannot be excluded exception
+   */
+  @DeleteMapping("/{equipmentId}")
+  @PreAuthorize("hasAuthority('ADMIN')")
+  public EquipmentDto removeEquipmentById(@PathVariable Long equipmentId)
+      throws EquipmentNotFoundException, EquipmentCannotBeExcludedException {
+    return EquipmentDto.fromEntity(equipmentService.removeEquipmentById(equipmentId));
   }
 
 }

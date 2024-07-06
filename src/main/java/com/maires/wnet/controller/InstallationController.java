@@ -9,6 +9,7 @@ import com.maires.wnet.service.exception.InstallationNotFoundException;
 import com.maires.wnet.service.exception.PlanNotFoundException;
 import com.maires.wnet.service.exception.TechnicianNotFoundException;
 import java.util.List;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,6 +44,7 @@ public class InstallationController {
    * @return the list
    */
   @GetMapping
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public List<InstallationDto> findAllInstallations() {
     return installationService.findAllInstallations().stream()
         .map(InstallationDto::fromEntity).toList();
@@ -56,6 +58,7 @@ public class InstallationController {
    * @throws InstallationNotFoundException the installation not found exception
    */
   @GetMapping("/{installationId}")
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public InstallationDto findInstallationById(@PathVariable Long installationId)
       throws InstallationNotFoundException {
     return InstallationDto.fromEntity(installationService.findInstallationById(installationId));
@@ -74,6 +77,7 @@ public class InstallationController {
    * @throws PlanNotFoundException               the plan not found exception
    */
   @PutMapping("/{installationId}")
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public InstallationDto updateInstallation(
       @PathVariable Long installationId,
       @RequestBody InstallationCreationDto installationCreationDto
@@ -103,6 +107,7 @@ public class InstallationController {
    * @throws InstallationNotFoundException the installation not found exception
    */
   @DeleteMapping("/{installationId}")
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public InstallationDto removeInstallationById(@PathVariable Long installationId)
       throws InstallationNotFoundException {
     return InstallationDto.fromEntity(installationService.removeInstallationById(installationId));

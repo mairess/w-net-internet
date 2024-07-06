@@ -6,7 +6,7 @@ This is an internet provider management system.
 
 # ER Diagram
 
-<img src="/images/w-net-diagram.svg" alt="Description of image" style="height: 500px; width: 600px;" />
+<img src="/images/ER-Diagram.svg" alt="Description of image" style="height: 500px; width: 600px;" />
 
 ## Run project locally
 
@@ -69,4 +69,4 @@ http://localhost:8080/swagger-ui/index.html
 # To do
 
 - [ ] Tests
-- [ ] Add authentication/authorization
+- [x] authentication/authorization
