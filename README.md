@@ -69,4 +69,4 @@ http://localhost:8080/swagger-ui/index.html
 # To do
 
 - [ ] Tests
-- [ ] Add authentication/authorization
+- [x] authentication/authorization
