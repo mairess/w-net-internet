@@ -24,7 +24,8 @@ public class Customer {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String name;
+  @Column(unique = true)
+  private String fullName;
 
   @Column(unique = true)
   private String cpf;
@@ -49,13 +50,13 @@ public class Customer {
   /**
    * Instantiates a new Customer.
    *
-   * @param name  the name
-   * @param cpf   the cpf
-   * @param phone the phone
-   * @param email the email
+   * @param fullName the fullName
+   * @param cpf      the cpf
+   * @param phone    the phone
+   * @param email    the email
    */
-  public Customer(String name, String cpf, String phone, String email) {
-    this.name = name;
+  public Customer(String fullName, String cpf, String phone, String email) {
+    this.fullName = fullName;
     this.cpf = cpf;
     this.phone = phone;
     this.email = email;
@@ -81,21 +82,21 @@ public class Customer {
   }
 
   /**
-   * Gets name.
+   * Gets fullName.
    *
-   * @return the name
+   * @return the fullName
    */
-  public String getName() {
-    return name;
+  public String getFullName() {
+    return fullName;
   }
 
   /**
-   * Sets name.
+   * Sets fullName.
    *
-   * @param name the name
+   * @param fullName the fullName
    */
-  public void setName(String name) {
-    this.name = name;
+  public void setFullName(String fullName) {
+    this.fullName = fullName;
   }
 
   /**

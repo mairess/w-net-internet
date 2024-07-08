@@ -46,7 +46,8 @@ public class EquipmentService {
    * @throws EquipmentNotFoundException the equipment not found exception
    */
   public Equipment findEquipmentById(Long equipmentId) throws EquipmentNotFoundException {
-    return equipmentRepository.findById(equipmentId).orElseThrow(EquipmentNotFoundException::new);
+    return equipmentRepository.findById(equipmentId)
+        .orElseThrow(() -> new EquipmentNotFoundException(equipmentId.toString()));
   }
 
   /**

@@ -9,7 +9,7 @@ import java.util.List;
  */
 public record CustomerDto(
     Long id,
-    String name,
+    String fullName,
     String cpf,
     String phone,
     String email,
@@ -26,7 +26,7 @@ public record CustomerDto(
   public static CustomerDto fromEntity(Customer customer) {
     return new CustomerDto(
         customer.getId(),
-        customer.getName(),
+        customer.getFullName(),
         customer.getCpf(),
         customer.getPhone(),
         customer.getEmail(),

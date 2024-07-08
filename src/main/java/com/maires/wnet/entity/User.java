@@ -52,7 +52,7 @@ public class User implements UserDetails {
    * Instantiates a new Person.
    *
    * @param id       the id
-   * @param fullName the full name
+   * @param fullName the full fullName
    * @param email    the email
    * @param username the username
    * @param password the password
@@ -75,18 +75,18 @@ public class User implements UserDetails {
   }
 
   /**
-   * Gets full name.
+   * Gets full fullName.
    *
-   * @return the full name
+   * @return the full fullName
    */
   public String getFullName() {
     return fullName;
   }
 
   /**
-   * Sets full name.
+   * Sets full fullName.
    *
-   * @param fullName the full name
+   * @param fullName the full fullName
    */
   public void setFullName(String fullName) {
     this.fullName = fullName;

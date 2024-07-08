@@ -1,6 +1,7 @@
 package com.maires.wnet.entity;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,7 +22,8 @@ public class Plan {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String name;
+  @Column(unique = true)
+  private String fullName;
 
   private Integer speed;
 
@@ -40,12 +42,12 @@ public class Plan {
   /**
    * Instantiates a new Plan.
    *
-   * @param name  the name
-   * @param speed the speed
-   * @param price the price
+   * @param fullName the full name
+   * @param speed    the speed
+   * @param price    the price
    */
-  public Plan(String name, Integer speed, Double price) {
-    this.name = name;
+  public Plan(String fullName, Integer speed, Double price) {
+    this.fullName = fullName;
     this.speed = speed;
     this.price = price;
   }
@@ -68,22 +70,24 @@ public class Plan {
     this.id = id;
   }
 
-  /**
-   * Gets name.
-   *
-   * @return the name
-   */
-  public String getName() {
-    return name;
-  }
 
   /**
-   * Sets name.
+   * Gets full name.
    *
-   * @param name the name
+   * @return the full name
    */
-  public void setName(String name) {
-    this.name = name;
+  public String getFullName() {
+    return fullName;
+  }
+
+
+  /**
+   * Sets full name.
+   *
+   * @param fullName the full name
+   */
+  public void setFullName(String fullName) {
+    this.fullName = fullName;
   }
 
   /**

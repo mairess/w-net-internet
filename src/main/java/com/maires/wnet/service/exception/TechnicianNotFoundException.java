@@ -9,8 +9,8 @@ public class TechnicianNotFoundException extends NotFoundException {
   /**
    * Instantiates a new Technician not found exception.
    */
-  public TechnicianNotFoundException() {
-    super("Technician not found!");
+  public TechnicianNotFoundException(String identifier) {
+    super("Technician not found with identifier " + identifier + "!");
   }
 
 }

@@ -16,7 +16,7 @@ public record TechnicianDto(Long id, String name, String phone, String email) {
   public static TechnicianDto fromEntity(Technician technician) {
     return new TechnicianDto(
         technician.getId(),
-        technician.getName(),
+        technician.getFullName(),
         technician.getPhone(),
         technician.getEmail()
     );

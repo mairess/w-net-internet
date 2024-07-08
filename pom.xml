@@ -81,6 +81,12 @@
     </plugins>
   </build>
   <dependencies>
+    <!-- validations -->
+    <dependency>
+      <artifactId>spring-boot-starter-validation</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+
     <!-- documentation -->
     <dependency>
       <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -103,6 +109,17 @@
     <dependency>
       <artifactId>spring-boot-starter-web</artifactId>
       <groupId>org.springframework.boot</groupId>
+    </dependency>
+
+    <!-- security -->
+    <dependency>
+      <artifactId>spring-boot-starter-security</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>java-jwt</artifactId>
+      <groupId>com.auth0</groupId>
+      <version>4.4.0</version>
     </dependency>
 
     <!-- test -->
@@ -134,17 +151,6 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <groupId>org.junit.jupiter</groupId>
       <scope>test</scope>
-    </dependency>
-
-    <!-- security -->
-    <dependency>
-      <artifactId>spring-boot-starter-security</artifactId>
-      <groupId>org.springframework.boot</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>java-jwt</artifactId>
-      <groupId>com.auth0</groupId>
-      <version>4.4.0</version>
     </dependency>
   </dependencies>
   <description>A simple API for internet provider</description>

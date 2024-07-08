@@ -21,8 +21,10 @@ public class Technician {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String name;
+  @Column(unique = true)
+  private String fullName;
 
+  @Column(unique = true)
   private String phone;
 
   @Column(unique = true)
@@ -40,12 +42,12 @@ public class Technician {
   /**
    * Instantiates a new Technician.
    *
-   * @param name  the name
+   * @param name  the fullName
    * @param phone the phone
    * @param email the email
    */
   public Technician(String name, String phone, String email) {
-    this.name = name;
+    this.fullName = name;
     this.phone = phone;
     this.email = email;
   }
@@ -69,21 +71,21 @@ public class Technician {
   }
 
   /**
-   * Gets name.
+   * Gets fullName.
    *
-   * @return the name
+   * @return the fullName
    */
-  public String getName() {
-    return name;
+  public String getFullName() {
+    return fullName;
   }
 
   /**
-   * Sets name.
+   * Sets fullName.
    *
-   * @param name the name
+   * @param name the fullName
    */
-  public void setName(String name) {
-    this.name = name;
+  public void setFullName(String name) {
+    this.fullName = name;
   }
 
   /**

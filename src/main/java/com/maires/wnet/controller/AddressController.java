@@ -12,6 +12,7 @@ import com.maires.wnet.service.exception.EquipmentAlreadyAssociatedException;
 import com.maires.wnet.service.exception.EquipmentNotFoundException;
 import com.maires.wnet.service.exception.PlanNotFoundException;
 import com.maires.wnet.service.exception.TechnicianNotFoundException;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -90,6 +91,7 @@ public class AddressController {
   @ResponseStatus(HttpStatus.CREATED)
   @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public InstallationDto createAddressInstallation(
+      @Valid
       @PathVariable Long addressId,
       @RequestBody InstallationCreationDto installationCreationDto)
       throws
@@ -121,6 +123,7 @@ public class AddressController {
   @PutMapping("/{addressId}")
   @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public AddressDto updateAddress(
+      @Valid
       @PathVariable Long addressId,
       @RequestBody AddressCreationDto addressCreationDto
   ) throws AddressNotFoundException {

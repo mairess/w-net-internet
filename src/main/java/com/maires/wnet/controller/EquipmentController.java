@@ -6,6 +6,7 @@ import com.maires.wnet.entity.Equipment;
 import com.maires.wnet.service.EquipmentService;
 import com.maires.wnet.service.exception.EquipmentCannotBeExcludedException;
 import com.maires.wnet.service.exception.EquipmentNotFoundException;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -73,7 +74,8 @@ public class EquipmentController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
-  public EquipmentDto createEquipment(@RequestBody EquipmentCreationDto equipmentCreationDto) {
+  public EquipmentDto createEquipment(
+      @Valid @RequestBody EquipmentCreationDto equipmentCreationDto) {
     Equipment newEquipment = equipmentService.createEquipment(equipmentCreationDto.toEntity());
     return EquipmentDto.fromEntity(newEquipment);
   }
@@ -89,6 +91,7 @@ public class EquipmentController {
   @PutMapping("/{equipmentId}")
   @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public EquipmentDto updateEquipment(
+      @Valid
       @PathVariable Long equipmentId,
       @RequestBody EquipmentCreationDto equipmentCreationDto
   ) throws EquipmentNotFoundException {

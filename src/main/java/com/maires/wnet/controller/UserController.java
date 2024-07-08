@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -93,7 +95,7 @@ public class UserController {
       responseCode = "201",
       description = "Created user",
       content = @Content(schema = @Schema(implementation = UserDto.class)))
-  public UserDto createUser(@RequestBody UserCreationDto userCreationDto) {
+  public UserDto createUser(@Valid @RequestBody UserCreationDto userCreationDto) {
     return UserDto.fromEntity(userService.createUser(userCreationDto.toEntity()));
   }
 
@@ -105,8 +107,12 @@ public class UserController {
    * @return the user dto
    * @throws UserNotFoundException the user not found exception
    */
+  @PutMapping("/{userId}")
   @PreAuthorize("hasAuthority('ADMIN')")
-  public UserDto updateUser(@PathVariable Long userId, UserCreationDto userCreationDto
+  public UserDto updateUser(
+      @Valid
+      @PathVariable Long userId,
+      @RequestBody UserCreationDto userCreationDto
   ) throws UserNotFoundException {
     return UserDto.fromEntity(userService.updateUser(userId, userCreationDto.toEntity()));
   }

@@ -9,6 +9,7 @@ import com.maires.wnet.repository.EquipmentRepository;
 import com.maires.wnet.service.exception.CustomerNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +61,7 @@ public class CustomerService {
    */
   public Customer findCustomerById(Long customerId) throws CustomerNotFoundException {
     return customerRepository.findById(customerId)
-        .orElseThrow(CustomerNotFoundException::new);
+        .orElseThrow(() -> new CustomerNotFoundException(customerId.toString()));
   }
 
   /**
@@ -74,7 +75,7 @@ public class CustomerService {
 
     Customer customer = customerRepository
         .findById(customerId)
-        .orElseThrow(CustomerNotFoundException::new);
+        .orElseThrow(() -> new CustomerNotFoundException(customerId.toString()));
 
     return customer.getAddresses();
   }
@@ -101,7 +102,7 @@ public class CustomerService {
       throws CustomerNotFoundException {
     Customer customerToUpdate = findCustomerById(customerId);
 
-    customerToUpdate.setName(customer.getName());
+    customerToUpdate.setFullName(customer.getFullName());
     customerToUpdate.setCpf(customer.getCpf());
     customerToUpdate.setPhone(customer.getPhone());
     customerToUpdate.setEmail(customer.getEmail());
@@ -122,7 +123,7 @@ public class CustomerService {
       throws CustomerNotFoundException {
 
     Customer customer = customerRepository.findById(customerId)
-        .orElseThrow(CustomerNotFoundException::new);
+        .orElseThrow(() -> new CustomerNotFoundException(customerId.toString()));
 
     address.setCustomer(customer);
 
@@ -142,6 +143,7 @@ public class CustomerService {
 
     deletedCustomer.getAddresses().stream()
         .map(Address::getInstallation)
+        .filter(Objects::nonNull)
         .map(Installation::getEquipments)
         .flatMap(List::stream)
         .forEach(equipment -> {
