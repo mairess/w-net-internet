@@ -6,6 +6,7 @@ import com.maires.wnet.entity.Technician;
 import com.maires.wnet.service.TechnicianService;
 import com.maires.wnet.service.exception.TechnicianCannotBeExcludedException;
 import com.maires.wnet.service.exception.TechnicianNotFoundException;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -73,7 +74,8 @@ public class TechnicianController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   @PreAuthorize("hasAuthority('ADMIN')")
-  public TechnicianDto createTechnician(@RequestBody TechnicianCreationDto technicianCreationDto) {
+  public TechnicianDto createTechnician(
+      @Valid @RequestBody TechnicianCreationDto technicianCreationDto) {
     Technician newTechnician = technicianService.createTechnician(technicianCreationDto.toEntity());
     return TechnicianDto.fromEntity(newTechnician);
   }
@@ -104,6 +106,7 @@ public class TechnicianController {
   @PutMapping("/{technicianId}")
   @PreAuthorize("hasAuthority('ADMIN')")
   public TechnicianDto updateTechnician(
+      @Valid
       @PathVariable Long technicianId,
       @RequestBody TechnicianCreationDto technicianCreationDto
   ) throws TechnicianNotFoundException {

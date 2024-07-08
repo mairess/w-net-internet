@@ -22,9 +22,9 @@ public enum EquipmentType {
   }
 
   /**
-   * Gets name.
+   * Gets fullName.
    *
-   * @return the name
+   * @return the fullName
    */
   public String getName() {
     return name;

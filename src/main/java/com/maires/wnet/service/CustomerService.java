@@ -101,7 +101,7 @@ public class CustomerService {
       throws CustomerNotFoundException {
     Customer customerToUpdate = findCustomerById(customerId);
 
-    customerToUpdate.setName(customer.getName());
+    customerToUpdate.setFullName(customer.getFullName());
     customerToUpdate.setCpf(customer.getCpf());
     customerToUpdate.setPhone(customer.getPhone());
     customerToUpdate.setEmail(customer.getEmail());

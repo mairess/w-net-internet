@@ -6,6 +6,7 @@ import com.maires.wnet.entity.Plan;
 import com.maires.wnet.service.PlanService;
 import com.maires.wnet.service.exception.PlanCannotBeExcludedException;
 import com.maires.wnet.service.exception.PlanNotFoundException;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -73,7 +74,7 @@ public class PlanController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   @PreAuthorize("hasAuthority('ADMIN')")
-  public PlanDto createPlan(@RequestBody PlanCreationDto planCreationDto) {
+  public PlanDto createPlan(@Valid @RequestBody PlanCreationDto planCreationDto) {
     Plan newPlan = planService.createPlan(planCreationDto.toEntity());
     return PlanDto.fromEntity(newPlan);
   }
@@ -104,6 +105,7 @@ public class PlanController {
   @PutMapping("/{planId}")
   @PreAuthorize("hasAuthority('ADMIN')")
   public PlanDto updatePlan(
+      @Valid
       @PathVariable Long planId,
       @RequestBody PlanCreationDto planCreationDto
   ) throws PlanNotFoundException {

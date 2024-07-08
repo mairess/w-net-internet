@@ -8,6 +8,7 @@ import com.maires.wnet.service.exception.EquipmentNotFoundException;
 import com.maires.wnet.service.exception.InstallationNotFoundException;
 import com.maires.wnet.service.exception.PlanNotFoundException;
 import com.maires.wnet.service.exception.TechnicianNotFoundException;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -79,6 +80,7 @@ public class InstallationController {
   @PutMapping("/{installationId}")
   @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public InstallationDto updateInstallation(
+      @Valid
       @PathVariable Long installationId,
       @RequestBody InstallationCreationDto installationCreationDto
   ) throws

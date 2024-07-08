@@ -91,7 +91,7 @@ public class TechnicianService {
 
     Technician technicianToUpdate = findTechnicianById(technicianId);
 
-    technicianToUpdate.setName(technician.getName());
+    technicianToUpdate.setFullName(technician.getFullName());
     technicianToUpdate.setPhone(technician.getPhone());
     technicianToUpdate.setEmail(technician.getEmail());
 

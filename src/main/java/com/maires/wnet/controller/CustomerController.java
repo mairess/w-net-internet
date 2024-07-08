@@ -7,6 +7,7 @@ import com.maires.wnet.controller.dto.CustomerDto;
 import com.maires.wnet.entity.Customer;
 import com.maires.wnet.service.CustomerService;
 import com.maires.wnet.service.exception.CustomerNotFoundException;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -93,6 +94,7 @@ public class CustomerController {
   @ResponseStatus(HttpStatus.CREATED)
   @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public CustomerDto createCustomer(
+      @Valid
       @RequestBody CustomerCreationDto customerCreationDto
   ) {
     return CustomerDto.fromEntity(customerService.createCustomer(customerCreationDto.toEntity()));
@@ -110,6 +112,7 @@ public class CustomerController {
   @PutMapping("/{customerId}")
   @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public CustomerDto updateCustomer(
+      @Valid
       @PathVariable Long customerId,
       @RequestBody Customer customer
   ) throws CustomerNotFoundException {
@@ -129,6 +132,7 @@ public class CustomerController {
   @ResponseStatus(HttpStatus.CREATED)
   @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public AddressDto createCustomerAddress(
+      @Valid
       @PathVariable Long customerId,
       @RequestBody AddressCreationDto addressCreationDto
   ) throws CustomerNotFoundException {
