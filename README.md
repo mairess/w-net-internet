@@ -6,7 +6,7 @@ This is an internet provider management system.
 
 # ER Diagram
 
-<img src="/images/ER-Diagram.svg" alt="Description of image" style="height: 500px; width: 600px;" />
+<img src="/images/diagramaER.svg" alt="Description of image" style="height: 500px; width: 600px;" />
 
 ## Run project locally
 
@@ -17,7 +17,7 @@ This is an internet provider management system.
 1. Clone the repository:
 
 ```BASH
-git clone git@github.com:mairess/projeto-final-agrix-fase-c.git
+git clone git@github.com:mairess/w-net-internet.git
 ```
 
 2. Install dependencies:
@@ -51,7 +51,7 @@ http://localhost:8080/swagger-ui/index.html
 1. Clone the repository:
 
 ```BASH
-git clone git@github.com:mairess/projeto-final-agrix-fase-c.git
+git clone git@github.com:mairess/w-net-internet.git
 ```
 
 2. Start the API and the database:
