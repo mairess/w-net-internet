@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Size;
 public record PlanCreationDto(
     @NotNull(message = "cannot be null!")
     @NotBlank(message = "cannot be blank!")
-    @Size(max = 15, message = "must be at least 15 characters!")
+    @Size(max = 20, message = "must be at least 20 characters!")
     String name,
 
     @NotNull(message = "cannot be null!")

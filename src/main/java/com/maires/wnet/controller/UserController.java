@@ -109,7 +109,10 @@ public class UserController {
    */
   @PutMapping("/{userId}")
   @PreAuthorize("hasAuthority('ADMIN')")
-  public UserDto updateUser(@PathVariable Long userId, UserCreationDto userCreationDto
+  public UserDto updateUser(
+      @Valid
+      @PathVariable Long userId,
+      @RequestBody UserCreationDto userCreationDto
   ) throws UserNotFoundException {
     return UserDto.fromEntity(userService.updateUser(userId, userCreationDto.toEntity()));
   }
