@@ -44,7 +44,7 @@ public class PlanService {
    */
   public Plan findPlanById(Long planId) throws PlanNotFoundException {
     return planRepository.findById(planId)
-        .orElseThrow(PlanNotFoundException::new);
+        .orElseThrow(() -> new PlanNotFoundException(planId.toString()));
   }
 
   /**

@@ -76,7 +76,8 @@ public class AddressService {
    * @throws AddressNotFoundException the address not found exception
    */
   public Address findAddressById(Long addressId) throws AddressNotFoundException {
-    return addressRepository.findById(addressId).orElseThrow(AddressNotFoundException::new);
+    return addressRepository.findById(addressId)
+        .orElseThrow(() -> new AddressNotFoundException(addressId.toString()));
   }
 
   /**
@@ -109,24 +110,24 @@ public class AddressService {
       EquipmentAlreadyAssociatedException {
 
     Address address = addressRepository.findById(addressId)
-        .orElseThrow(AddressNotFoundException::new);
+        .orElseThrow(() -> new AddressNotFoundException(addressId.toString()));
 
     if (address.getInstallation() != null) {
       throw new AddressAlreadyAssociatedException();
     }
 
     Plan plan = planRepository.findById(planId)
-        .orElseThrow(PlanNotFoundException::new);
+        .orElseThrow(() -> new PlanNotFoundException(planId.toString()));
 
     Technician technician = technicianRepository.findById(technicianId)
-        .orElseThrow(TechnicianNotFoundException::new);
+        .orElseThrow(() -> new TechnicianNotFoundException(technicianId.toString()));
 
     List<Equipment> equipmentList = new ArrayList<>();
 
     for (Long id : equipmentIds) {
 
       Equipment equipment = equipmentRepository.findById(id)
-          .orElseThrow(EquipmentNotFoundException::new);
+          .orElseThrow(() -> new EquipmentNotFoundException(id.toString()));
 
       if (equipment.getInstallation() != null) {
         throw new EquipmentAlreadyAssociatedException();

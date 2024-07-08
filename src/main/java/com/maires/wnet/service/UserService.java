@@ -49,7 +49,7 @@ public class UserService implements UserDetailsService {
    * @throws UserNotFoundException the user not found exception
    */
   public User findUserById(Long id) throws UserNotFoundException {
-    return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id.toString()));
   }
 
 
@@ -61,7 +61,8 @@ public class UserService implements UserDetailsService {
    * @throws UserNotFoundException the user not found exception
    */
   public User findUserByUsername(String username) throws UserNotFoundException {
-    return userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+    return userRepository.findByUsername(username)
+        .orElseThrow(() -> new UserNotFoundException(username));
   }
 
   /**

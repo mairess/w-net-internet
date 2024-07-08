@@ -44,7 +44,7 @@ public class TechnicianService {
    */
   public Technician findTechnicianById(Long technicianId) throws TechnicianNotFoundException {
     return technicianRepository.findById(technicianId)
-        .orElseThrow(TechnicianNotFoundException::new);
+        .orElseThrow(() -> new TechnicianNotFoundException(technicianId.toString()));
   }
 
   /**

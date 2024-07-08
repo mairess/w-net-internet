@@ -60,7 +60,7 @@ public class CustomerService {
    */
   public Customer findCustomerById(Long customerId) throws CustomerNotFoundException {
     return customerRepository.findById(customerId)
-        .orElseThrow(CustomerNotFoundException::new);
+        .orElseThrow(() -> new CustomerNotFoundException(customerId.toString()));
   }
 
   /**
@@ -74,7 +74,7 @@ public class CustomerService {
 
     Customer customer = customerRepository
         .findById(customerId)
-        .orElseThrow(CustomerNotFoundException::new);
+        .orElseThrow(() -> new CustomerNotFoundException(customerId.toString()));
 
     return customer.getAddresses();
   }
@@ -122,7 +122,7 @@ public class CustomerService {
       throws CustomerNotFoundException {
 
     Customer customer = customerRepository.findById(customerId)
-        .orElseThrow(CustomerNotFoundException::new);
+        .orElseThrow(() -> new CustomerNotFoundException(customerId.toString()));
 
     address.setCustomer(customer);
 

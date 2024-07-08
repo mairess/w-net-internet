@@ -9,8 +9,8 @@ public class EquipmentNotFoundException extends NotFoundException {
   /**
    * Instantiates a new Equipment not found exception.
    */
-  public EquipmentNotFoundException() {
-    super("Equipment not found!");
+  public EquipmentNotFoundException(String identifier) {
+    super("Equipment not found with identifier " + identifier + "!");
   }
 
 }

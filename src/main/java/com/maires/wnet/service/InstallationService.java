@@ -76,7 +76,7 @@ public class InstallationService {
   public Installation findInstallationById(Long installationId)
       throws InstallationNotFoundException {
     return installationRepository.findById(installationId).orElseThrow(
-        InstallationNotFoundException::new);
+        () -> new InstallationNotFoundException(installationId.toString()));
   }
 
   /**
@@ -123,7 +123,7 @@ public class InstallationService {
       for (Long id : equipmentIds) {
 
         Equipment equipment = equipmentRepository.findById(id)
-            .orElseThrow(EquipmentNotFoundException::new);
+            .orElseThrow(() -> new EquipmentNotFoundException(id.toString()));
 
         if (equipment.getInstallation() != null) {
           throw new EquipmentAlreadyAssociatedException();
@@ -136,10 +136,11 @@ public class InstallationService {
       installationToUpdate.setEquipments(equipmentList);
     }
 
-    Plan plan = planRepository.findById(planId).orElseThrow(PlanNotFoundException::new);
+    Plan plan = planRepository.findById(planId)
+        .orElseThrow(() -> new PlanNotFoundException(planId.toString()));
 
     Technician technician = technicianRepository.findById(technicianId)
-        .orElseThrow(TechnicianNotFoundException::new);
+        .orElseThrow(() -> new TechnicianNotFoundException(technicianId.toString()));
 
     installationToUpdate.setPlan(plan);
     installationToUpdate.setTechnician(technician);

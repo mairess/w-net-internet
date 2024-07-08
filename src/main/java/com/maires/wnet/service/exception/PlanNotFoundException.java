@@ -9,8 +9,8 @@ public class PlanNotFoundException extends NotFoundException {
   /**
    * Instantiates a new Pan not found exception.
    */
-  public PlanNotFoundException() {
-    super("Plan not found!");
+  public PlanNotFoundException(String identifier) {
+    super("Plan not found with identifier " + identifier + "!");
   }
 
 }

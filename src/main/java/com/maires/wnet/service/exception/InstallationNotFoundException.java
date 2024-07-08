@@ -9,8 +9,8 @@ public class InstallationNotFoundException extends NotFoundException {
   /**
    * Instantiates a new Installation not found exception.
    */
-  public InstallationNotFoundException() {
-    super("Installation not found!");
+  public InstallationNotFoundException(String identifier) {
+    super("Installation not found with identifier " + identifier + "!");
   }
 
 }
