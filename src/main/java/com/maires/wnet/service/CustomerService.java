@@ -9,6 +9,7 @@ import com.maires.wnet.repository.EquipmentRepository;
 import com.maires.wnet.service.exception.CustomerNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -142,6 +143,7 @@ public class CustomerService {
 
     deletedCustomer.getAddresses().stream()
         .map(Address::getInstallation)
+        .filter(Objects::nonNull)
         .map(Installation::getEquipments)
         .flatMap(List::stream)
         .forEach(equipment -> {
