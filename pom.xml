@@ -81,6 +81,17 @@
     </plugins>
   </build>
   <dependencies>
+    <!-- Messaging and queue -->
+    <dependency>
+      <artifactId>spring-kafka</artifactId>
+      <groupId>org.springframework.kafka</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>spring-boot-starter-mail</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+
     <!-- validations -->
     <dependency>
       <artifactId>spring-boot-starter-validation</artifactId>
@@ -123,6 +134,11 @@
     </dependency>
 
     <!-- test -->
+    <dependency>
+      <artifactId>spring-kafka-test</artifactId>
+      <groupId>org.springframework.kafka</groupId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <artifactId>spring-boot-starter-test</artifactId>
       <groupId>org.springframework.boot</groupId>
