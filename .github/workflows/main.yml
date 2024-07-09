@@ -23,11 +23,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Start ZooKeeper
-        uses: wurstmeister/zookeeper-action@master
-        with:
-          zookeeper_version: '3.6.3'
-
       - name: Run Kafka KRaft Broker
         uses: spicyparrot/kafka-kraft-action@v1.1.0
         with:
