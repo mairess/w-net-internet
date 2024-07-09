@@ -1,5 +1,5 @@
 
-insert into "PLANS" ("full_name", "speed", "price") values ('Starter Plan', 100, 99.99), ('Deluxe Plan', 300, 199.99), ('Platinum Plan', 500, 299.99);
+insert into "PLANS" ("name", "speed", "price") values ('Starter Plan', 100, 99.99), ('Deluxe Plan', 300, 199.99), ('Platinum Plan', 500, 299.99);
 
 insert into "TECHNICIANS" ("full_name", "phone", "email") values ('Marcos Oliveira', '21987654321', 'marcos@wnet.com'), ('João Silva', '21987654322', 'joao@wnet.com'), ('Ana Souza', '21987654323', 'ana@wnet.com'), ('Pedro Santos', '21987654324', 'pedro@wnet.com');
 
