@@ -1,5 +1,6 @@
 package com.maires.wnet.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.maires.wnet.controller.dto.AddressCreationDto;
 import com.maires.wnet.controller.dto.AddressDto;
 import com.maires.wnet.controller.dto.InstallationCreationDto;
@@ -100,7 +101,7 @@ public class AddressController {
       AddressNotFoundException,
       EquipmentNotFoundException,
       TechnicianNotFoundException,
-      PlanNotFoundException {
+      PlanNotFoundException, JsonProcessingException {
 
     Installation newInstallation = addressService.createAddressInstallation(
         addressId,
