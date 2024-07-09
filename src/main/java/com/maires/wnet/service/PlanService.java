@@ -87,7 +87,7 @@ public class PlanService {
   public Plan updatePlan(Long planId, Plan plan) throws PlanNotFoundException {
     Plan planToUpdate = findPlanById(planId);
 
-    planToUpdate.setFullName(plan.getFullName());
+    planToUpdate.setName(plan.getName());
     planToUpdate.setSpeed(plan.getSpeed());
     planToUpdate.setPrice(plan.getPrice());
 
