@@ -12,6 +12,7 @@ services:
       MAIL_PORT: ${MAIL_PORT}
       MAIL_USERNAME: ${MAIL_USERNAME}
       MAIL_PASSWORD: ${MAIL_PASSWORD}
+      KAFKA_HOST: kafka
     depends_on:
       database:
         condition: service_healthy
