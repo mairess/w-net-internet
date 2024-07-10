@@ -41,14 +41,13 @@ public class NewInstallationConsumer {
       topics = "${kafka.topic}",
       groupId = "message-request-consumer1"
   )
-  public void consumeInstallationMessage(String message)
+  public void consumeNewInstallationMessage(String message)
       throws MessagingException, JsonProcessingException {
-    System.out.println("===Message Received === ");
 
     MessagingNewInstallationDto messagingNewInstallationDto = objectMapper.readValue(message,
         MessagingNewInstallationDto.class);
 
-    emailService.sendNewInstallationCompleted(
+    emailService.sendNewInstallationMail(
         messagingNewInstallationDto.customerMail(),
         messagingNewInstallationDto.customerName()
     );

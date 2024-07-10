@@ -32,15 +32,34 @@ public class EmailService {
    * @param customerName the customer name
    * @throws MessagingException the messaging exception
    */
-  public void sendNewInstallationCompleted(String to, String customerName)
+  public void sendNewInstallationMail(String to, String customerName)
       throws MessagingException {
 
     MimeMessage message = mailSender.createMimeMessage();
     MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
+    String htmlContent = "<!DOCTYPE html>"
+        + "<html lang=\"en\">"
+        + "<head>"
+        + "<meta charset=\"UTF-8\">"
+        + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
+        + "<title>Installation completed</title>"
+        + "</head>"
+        + "<body style=\"font-family: Arial, sans-serif; "
+        + "background-color: #f0f0f0; padding: 20px;\">"
+        + "<div style=\"background-color: #ffffff; padding: 30px; "
+        + "border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);\">"
+        + "<h2 style=\"color: #333; margin-bottom: 20px;\">Hello " + customerName + ",</h2>"
+        + "<p style=\"font-size: 16px; color: #666; line-height: 1.6;\">"
+        + "Your installation was completed successfully!</p>"
+        + "<p style=\"font-size: 14px; color: #888;\">Thank you for choosing our service!</p>"
+        + "</div>"
+        + "</body>"
+        + "</html>";
+
     helper.setTo(to);
     helper.setSubject("Installation completed!");
-    helper.setText("Hello " + customerName + ", your installation was completed!");
+    helper.setText(htmlContent, true);
 
     mailSender.send(message);
   }

@@ -20,8 +20,9 @@ import org.springframework.kafka.core.ProducerFactory;
 public class ProducerConfig {
 
   private final KafkaProperties kafkaProperties;
+
   @Value("${kafka.topic}")
-  private String messagingRequest;
+  private String newInstallationRequest;
 
   /**
    * Instantiates a new Producer config.
@@ -61,7 +62,7 @@ public class ProducerConfig {
    */
   @Bean
   public NewTopic messagingRequestTopicBuild() {
-    return TopicBuilder.name(messagingRequest).partitions(1).replicas(1).build();
+    return TopicBuilder.name(newInstallationRequest).partitions(1).replicas(1).build();
   }
 
 }

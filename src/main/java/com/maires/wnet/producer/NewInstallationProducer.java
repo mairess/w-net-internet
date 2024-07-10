@@ -41,13 +41,12 @@ public class NewInstallationProducer {
    * @param messagingNewInstallationDto the messaging new installation dto
    * @throws JsonProcessingException the json processing exception
    */
-  public void sendMessage(
+  public void produceNewInstallationMessage(
       MessagingNewInstallationDto messagingNewInstallationDto
   ) throws JsonProcessingException {
 
     String content = objectMapper.writeValueAsString(messagingNewInstallationDto);
     kafkaTemplate.send(newInstallationRequest, content);
-    System.out.println("A new installation was completed!");
   }
 
 }

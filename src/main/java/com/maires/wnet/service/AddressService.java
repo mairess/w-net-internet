@@ -154,7 +154,7 @@ public class AddressService {
 
     );
 
-    newInstallationProducer.sendMessage(message);
+    newInstallationProducer.produceNewInstallationMessage(message);
 
     return installationRepository.save(newInstallation);
   }
