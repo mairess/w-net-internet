@@ -23,7 +23,7 @@ public class Plan {
   private Long id;
 
   @Column(unique = true)
-  private String fullName;
+  private String name;
 
   private Integer speed;
 
@@ -47,7 +47,7 @@ public class Plan {
    * @param price    the price
    */
   public Plan(String fullName, Integer speed, Double price) {
-    this.fullName = fullName;
+    this.name = fullName;
     this.speed = speed;
     this.price = price;
   }
@@ -76,18 +76,18 @@ public class Plan {
    *
    * @return the full name
    */
-  public String getFullName() {
-    return fullName;
+  public String getName() {
+    return name;
   }
 
 
   /**
    * Sets full name.
    *
-   * @param fullName the full name
+   * @param name the full name
    */
-  public void setFullName(String fullName) {
-    this.fullName = fullName;
+  public void setName(String name) {
+    this.name = name;
   }
 
   /**

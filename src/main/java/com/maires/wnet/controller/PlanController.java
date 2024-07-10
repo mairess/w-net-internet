@@ -46,7 +46,6 @@ public class PlanController {
    * @return the list
    */
   @GetMapping
-  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public List<PlanDto> findAllPlans() {
     return planService.findAllPlans().stream().map(PlanDto::fromEntity).toList();
   }

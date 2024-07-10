@@ -1,10 +1,13 @@
 package com.maires.wnet.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.maires.wnet.controller.dto.MessagingNewInstallationDto;
 import com.maires.wnet.entity.Address;
 import com.maires.wnet.entity.Equipment;
 import com.maires.wnet.entity.Installation;
 import com.maires.wnet.entity.Plan;
 import com.maires.wnet.entity.Technician;
+import com.maires.wnet.producer.NewInstallationProducer;
 import com.maires.wnet.repository.AddressRepository;
 import com.maires.wnet.repository.EquipmentRepository;
 import com.maires.wnet.repository.InstallationRepository;
@@ -33,16 +36,18 @@ public class AddressService {
   private final PlanRepository planRepository;
   private final TechnicianRepository technicianRepository;
   private final InstallationRepository installationRepository;
+  private final NewInstallationProducer newInstallationProducer;
 
 
   /**
    * Instantiates a new Address service.
    *
-   * @param addressRepository      the address repository
-   * @param equipmentRepository    the equipment repository
-   * @param planRepository         the plan repository
-   * @param technicianRepository   the technician repository
-   * @param installationRepository the installation repository
+   * @param addressRepository       the address repository
+   * @param equipmentRepository     the equipment repository
+   * @param planRepository          the plan repository
+   * @param technicianRepository    the technician repository
+   * @param installationRepository  the installation repository
+   * @param newInstallationProducer the new installation producer
    */
   @Autowired
   public AddressService(
@@ -50,13 +55,15 @@ public class AddressService {
       EquipmentRepository equipmentRepository,
       PlanRepository planRepository,
       TechnicianRepository technicianRepository,
-      InstallationRepository installationRepository
+      InstallationRepository installationRepository,
+      NewInstallationProducer newInstallationProducer
   ) {
     this.addressRepository = addressRepository;
     this.equipmentRepository = equipmentRepository;
     this.planRepository = planRepository;
     this.technicianRepository = technicianRepository;
     this.installationRepository = installationRepository;
+    this.newInstallationProducer = newInstallationProducer;
   }
 
   /**
@@ -94,6 +101,7 @@ public class AddressService {
    * @throws TechnicianNotFoundException         the technician not found exception
    * @throws EquipmentNotFoundException          the equipment not found exception
    * @throws EquipmentAlreadyAssociatedException the equipment already associated exception
+   * @throws JsonProcessingException             the json processing exception
    */
   @Transactional
   public Installation createAddressInstallation(
@@ -107,7 +115,7 @@ public class AddressService {
       PlanNotFoundException,
       TechnicianNotFoundException,
       EquipmentNotFoundException,
-      EquipmentAlreadyAssociatedException {
+      EquipmentAlreadyAssociatedException, JsonProcessingException {
 
     Address address = addressRepository.findById(addressId)
         .orElseThrow(() -> new AddressNotFoundException(addressId.toString()));
@@ -139,6 +147,14 @@ public class AddressService {
     address.setInstallation(newInstallation);
 
     equipmentList.forEach(equipment -> equipment.setInstallation(newInstallation));
+
+    MessagingNewInstallationDto message = new MessagingNewInstallationDto(
+        address.getCustomer().getEmail(),
+        address.getCustomer().getFullName().split(" ")[0]
+
+    );
+
+    newInstallationProducer.produceNewInstallationMessage(message);
 
     return installationRepository.save(newInstallation);
   }

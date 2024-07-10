@@ -16,7 +16,7 @@ public record PlanDto(Long id, String name, Integer speed, double price) {
   public static PlanDto fromEntity(Plan plan) {
     return new PlanDto(
         plan.getId(),
-        plan.getFullName(),
+        plan.getName(),
         plan.getSpeed(),
         plan.getPrice()
     );
