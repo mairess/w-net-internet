@@ -36,6 +36,7 @@
               <haltOnFailure>true</haltOnFailure>
               <includes>
                 <include>**/controller/UserController.*</include>
+                <include>**/controller/TechnicianController.*</include>
               </includes>
               <rules>
                 <rule>

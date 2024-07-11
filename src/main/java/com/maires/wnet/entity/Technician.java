@@ -42,12 +42,12 @@ public class Technician {
   /**
    * Instantiates a new Technician.
    *
-   * @param name  the fullName
-   * @param phone the phone
-   * @param email the email
+   * @param fullName the fullName
+   * @param phone    the phone
+   * @param email    the email
    */
-  public Technician(String name, String phone, String email) {
-    this.fullName = name;
+  public Technician(String fullName, String phone, String email) {
+    this.fullName = fullName;
     this.phone = phone;
     this.email = email;
   }
