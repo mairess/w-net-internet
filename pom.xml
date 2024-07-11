@@ -32,14 +32,18 @@
           </execution>
           <execution>
             <configuration>
+
               <haltOnFailure>true</haltOnFailure>
+              <includes>
+                <include>**/controller/UserController.*</include>
+              </includes>
               <rules>
                 <rule>
                   <element>PACKAGE</element>
                   <limits>
                     <limit>
                       <counter>LINE</counter>
-                      <minimum>0.0</minimum>
+                      <minimum>0.80</minimum>
                       <value>COVEREDRATIO</value>
                     </limit>
                   </limits>
@@ -167,6 +171,29 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <groupId>org.junit.jupiter</groupId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <artifactId>junit-jupiter</artifactId>
+      <groupId>org.testcontainers</groupId>
+      <scope>test</scope>
+      <version>1.19.8</version>
+    </dependency>
+    <dependency>
+      <artifactId>postgresql</artifactId>
+      <groupId>org.testcontainers</groupId>
+      <scope>test</scope>
+      <version>1.19.8</version>
+    </dependency>
+    <dependency>
+      <artifactId>kafka</artifactId>
+      <groupId>org.testcontainers</groupId>
+      <scope>test</scope>
+      <version>1.19.8</version>
+    </dependency>
+    <dependency>
+      <artifactId>jjwt</artifactId>
+      <groupId>io.jsonwebtoken</groupId>
+      <version>0.9.1</version>
     </dependency>
   </dependencies>
   <description>A simple API for internet provider</description>
