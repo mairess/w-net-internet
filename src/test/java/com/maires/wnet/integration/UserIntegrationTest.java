@@ -31,7 +31,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-@DisplayName("User Integration Tests")
+@DisplayName("User integration tests")
 public class UserIntegrationTest {
 
   @Container

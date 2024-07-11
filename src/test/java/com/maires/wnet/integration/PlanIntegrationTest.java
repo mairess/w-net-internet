@@ -7,9 +7,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.maires.wnet.entity.Technician;
+import com.maires.wnet.entity.Plan;
 import com.maires.wnet.entity.User;
-import com.maires.wnet.repository.TechnicianRepository;
+import com.maires.wnet.repository.PlanRepository;
 import com.maires.wnet.repository.UserRepository;
 import com.maires.wnet.security.Role;
 import com.maires.wnet.service.TokenService;
@@ -33,8 +33,8 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-@DisplayName("Technician integration tests")
-public class TechnicianIntegrationTest {
+@DisplayName("Plan integration tests")
+public class PlanIntegrationTest {
 
   @Container
   public static PostgreSQLContainer POSTGRES_CONTAINER = new PostgreSQLContainer("postgres")
@@ -42,7 +42,7 @@ public class TechnicianIntegrationTest {
   @Container
   public static KafkaContainer kafkaContainer = new KafkaContainer();
   @Autowired
-  TechnicianRepository technicianRepository;
+  PlanRepository planRepository;
   @Autowired
   UserRepository userRepository;
   @Autowired
@@ -50,7 +50,6 @@ public class TechnicianIntegrationTest {
   @Autowired
   private TokenService tokenService;
   private String tokenAdmin;
-
 
   @DynamicPropertySource
   public static void overrideProperties(DynamicPropertyRegistry registry) {
@@ -67,7 +66,7 @@ public class TechnicianIntegrationTest {
   @BeforeEach
   public void cleanUp() {
     userRepository.deleteAll();
-    technicianRepository.deleteAll();
+    planRepository.deleteAll();
     User admin = new User(null, "System Manager Administrator", "admin@mail.com", "admin",
         "segredo123",
         Role.ADMIN);
@@ -76,116 +75,109 @@ public class TechnicianIntegrationTest {
   }
 
   @Test
-  @DisplayName("Retrieval all technicians")
+  @DisplayName("Retrieval all plans")
   public void testTechnicianRetrievalAll() throws Exception {
-    Technician Alberto = new Technician("Alberto Benevides de Castro", "7799000000000",
-        "alberto@mail.com");
-    Technician Amarildo = new Technician("Amarildo Xavier da Costa", "7799111111111",
-        "amarildo@mail.com");
+    Plan planOne = new Plan("Speed of Light", 299, 100.0);
+    Plan planTwe = new Plan("Low Connection", 10, 50.0);
 
-    technicianRepository.save(Alberto);
-    technicianRepository.save(Amarildo);
-    String technicianUrl = "/technicians";
+    planRepository.save(planOne);
+    planRepository.save(planTwe);
+    String planUrl = "/plans";
 
-    mockMvc.perform(get(technicianUrl)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenAdmin)
+    mockMvc.perform(get(planUrl)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isArray())
         .andExpect(jsonPath("$.length()").value(2))
         .andExpect(jsonPath("$[0].id").exists())
-        .andExpect(jsonPath("$[0].fullName").value("Alberto Benevides de Castro"))
+        .andExpect(jsonPath("$[0].name").value("Speed of Light"))
         .andExpect(jsonPath("$[1].id").exists())
-        .andExpect(jsonPath("$[1].fullName").value("Amarildo Xavier da Costa"));
+        .andExpect(jsonPath("$[1].name").value("Low Connection"));
   }
 
   @Test
-  @DisplayName("Retrieval technician by id")
-  public void testTechnicianRetrievalById() throws Exception {
-    Technician Amarildo = new Technician("Amarildo Xavier da Costa", "7799111111111",
-        "amarildo@mail.com");
-    technicianRepository.save(Amarildo);
+  @DisplayName("Retrieval plan by id")
+  public void testPlanRetrievalById() throws Exception {
+    Plan plan = new Plan("Speed of Light", 299, 100.0);
 
-    String technicianUrl = "/technicians/%s".formatted(Amarildo.getId());
+    planRepository.save(plan);
+    String planUrl = "/plans/%s".formatted(plan.getId());
 
-    mockMvc.perform(get(technicianUrl)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenAdmin)
+    mockMvc.perform(get(planUrl)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").exists())
-        .andExpect(jsonPath("$.fullName").value("Amarildo Xavier da Costa"))
-        .andExpect(jsonPath("$.phone").value("7799111111111"))
-        .andExpect(jsonPath("$.email").value("amarildo@mail.com"));
+        .andExpect(jsonPath("$.name").value("Speed of Light"))
+        .andExpect(jsonPath("$.speed").value(299))
+        .andExpect(jsonPath("$.price").value(100.0));
   }
 
   @Test
-  @DisplayName("Create technician")
-  public void testCreateTechnician() throws Exception {
+  @DisplayName("Create plan")
+  public void testCreatePlan() throws Exception {
 
-    Technician Amarildo = new Technician("Amarildo Xavier da Costa", "7799111111111",
-        "amarildo@mail.com");
+    Plan newPlan = new Plan("Speed of Light", 299, 100.0);
 
     ObjectMapper objectMapper = new ObjectMapper();
-    String newTechnicianJson = objectMapper.writeValueAsString(Amarildo);
-    String technicianUrl = "/technicians";
+    String newPlanJson = objectMapper.writeValueAsString(newPlan);
+    String planUrl = "/plans";
 
-    mockMvc.perform(post(technicianUrl)
+    mockMvc.perform(post(planUrl)
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenAdmin)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .content(newTechnicianJson))
+            .content(newPlanJson))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").exists())
-        .andExpect(jsonPath("$.fullName").value("Amarildo Xavier da Costa"))
-        .andExpect(jsonPath("$.phone").value("7799111111111"))
-        .andExpect(jsonPath("$.email").value("amarildo@mail.com"));
+        .andExpect(jsonPath("$.name").value("Speed of Light"))
+        .andExpect(jsonPath("$.speed").value(299))
+        .andExpect(jsonPath("$.price").value(100.0));
   }
 
   @Test
-  @DisplayName("Update technician")
+  @DisplayName("Update plan")
   public void testUpdateTechnician() throws Exception {
 
-    Technician technicianToUpdate = new Technician("Amarildo Xavier da Costa", "7799111111111",
-        "amarildo@mail.com");
-    technicianRepository.save(technicianToUpdate);
+    Plan planToUpdate = new Plan("Speed of Light", 299, 100.0);
+    planRepository.save(planToUpdate);
 
-    technicianToUpdate.setFullName("Amarildo Candido Xavier");
-    technicianToUpdate.setPhone("7799222222222");
+    planToUpdate.setName("Speed of Thunder");
+    planToUpdate.setSpeed(150);
+    planToUpdate.setPrice(70.0);
 
     ObjectMapper objectMapper = new ObjectMapper();
-    String updatedTechnicianJson = objectMapper.writeValueAsString(technicianToUpdate);
-    String technicianUrl = "/technicians/%s".formatted(technicianToUpdate.getId());
+    String updatedPlanJson = objectMapper.writeValueAsString(planToUpdate);
+    String planUrl = "/plans/%s".formatted(planToUpdate.getId());
 
-    mockMvc.perform(put(technicianUrl)
+    mockMvc.perform(put(planUrl)
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenAdmin)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .content(updatedTechnicianJson))
+            .content(updatedPlanJson))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").exists())
-        .andExpect(jsonPath("$.fullName").value("Amarildo Candido Xavier"))
-        .andExpect(jsonPath("$.phone").value("7799222222222"))
-        .andExpect(jsonPath("$.email").value("amarildo@mail.com"));
+        .andExpect(jsonPath("$.name").value("Speed of Thunder"))
+        .andExpect(jsonPath("$.speed").value(150))
+        .andExpect(jsonPath("$.price").value(70.0));
   }
 
   @Test
-  @DisplayName("Delete technician")
-  public void testDeleteTechnician() throws Exception {
+  @DisplayName("Delete plan")
+  public void testDeletePlan() throws Exception {
 
-    Technician technicianToDelete = new Technician("Amarildo Xavier da Costa", "7799111111111",
-        "amarildo@mail.com");
+    Plan planToDelete = new Plan("Speed of Light", 299, 100.0);
+    planRepository.save(planToDelete);
 
-    technicianRepository.save(technicianToDelete);
-    String technicianUrl = "/technicians/%s".formatted(technicianToDelete.getId());
+    String planUrl = "/plans/%s".formatted(planToDelete.getId());
 
-    mockMvc.perform(delete(technicianUrl)
+    mockMvc.perform(delete(planUrl)
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenAdmin)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").exists())
-        .andExpect(jsonPath("$.fullName").value("Amarildo Xavier da Costa"))
-        .andExpect(jsonPath("$.phone").value("7799111111111"))
-        .andExpect(jsonPath("$.email").value("amarildo@mail.com"));
+        .andExpect(jsonPath("$.name").value("Speed of Light"))
+        .andExpect(jsonPath("$.speed").value(299))
+        .andExpect(jsonPath("$.price").value(100.0));
   }
 
 }
