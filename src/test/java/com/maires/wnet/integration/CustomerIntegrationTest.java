@@ -1,5 +1,6 @@
 package com.maires.wnet.integration;
 
+import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -168,7 +169,7 @@ public class CustomerIntegrationTest {
         .andExpect(jsonPath("$[0].street").value("Avenida Paulista"))
         .andExpect(jsonPath("$[0].streetNumber").value(1023))
         .andExpect(jsonPath("$[1].street").value("Fazenda Santo Antônio"))
-        .andExpect(jsonPath("$[1].streetNumber").doesNotExist());
+        .andExpect(jsonPath("$[1].streetNumber").value(nullValue()));
   }
 
   @Test
