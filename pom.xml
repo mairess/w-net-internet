@@ -39,6 +39,7 @@
                 <include>**/controller/TechnicianController.*</include>
                 <include>**/controller/PlanController.*</include>
                 <include>**/controller/EquipmentController.*</include>
+                <include>**/controller/CustomerController.*</include>
               </includes>
               <rules>
                 <rule>
