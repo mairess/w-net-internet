@@ -87,6 +87,7 @@ public class AddressIntegrationTest {
   @BeforeEach
   public void cleanUp() {
     userRepository.deleteAll();
+    equipmentRepository.deleteAll();
     addressRepository.deleteAll();
     User admin = new User(null, "System Manager Administrator", "admin@mail.com", "admin",
         "segredo123",
@@ -135,8 +136,8 @@ public class AddressIntegrationTest {
   }
 
   @Test
-  @DisplayName("Retrieval customer by id")
-  public void testCustomerRetrievalById() throws Exception {
+  @DisplayName("Retrieval addresses by id")
+  public void testAddressRetrievalById() throws Exception {
     Address home = new Address(
         "São Paulo",
         "São Paulo",
@@ -249,8 +250,8 @@ public class AddressIntegrationTest {
   }
 
   @Test
-  @DisplayName("Delete Customer")
-  public void testDeleteEquipment() throws Exception {
+  @DisplayName("Delete Address")
+  public void testDeleteAddress() throws Exception {
 
     Address addressToDelete = new Address(
         "São Paulo", "São Paulo", "01000000", "Avenida Paulista", 1023, "Bela Vista",
