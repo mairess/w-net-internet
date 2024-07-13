@@ -40,7 +40,7 @@ public class TechnicianIntegrationTest {
   public static PostgreSQLContainer POSTGRES_CONTAINER = new PostgreSQLContainer("postgres")
       .withDatabaseName("wnetdb");
   @Container
-  public static KafkaContainer kafkaContainer = new KafkaContainer();
+  public static KafkaContainer KAFKA_CONTAINER = new KafkaContainer();
   @Autowired
   TechnicianRepository technicianRepository;
   @Autowired
@@ -57,11 +57,7 @@ public class TechnicianIntegrationTest {
     registry.add("spring.datasource.url", POSTGRES_CONTAINER::getJdbcUrl);
     registry.add("spring.datasource.username", POSTGRES_CONTAINER::getUsername);
     registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
-  }
-
-  @DynamicPropertySource
-  public static void kafkaProperties(DynamicPropertyRegistry registry) {
-    registry.add("spring.kafka.bootstrap-servers", kafkaContainer::getBootstrapServers);
+    registry.add("spring.kafka.bootstrap-servers", KAFKA_CONTAINER::getBootstrapServers);
   }
 
   @BeforeEach

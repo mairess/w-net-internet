@@ -40,7 +40,7 @@ public class PlanIntegrationTest {
   public static PostgreSQLContainer POSTGRES_CONTAINER = new PostgreSQLContainer("postgres")
       .withDatabaseName("wnetdb");
   @Container
-  public static KafkaContainer kafkaContainer = new KafkaContainer();
+  public static KafkaContainer KAFKA_CONTAINER = new KafkaContainer();
   @Autowired
   PlanRepository planRepository;
   @Autowired
@@ -56,11 +56,7 @@ public class PlanIntegrationTest {
     registry.add("spring.datasource.url", POSTGRES_CONTAINER::getJdbcUrl);
     registry.add("spring.datasource.username", POSTGRES_CONTAINER::getUsername);
     registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
-  }
-
-  @DynamicPropertySource
-  public static void kafkaProperties(DynamicPropertyRegistry registry) {
-    registry.add("spring.kafka.bootstrap-servers", kafkaContainer::getBootstrapServers);
+    registry.add("spring.kafka.bootstrap-servers", KAFKA_CONTAINER::getBootstrapServers);
   }
 
   @BeforeEach
@@ -76,7 +72,7 @@ public class PlanIntegrationTest {
 
   @Test
   @DisplayName("Retrieval all plans")
-  public void testTechnicianRetrievalAll() throws Exception {
+  public void testPlanRetrievalAll() throws Exception {
     Plan planOne = new Plan("Speed of Light", 299, 100.0);
     Plan planTwe = new Plan("Low Connection", 10, 50.0);
 
@@ -136,7 +132,7 @@ public class PlanIntegrationTest {
 
   @Test
   @DisplayName("Update plan")
-  public void testUpdateTechnician() throws Exception {
+  public void testUpdatePlan() throws Exception {
 
     Plan planToUpdate = new Plan("Speed of Light", 299, 100.0);
     planRepository.save(planToUpdate);

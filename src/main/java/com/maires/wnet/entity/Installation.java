@@ -53,14 +53,34 @@ public class Installation {
   /**
    * Instantiates a new Installation.
    *
-   * @param address    the address id
-   * @param plan       the plan id
-   * @param technician the technician id
+   * @param address    the address
+   * @param plan       the plan
+   * @param technician the technician
    * @param equipments the equipments
    */
   public Installation(Address address, Plan plan, Technician technician,
       List<Equipment> equipments) {
     this.isActive = true;
+    this.address = address;
+    this.plan = plan;
+    this.technician = technician;
+    this.equipments = equipments;
+    this.installationDate = DateUtil.formatCurrentDate();
+  }
+
+
+  /**
+   * Instantiates a new Installation.
+   *
+   * @param isActive   the is active
+   * @param address    the address
+   * @param plan       the plan
+   * @param technician the technician
+   * @param equipments the equipments
+   */
+  public Installation(boolean isActive, Address address, Plan plan, Technician technician,
+      List<Equipment> equipments) {
+    this.isActive = isActive;
     this.address = address;
     this.plan = plan;
     this.technician = technician;

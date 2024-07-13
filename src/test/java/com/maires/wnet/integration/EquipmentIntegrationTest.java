@@ -41,7 +41,7 @@ public class EquipmentIntegrationTest {
   public static PostgreSQLContainer POSTGRES_CONTAINER = new PostgreSQLContainer("postgres")
       .withDatabaseName("wnetdb");
   @Container
-  public static KafkaContainer kafkaContainer = new KafkaContainer();
+  public static KafkaContainer KAFKA_CONTAINER = new KafkaContainer();
   @Autowired
   EquipmentRepository equipmentRepository;
   @Autowired
@@ -57,11 +57,7 @@ public class EquipmentIntegrationTest {
     registry.add("spring.datasource.url", POSTGRES_CONTAINER::getJdbcUrl);
     registry.add("spring.datasource.username", POSTGRES_CONTAINER::getUsername);
     registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
-  }
-
-  @DynamicPropertySource
-  public static void kafkaProperties(DynamicPropertyRegistry registry) {
-    registry.add("spring.kafka.bootstrap-servers", kafkaContainer::getBootstrapServers);
+    registry.add("spring.kafka.bootstrap-servers", KAFKA_CONTAINER::getBootstrapServers);
   }
 
   @BeforeEach
@@ -150,14 +146,14 @@ public class EquipmentIntegrationTest {
     equipmentToUpdate.setManufacturer("Netgear");
 
     ObjectMapper objectMapper = new ObjectMapper();
-    String updatedPlanJson = objectMapper.writeValueAsString(equipmentToUpdate);
+    String updatedEquipmentJson = objectMapper.writeValueAsString(equipmentToUpdate);
     String equipmentUrl = "/equipments/%s".formatted(equipmentToUpdate.getId());
 
     mockMvc.perform(put(equipmentUrl)
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenAdmin)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .content(updatedPlanJson))
+            .content(updatedEquipmentJson))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").exists())
         .andExpect(jsonPath("$.type").value("MODEM"))

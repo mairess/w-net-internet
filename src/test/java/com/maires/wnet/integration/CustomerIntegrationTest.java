@@ -43,7 +43,7 @@ public class CustomerIntegrationTest {
   public static PostgreSQLContainer POSTGRES_CONTAINER = new PostgreSQLContainer("postgres")
       .withDatabaseName("wnetdb");
   @Container
-  public static KafkaContainer kafkaContainer = new KafkaContainer();
+  public static KafkaContainer KAFKA_CONTAINER = new KafkaContainer();
   @Autowired
   CustomerRepository customerRepository;
   @Autowired
@@ -61,11 +61,7 @@ public class CustomerIntegrationTest {
     registry.add("spring.datasource.url", POSTGRES_CONTAINER::getJdbcUrl);
     registry.add("spring.datasource.username", POSTGRES_CONTAINER::getUsername);
     registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
-  }
-
-  @DynamicPropertySource
-  public static void kafkaProperties(DynamicPropertyRegistry registry) {
-    registry.add("spring.kafka.bootstrap-servers", kafkaContainer::getBootstrapServers);
+    registry.add("spring.kafka.bootstrap-servers", KAFKA_CONTAINER::getBootstrapServers);
   }
 
   @BeforeEach
@@ -212,9 +208,9 @@ public class CustomerIntegrationTest {
 
     ObjectMapper objectMapper = new ObjectMapper();
     String updatedCustomerJson = objectMapper.writeValueAsString(customerToUpdate);
-    String equipmentUrl = "/customers/%s".formatted(customerToUpdate.getId());
+    String customerUrl = "/customers/%s".formatted(customerToUpdate.getId());
 
-    mockMvc.perform(put(equipmentUrl)
+    mockMvc.perform(put(customerUrl)
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenAdmin)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
@@ -269,7 +265,7 @@ public class CustomerIntegrationTest {
 
   @Test
   @DisplayName("Delete Customer")
-  public void testDeleteEquipment() throws Exception {
+  public void testDeleteCustomer() throws Exception {
 
     Customer customerToDelete = new Customer("Gilvan Carlos Ferreira", "93684193020",
         "77009901111",
