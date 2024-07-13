@@ -5,7 +5,7 @@ import com.maires.wnet.entity.Technician;
 /**
  * The type Technician dto.
  */
-public record TechnicianDto(Long id, String name, String phone, String email) {
+public record TechnicianDto(Long id, String fullName, String phone, String email) {
 
   /**
    * From entity technician dto.

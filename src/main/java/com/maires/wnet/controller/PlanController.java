@@ -58,7 +58,6 @@ public class PlanController {
    * @throws PlanNotFoundException the plan not found exception
    */
   @GetMapping("/{planId}")
-  @PreAuthorize("hasAnyAuthority('ADMIN', 'TECHNICIAN')")
   public PlanDto findPlanById(@PathVariable Long planId)
       throws PlanNotFoundException {
     return PlanDto.fromEntity(planService.findPlanById(planId));

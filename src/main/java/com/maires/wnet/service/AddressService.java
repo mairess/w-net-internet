@@ -173,7 +173,7 @@ public class AddressService {
     addressToUpdate.setCity(address.getCity());
     addressToUpdate.setState(address.getState());
     addressToUpdate.setZipCode(address.getZipCode());
-    addressToUpdate.setStreet(addressToUpdate.getStreet());
+    addressToUpdate.setStreet(address.getStreet());
     addressToUpdate.setStreetNumber(address.getStreetNumber());
     addressToUpdate.setNeighborhood(address.getNeighborhood());
     addressToUpdate.setComplement(address.getComplement());

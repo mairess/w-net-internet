@@ -42,12 +42,12 @@ public class Plan {
   /**
    * Instantiates a new Plan.
    *
-   * @param fullName the full name
-   * @param speed    the speed
-   * @param price    the price
+   * @param name  the name
+   * @param speed the speed
+   * @param price the price
    */
-  public Plan(String fullName, Integer speed, Double price) {
-    this.name = fullName;
+  public Plan(String name, Integer speed, Double price) {
+    this.name = name;
     this.speed = speed;
     this.price = price;
   }
