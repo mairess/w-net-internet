@@ -35,12 +35,7 @@
 
               <haltOnFailure>true</haltOnFailure>
               <includes>
-                <include>**/controller/UserController.*</include>
-                <include>**/controller/TechnicianController.*</include>
-                <include>**/controller/PlanController.*</include>
-                <include>**/controller/EquipmentController.*</include>
-                <include>**/controller/CustomerController.*</include>
-                <include>**/controller/AddressController.*</include>
+                <include>**/controller/*</include>
               </includes>
               <rules>
                 <rule>
