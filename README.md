@@ -1,5 +1,13 @@
 # <p align="center">W-net Internet </p>
 
+<div align="center">
+
+<a href="https://codecov.io/gh/mairess/w-net-internet" > 
+ <img src="https://codecov.io/gh/mairess/w-net-internet/graph/badge.svg?token=ukuYKkowJP"/>
+ </a>
+
+</div>
+
 ## Context
 
 This is an internet provider management system.
