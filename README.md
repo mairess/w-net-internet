@@ -1,12 +1,8 @@
-# <p align="center">W-net Internet </p>
-
-<div align="center">
+# W-net Internet
 
 <a href="https://codecov.io/gh/mairess/w-net-internet" > 
  <img src="https://codecov.io/gh/mairess/w-net-internet/graph/badge.svg?token=ukuYKkowJP"/>
  </a>
-
-</div>
 
 ## Context
 
@@ -44,7 +40,7 @@ MAIL_PASSWORD=your-app-password
 
 ### Steps:
 
-1. Clone the repository:
+1. Clone repository:
 
 ```BASH
 git clone git@github.com:mairess/w-net-internet.git
@@ -61,32 +57,34 @@ mvn install -DskipTests
 3. Start ZooKeeper:
 
 ```BASH
-# Start ZooKeeper:
-
 bin/zookeeper-server-start.sh config/zookeeper.properties
 ```
 
 4. Start Kafka:
 
 ```BASH
-# Start Kafka:
-
 bin/kafka-server-start.sh config/server.properties
 ```
 
-5. Start the database:
+5. Start database:
 
 ```BASH
 docker compose up database -d --build 
 ```
 
-6. Run the API:
+6. Run API:
 
 ```BASH
 mvn spring-boot:run
 ```
 
-7. Access the API documentation and available routes on your web browser at:
+7. Run tests:
+
+```BASH
+mvn test
+```
+
+8. Access API documentation and available routes on your web browser at:
 
 ```BASH
 http://localhost:8080/swagger-ui/index.html
@@ -114,7 +112,7 @@ MAIL_PASSWORD=your-app-password
 
 ### Steps:
 
-1. Clone the repository:
+1. Clone repository:
 
 ```BASH
 git clone git@github.com:mairess/w-net-internet.git
@@ -122,19 +120,20 @@ git clone git@github.com:mairess/w-net-internet.git
 cd w-net-internet
 ```
 
-2. Start application:
+2. Run API:
 
 ```BASH
 docker compose up -d --build 
 ```
 
-3. Access the API documentation and available routes on your web browser at:
+3. Run tests:
+
+```BASH
+mvn test
+```
+
+4. Access API documentation and available routes on your web browser at:
 
 ```BASH
 http://localhost:8080/swagger-ui/index.html
 ```
-
-# To do
-
-- [ ] Tests
-- [x] authentication/authorization
