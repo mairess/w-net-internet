@@ -113,6 +113,19 @@ public class UserIntegrationTest {
   }
 
   @Test
+  @DisplayName("Throw userNotFoundException by id")
+  public void testUserNotFoundExceptionById() throws Exception {
+
+    String userUrl = "/users/666";
+
+    mockMvc.perform(get(userUrl)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenAdmin)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.message").value("User not found with identifier 666!"));
+  }
+  
+  @Test
   @DisplayName("Retrieval user by username")
   public void testUserRetrievalByUsername() throws Exception {
 
@@ -127,6 +140,19 @@ public class UserIntegrationTest {
         .andExpect(jsonPath("$.email").value("admin@mail.com"))
         .andExpect(jsonPath("$.username").value("admin"))
         .andExpect(jsonPath("$.role").value("ADMIN"));
+  }
+
+  @Test
+  @DisplayName("Throw userNotFoundException by username")
+  public void testUserNotFoundExceptionByUsername() throws Exception {
+
+    String userUrl = "/users/find?username=doesNotExists";
+
+    mockMvc.perform(get(userUrl)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenAdmin)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.message").value("User not found with identifier doesNotExists!"));
   }
 
   @Test
