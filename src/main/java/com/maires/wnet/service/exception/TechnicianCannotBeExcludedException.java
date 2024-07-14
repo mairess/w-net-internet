@@ -9,6 +9,6 @@ public class TechnicianCannotBeExcludedException extends CannotBeExcludedExcepti
    * Instantiates a new Technician cannot be excluded exception.
    */
   public TechnicianCannotBeExcludedException() {
-    super("This technician cannot be excluded because he has an association!");
+    super("This Technician cannot be excluded because he has an association!");
   }
 }
