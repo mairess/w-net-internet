@@ -7,12 +7,25 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.maires.wnet.entity.Address;
+import com.maires.wnet.entity.Customer;
+import com.maires.wnet.entity.Equipment;
+import com.maires.wnet.entity.EquipmentType;
+import com.maires.wnet.entity.Installation;
+import com.maires.wnet.entity.Plan;
 import com.maires.wnet.entity.Technician;
 import com.maires.wnet.entity.User;
+import com.maires.wnet.repository.AddressRepository;
+import com.maires.wnet.repository.CustomerRepository;
+import com.maires.wnet.repository.EquipmentRepository;
+import com.maires.wnet.repository.InstallationRepository;
+import com.maires.wnet.repository.PlanRepository;
 import com.maires.wnet.repository.TechnicianRepository;
 import com.maires.wnet.repository.UserRepository;
 import com.maires.wnet.security.Role;
 import com.maires.wnet.service.TokenService;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,6 +59,16 @@ public class TechnicianIntegrationTest {
   @Autowired
   UserRepository userRepository;
   @Autowired
+  AddressRepository addressRepository;
+  @Autowired
+  EquipmentRepository equipmentRepository;
+  @Autowired
+  CustomerRepository customerRepository;
+  @Autowired
+  InstallationRepository installationRepository;
+  @Autowired
+  PlanRepository planRepository;
+  @Autowired
   MockMvc mockMvc;
   @Autowired
   private TokenService tokenService;
@@ -63,6 +86,7 @@ public class TechnicianIntegrationTest {
   @BeforeEach
   public void cleanUp() {
     userRepository.deleteAll();
+    installationRepository.deleteAll();
     technicianRepository.deleteAll();
     User admin = new User(null, "System Manager Administrator", "admin@mail.com", "admin",
         "segredo123",
@@ -112,6 +136,19 @@ public class TechnicianIntegrationTest {
         .andExpect(jsonPath("$.fullName").value("Amarildo Xavier da Costa"))
         .andExpect(jsonPath("$.phone").value("7799111111111"))
         .andExpect(jsonPath("$.email").value("amarildo@mail.com"));
+  }
+
+  @Test
+  @DisplayName("Throw technicianNotFoundException")
+  public void testTechnicianNotFoundExceptionById() throws Exception {
+
+    String technicianUrl = "/technicians/666";
+
+    mockMvc.perform(get(technicianUrl)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenAdmin)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.message").value("Technician not found with identifier 666!"));
   }
 
   @Test
@@ -182,6 +219,55 @@ public class TechnicianIntegrationTest {
         .andExpect(jsonPath("$.fullName").value("Amarildo Xavier da Costa"))
         .andExpect(jsonPath("$.phone").value("7799111111111"))
         .andExpect(jsonPath("$.email").value("amarildo@mail.com"));
+  }
+
+  @Test
+  @DisplayName("Throw technicianCannotBeExcludedException")
+  public void testTechnicianCannotBeExcludedException() throws Exception {
+
+    Customer customer = new Customer(
+        "Graciliano Ramos de Oliveira",
+        "00011122233",
+        "77011223344",
+        "gracit@example.com"
+    );
+
+    Address home = new Address(
+        "São Paulo", "São Paulo", "01000000", "Avenida Paulista", 1023, "Bela Vista",
+        "Próximo ao Parque Trianon");
+
+    Technician technician = new Technician("João Antônio Benevides Faria", "77011114444",
+        "joao@example.com");
+
+    Plan plan = new Plan("Speed og Thunder", 300, 70.0);
+
+    Equipment router = new Equipment(EquipmentType.ROUTER, "Asus RT-AC88U", "SN035", "Asus");
+    Equipment modem = new Equipment(EquipmentType.MODEM, "Motorola MG7700", "SN036", "Motorola");
+
+    home.setCustomer(customer);
+    customerRepository.save(customer);
+    addressRepository.save(home);
+    technicianRepository.save(technician);
+    planRepository.save(plan);
+    equipmentRepository.save(router);
+    equipmentRepository.save(modem);
+
+    List<Equipment> equipmentList = new ArrayList<>();
+    equipmentList.add(router);
+    equipmentList.add(modem);
+
+    Installation installation = new Installation(home, plan, technician, equipmentList);
+
+    installationRepository.save(installation);
+
+    String technicianUrl = "/technicians/%s".formatted(technician.getId());
+
+    mockMvc.perform(delete(technicianUrl)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenAdmin)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isConflict())
+        .andExpect(jsonPath("$.message").value(
+            "This Technician cannot be excluded because he has an association!"));
   }
 
 }
