@@ -9,8 +9,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.maires.wnet.entity.Equipment;
 import com.maires.wnet.entity.EquipmentType;
+import com.maires.wnet.entity.Installation;
 import com.maires.wnet.entity.User;
 import com.maires.wnet.repository.EquipmentRepository;
+import com.maires.wnet.repository.InstallationRepository;
 import com.maires.wnet.repository.UserRepository;
 import com.maires.wnet.security.Role;
 import com.maires.wnet.service.TokenService;
@@ -46,6 +48,8 @@ public class EquipmentIntegrationTest {
   EquipmentRepository equipmentRepository;
   @Autowired
   UserRepository userRepository;
+  @Autowired
+  InstallationRepository installationRepository;
   @Autowired
   MockMvc mockMvc;
   @Autowired
@@ -107,6 +111,19 @@ public class EquipmentIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").exists())
         .andExpect(jsonPath("$.model").value("TP-Link Deco M4"));
+  }
+
+  @Test
+  @DisplayName("Throw equipmentNotFoundException")
+  public void testEquipmentNotFoundExceptionById() throws Exception {
+
+    String equipmentUrl = "/equipments/666";
+
+    mockMvc.perform(get(equipmentUrl)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenAdmin)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.message").value("Equipment not found with identifier 666!"));
   }
 
   @Test
@@ -181,6 +198,29 @@ public class EquipmentIntegrationTest {
         .andExpect(jsonPath("$.model").value("TP-Link Deco M4"))
         .andExpect(jsonPath("$.serialNumber").value("SN5332"))
         .andExpect(jsonPath("$.manufacturer").value("TP-Link"));
+  }
+
+  @Test
+  @DisplayName("Throw equipmentCannotBeExcludedException")
+  public void testEquipmentCannotBeExcludedException() throws Exception {
+
+    Equipment equipmentToDelete = new Equipment(EquipmentType.ROUTER, "TP-Link Deco M4", "SN5332",
+        "TP-Link");
+
+    Installation installation = new Installation();
+    installationRepository.save(installation);
+
+    equipmentToDelete.setInstallation(installation);
+    equipmentRepository.save(equipmentToDelete);
+
+    String equipmentUrl = "/equipments/%s".formatted(equipmentToDelete.getId());
+
+    mockMvc.perform(delete(equipmentUrl)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenAdmin)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isConflict())
+        .andExpect(jsonPath("$.message").value(
+            "This equipment cannot be excluded because it has an association!"));
   }
 
 }
