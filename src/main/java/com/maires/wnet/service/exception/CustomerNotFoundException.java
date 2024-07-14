@@ -9,7 +9,7 @@ public class CustomerNotFoundException extends NotFoundException {
    * Instantiates a new Customer not found exception.
    */
   public CustomerNotFoundException(String identifier) {
-    super("Customer not found with " + identifier + "!");
+    super("Customer not found with identifier " + identifier + "!");
   }
 
 }

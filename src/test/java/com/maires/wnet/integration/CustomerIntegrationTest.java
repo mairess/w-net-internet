@@ -13,6 +13,10 @@ import com.maires.wnet.entity.Customer;
 import com.maires.wnet.entity.User;
 import com.maires.wnet.repository.AddressRepository;
 import com.maires.wnet.repository.CustomerRepository;
+import com.maires.wnet.repository.EquipmentRepository;
+import com.maires.wnet.repository.InstallationRepository;
+import com.maires.wnet.repository.PlanRepository;
+import com.maires.wnet.repository.TechnicianRepository;
 import com.maires.wnet.repository.UserRepository;
 import com.maires.wnet.security.Role;
 import com.maires.wnet.service.TokenService;
@@ -50,6 +54,14 @@ public class CustomerIntegrationTest {
   AddressRepository addressRepository;
   @Autowired
   UserRepository userRepository;
+  @Autowired
+  TechnicianRepository technicianRepository;
+  @Autowired
+  EquipmentRepository equipmentRepository;
+  @Autowired
+  PlanRepository planRepository;
+  @Autowired
+  InstallationRepository installationRepository;
   @Autowired
   MockMvc mockMvc;
   @Autowired
@@ -122,6 +134,19 @@ public class CustomerIntegrationTest {
   }
 
   @Test
+  @DisplayName("Throw customerNotFoundException by id")
+  public void testCustomerNotFoundExceptionById() throws Exception {
+
+    String customerUrl = "/customers/666";
+
+    mockMvc.perform(get(customerUrl)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenAdmin)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.message").value("Customer not found with identifier 666!"));
+  }
+
+  @Test
   @DisplayName("Retrieval all addresses by customer")
   public void testAddressesRetrievalByCustomer() throws Exception {
     Customer machado = new Customer("Joaquim Maria Machado de Assis", "93684193020",
@@ -166,6 +191,19 @@ public class CustomerIntegrationTest {
         .andExpect(jsonPath("$[0].streetNumber").value(1023))
         .andExpect(jsonPath("$[1].street").value("Fazenda Santo Antônio"))
         .andExpect(jsonPath("$[1].streetNumber").value(nullValue()));
+  }
+
+  @Test
+  @DisplayName("Throw customerNotFoundException by address")
+  public void testCustomerNotFoundExceptionByAddress() throws Exception {
+
+    String customerUrl = "/customers/666/addresses";
+
+    mockMvc.perform(get(customerUrl)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenAdmin)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.message").value("Customer not found with identifier 666!"));
   }
 
   @Test
@@ -261,6 +299,34 @@ public class CustomerIntegrationTest {
         .andExpect(jsonPath("$.streetNumber").value(1023))
         .andExpect(jsonPath("$.neighborhood").value("Bela Vista"))
         .andExpect(jsonPath("$.complement").value("Próximo ao Parque Trianon"));
+  }
+
+  @Test
+  @DisplayName("Throw customerNotFoundException by creating address")
+  public void testCustomerNotFoundExceptionByCreateAddress() throws Exception {
+
+    Address newAddress = new Address(
+        "São Paulo",
+        "São Paulo",
+        "01000000",
+        "Avenida Paulista",
+        1023,
+        "Bela Vista",
+        "Próximo ao Parque Trianon"
+
+    );
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    String newAddressJson = objectMapper.writeValueAsString(newAddress);
+    String customerUrl = "/customers/666/addresses";
+
+    mockMvc.perform(post(customerUrl)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenAdmin)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(newAddressJson))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.message").value("Customer not found with identifier 666!"));
   }
 
   @Test
