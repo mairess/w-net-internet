@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AddressService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in w-net-internet Coverage Results</a> &gt; <a href="index.source.html" class="el_package">com.maires.wnet.service</a> &gt; <span class="el_source">AddressService.java</span></div><h1>AddressService.java</h1><pre class="source lang-java linenums">package com.maires.wnet.service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.maires.wnet.controller.dto.MessagingNewInstallationDto;
+import com.maires.wnet.entity.Address;
+import com.maires.wnet.entity.Equipment;
+import com.maires.wnet.entity.Installation;
+import com.maires.wnet.entity.Plan;
+import com.maires.wnet.entity.Technician;
+import com.maires.wnet.producer.NewInstallationProducer;
+import com.maires.wnet.repository.AddressRepository;
+import com.maires.wnet.repository.EquipmentRepository;
+import com.maires.wnet.repository.InstallationRepository;
+import com.maires.wnet.repository.PlanRepository;
+import com.maires.wnet.repository.TechnicianRepository;
+import com.maires.wnet.service.exception.AddressAlreadyAssociatedException;
+import com.maires.wnet.service.exception.AddressNotFoundException;
+import com.maires.wnet.service.exception.EquipmentAlreadyAssociatedException;
+import com.maires.wnet.service.exception.EquipmentNotFoundException;
+import com.maires.wnet.service.exception.PlanNotFoundException;
+import com.maires.wnet.service.exception.TechnicianNotFoundException;
+import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ * The type Address service.
+ */
+@Service
+public class AddressService {
+
+  private final AddressRepository addressRepository;
+  private final EquipmentRepository equipmentRepository;
+  private final PlanRepository planRepository;
+  private final TechnicianRepository technicianRepository;
+  private final InstallationRepository installationRepository;
+  private final NewInstallationProducer newInstallationProducer;
+
+
+  /**
+   * Instantiates a new Address service.
+   *
+   * @param addressRepository       the address repository
+   * @param equipmentRepository     the equipment repository
+   * @param planRepository          the plan repository
+   * @param technicianRepository    the technician repository
+   * @param installationRepository  the installation repository
+   * @param newInstallationProducer the new installation producer
+   */
+  @Autowired
+  public AddressService(
+      AddressRepository addressRepository,
+      EquipmentRepository equipmentRepository,
+      PlanRepository planRepository,
+      TechnicianRepository technicianRepository,
+      InstallationRepository installationRepository,
+      NewInstallationProducer newInstallationProducer
+<span class="fc" id="L60">  ) {</span>
+<span class="fc" id="L61">    this.addressRepository = addressRepository;</span>
+<span class="fc" id="L62">    this.equipmentRepository = equipmentRepository;</span>
+<span class="fc" id="L63">    this.planRepository = planRepository;</span>
+<span class="fc" id="L64">    this.technicianRepository = technicianRepository;</span>
+<span class="fc" id="L65">    this.installationRepository = installationRepository;</span>
+<span class="fc" id="L66">    this.newInstallationProducer = newInstallationProducer;</span>
+<span class="fc" id="L67">  }</span>
+
+  /**
+   * Find all addresses list.
+   *
+   * @return the list
+   */
+  public List&lt;Address&gt; findAllAddresses() {
+<span class="fc" id="L75">    return addressRepository.findAll();</span>
+  }
+
+  /**
+   * Find address by id address.
+   *
+   * @param addressId the address id
+   * @return the address
+   * @throws AddressNotFoundException the address not found exception
+   */
+  public Address findAddressById(Long addressId) throws AddressNotFoundException {
+<span class="fc" id="L86">    return addressRepository.findById(addressId)</span>
+<span class="fc" id="L87">        .orElseThrow(() -&gt; new AddressNotFoundException(addressId.toString()));</span>
+  }
+
+  /**
+   * Create address installation installation.
+   *
+   * @param addressId    the address id
+   * @param planId       the plan id
+   * @param technicianId the technician id
+   * @param equipmentIds the equipment ids
+   * @return the installation
+   * @throws AddressNotFoundException            the address not found exception
+   * @throws AddressAlreadyAssociatedException   the address already associated exception
+   * @throws PlanNotFoundException               the plan not found exception
+   * @throws TechnicianNotFoundException         the technician not found exception
+   * @throws EquipmentNotFoundException          the equipment not found exception
+   * @throws EquipmentAlreadyAssociatedException the equipment already associated exception
+   * @throws JsonProcessingException             the json processing exception
+   */
+  @Transactional
+  public Installation createAddressInstallation(
+      Long addressId,
+      Long planId,
+      Long technicianId,
+      List&lt;Long&gt; equipmentIds
+  ) throws
+      AddressNotFoundException,
+      AddressAlreadyAssociatedException,
+      PlanNotFoundException,
+      TechnicianNotFoundException,
+      EquipmentNotFoundException,
+      EquipmentAlreadyAssociatedException, JsonProcessingException {
+
+<span class="fc" id="L120">    Address address = addressRepository.findById(addressId)</span>
+<span class="fc" id="L121">        .orElseThrow(() -&gt; new AddressNotFoundException(addressId.toString()));</span>
+
+<span class="fc bfc" id="L123" title="All 2 branches covered.">    if (address.getInstallation() != null) {</span>
+<span class="fc" id="L124">      throw new AddressAlreadyAssociatedException();</span>
+    }
+
+<span class="fc" id="L127">    Plan plan = planRepository.findById(planId)</span>
+<span class="fc" id="L128">        .orElseThrow(() -&gt; new PlanNotFoundException(planId.toString()));</span>
+
+<span class="fc" id="L130">    Technician technician = technicianRepository.findById(technicianId)</span>
+<span class="fc" id="L131">        .orElseThrow(() -&gt; new TechnicianNotFoundException(technicianId.toString()));</span>
+
+<span class="fc" id="L133">    List&lt;Equipment&gt; equipmentList = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L135" title="All 2 branches covered.">    for (Long id : equipmentIds) {</span>
+
+<span class="fc" id="L137">      Equipment equipment = equipmentRepository.findById(id)</span>
+<span class="fc" id="L138">          .orElseThrow(() -&gt; new EquipmentNotFoundException(id.toString()));</span>
+
+<span class="fc bfc" id="L140" title="All 2 branches covered.">      if (equipment.getInstallation() != null) {</span>
+<span class="fc" id="L141">        throw new EquipmentAlreadyAssociatedException();</span>
+      }
+<span class="fc" id="L143">      equipmentList.add(equipment);</span>
+<span class="fc" id="L144">    }</span>
+
+<span class="fc" id="L146">    Installation newInstallation = new Installation(address, plan, technician, equipmentList);</span>
+<span class="fc" id="L147">    address.setInstallation(newInstallation);</span>
+
+<span class="fc" id="L149">    equipmentList.forEach(equipment -&gt; equipment.setInstallation(newInstallation));</span>
+
+<span class="fc" id="L151">    MessagingNewInstallationDto message = new MessagingNewInstallationDto(</span>
+<span class="fc" id="L152">        address.getCustomer().getEmail(),</span>
+<span class="fc" id="L153">        address.getCustomer().getFullName().split(&quot; &quot;)[0]</span>
+
+    );
+
+<span class="fc" id="L157">    newInstallationProducer.produceNewInstallationMessage(message);</span>
+
+<span class="fc" id="L159">    return installationRepository.save(newInstallation);</span>
+  }
+
+  /**
+   * Update address.
+   *
+   * @param addressId the address id
+   * @param address   the address
+   * @return the address
+   * @throws AddressNotFoundException the address not found exception
+   */
+  public Address updateAddress(Long addressId, Address address) throws AddressNotFoundException {
+<span class="fc" id="L171">    Address addressToUpdate = findAddressById(addressId);</span>
+
+<span class="fc" id="L173">    addressToUpdate.setCity(address.getCity());</span>
+<span class="fc" id="L174">    addressToUpdate.setState(address.getState());</span>
+<span class="fc" id="L175">    addressToUpdate.setZipCode(address.getZipCode());</span>
+<span class="fc" id="L176">    addressToUpdate.setStreet(address.getStreet());</span>
+<span class="fc" id="L177">    addressToUpdate.setStreetNumber(address.getStreetNumber());</span>
+<span class="fc" id="L178">    addressToUpdate.setNeighborhood(address.getNeighborhood());</span>
+<span class="fc" id="L179">    addressToUpdate.setComplement(address.getComplement());</span>
+
+<span class="fc" id="L181">    return addressRepository.save(addressToUpdate);</span>
+  }
+
+
+  /**
+   * Remove address by id address.
+   *
+   * @param addressId the address id
+   * @return the address
+   * @throws AddressNotFoundException the address not found exception
+   */
+  @Transactional
+  public Address removeAddressById(Long addressId) throws AddressNotFoundException {
+<span class="fc" id="L194">    Address deletedAddress = findAddressById(addressId);</span>
+
+<span class="pc bpc" id="L196" title="1 of 2 branches missed.">    if (deletedAddress.getInstallation() != null) {</span>
+<span class="nc" id="L197">      List&lt;Equipment&gt; equipmentList = deletedAddress.getInstallation().getEquipments();</span>
+
+<span class="nc" id="L199">      equipmentList.forEach(equipment -&gt; {</span>
+<span class="nc" id="L200">        equipment.setInstallation(null);</span>
+<span class="nc" id="L201">        equipmentRepository.save(equipment);</span>
+<span class="nc" id="L202">      });</span>
+
+    }
+<span class="fc" id="L205">    addressRepository.delete(deletedAddress);</span>
+<span class="fc" id="L206">    return deletedAddress;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

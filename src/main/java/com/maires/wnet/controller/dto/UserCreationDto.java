@@ -2,6 +2,7 @@ package com.maires.wnet.controller.dto;
 
 import com.maires.wnet.entity.User;
 import com.maires.wnet.security.Role;
+import com.maires.wnet.validation.EnumValidator;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -37,8 +38,9 @@ public record UserCreationDto(
     @Size(min = 6, max = 50, message = "must be between 6 and 50 characters!")
     String password,
 
-    @NotNull(message = "cannot be null!")
-    Role role
+    @NotNull(message = "must not be null! Try ADMIN or TECHNICIAN")
+    @EnumValidator(enumClazz = Role.class, message = "must be ADMIN or TECHNICIAN")
+    String role
 ) {
 
 
@@ -48,6 +50,6 @@ public record UserCreationDto(
    * @return the user
    */
   public User toEntity() {
-    return new User(null, fullName, email, username, password, role);
+    return new User(null, fullName, email, username, password, Role.valueOf(role.toUpperCase()));
   }
 }
