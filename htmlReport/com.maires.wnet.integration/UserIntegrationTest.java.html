@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserIntegrationTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in w-net-internet Coverage Results</a> &gt; <a href="index.source.html" class="el_package">com.maires.wnet.integration</a> &gt; <span class="el_source">UserIntegrationTest.java</span></div><h1>UserIntegrationTest.java</h1><pre class="source lang-java linenums">package com.maires.wnet.integration;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.maires.wnet.entity.User;
+import com.maires.wnet.repository.UserRepository;
+import com.maires.wnet.security.Role;
+import com.maires.wnet.service.TokenService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+@Testcontainers
+@DisplayName(&quot;User integration tests&quot;)
+<span class="fc" id="L35">public class UserIntegrationTest {</span>
+
+  @Container
+<span class="fc" id="L38">  public static PostgreSQLContainer POSTGRES_CONTAINER = new PostgreSQLContainer(&quot;postgres&quot;)</span>
+<span class="fc" id="L39">      .withDatabaseName(&quot;wnetdb&quot;);</span>
+  @Container
+<span class="fc" id="L41">  public static KafkaContainer KAFKA_CONTAINER = new KafkaContainer();</span>
+  @Autowired
+  UserRepository userRepository;
+  @Autowired
+  MockMvc mockMvc;
+  @Autowired
+  private TokenService tokenService;
+  private User userAdmin;
+  private String tokenAdmin;
+
+
+  @DynamicPropertySource
+  public static void overrideProperties(DynamicPropertyRegistry registry) {
+<span class="fc" id="L54">    registry.add(&quot;spring.datasource.url&quot;, POSTGRES_CONTAINER::getJdbcUrl);</span>
+<span class="fc" id="L55">    registry.add(&quot;spring.datasource.username&quot;, POSTGRES_CONTAINER::getUsername);</span>
+<span class="fc" id="L56">    registry.add(&quot;spring.datasource.password&quot;, POSTGRES_CONTAINER::getPassword);</span>
+<span class="fc" id="L57">    registry.add(&quot;spring.kafka.bootstrap-servers&quot;, KAFKA_CONTAINER::getBootstrapServers);</span>
+<span class="fc" id="L58">  }</span>
+
+  @BeforeEach
+  public void cleanUp() {
+<span class="fc" id="L62">    userRepository.deleteAll();</span>
+<span class="fc" id="L63">    User admin = new User(null, &quot;System Manager Administrator&quot;, &quot;admin@mail.com&quot;, &quot;admin&quot;,</span>
+        &quot;segredo123&quot;,
+        Role.ADMIN);
+<span class="fc" id="L66">    userAdmin = userRepository.save(admin);</span>
+<span class="fc" id="L67">    tokenAdmin = tokenService.generateToken(userAdmin.getUsername());</span>
+<span class="fc" id="L68">  }</span>
+
+  @Test
+  @DisplayName(&quot;Retrieval all users&quot;)
+  public void testUserRetrievalAll() throws Exception {
+<span class="fc" id="L73">    User Juca = new User(null, &quot;Juca Rosa de Souza&quot;, &quot;juquinha@mail.com&quot;, &quot;juca&quot;, &quot;segredo123&quot;,</span>
+        Role.TECHNICIAN);
+
+<span class="fc" id="L76">    User Rogerio = new User(null, &quot;Rogerio Cardoso da Sena&quot;, &quot;rogerSena@mail.com&quot;, &quot;rogerio&quot;,</span>
+        &quot;segredo123&quot;,
+        Role.TECHNICIAN);
+
+<span class="fc" id="L80">    userRepository.save(Juca);</span>
+<span class="fc" id="L81">    userRepository.save(Rogerio);</span>
+<span class="fc" id="L82">    String userUrl = &quot;/users&quot;;</span>
+
+<span class="fc" id="L84">    mockMvc.perform(get(userUrl)</span>
+<span class="fc" id="L85">            .header(HttpHeaders.AUTHORIZATION, &quot;Bearer &quot; + tokenAdmin)</span>
+<span class="fc" id="L86">            .accept(MediaType.APPLICATION_JSON))</span>
+<span class="fc" id="L87">        .andExpect(status().isOk())</span>
+<span class="fc" id="L88">        .andExpect(jsonPath(&quot;$&quot;).isArray())</span>
+<span class="fc" id="L89">        .andExpect(jsonPath(&quot;$.length()&quot;).value(3))</span>
+<span class="fc" id="L90">        .andExpect(jsonPath(&quot;$[0].id&quot;).exists())</span>
+<span class="fc" id="L91">        .andExpect(jsonPath(&quot;$[0].fullName&quot;).value(&quot;System Manager Administrator&quot;))</span>
+<span class="fc" id="L92">        .andExpect(jsonPath(&quot;$[1].id&quot;).exists())</span>
+<span class="fc" id="L93">        .andExpect(jsonPath(&quot;$[1].fullName&quot;).value(&quot;Juca Rosa de Souza&quot;))</span>
+<span class="fc" id="L94">        .andExpect(jsonPath(&quot;$[2].id&quot;).exists())</span>
+<span class="fc" id="L95">        .andExpect(jsonPath(&quot;$[2].fullName&quot;).value(&quot;Rogerio Cardoso da Sena&quot;));</span>
+<span class="fc" id="L96">  }</span>
+
+  @Test
+  @DisplayName(&quot;Retrieval user by id&quot;)
+  public void testUserRetrievalById() throws Exception {
+
+<span class="fc" id="L102">    String userUrl = &quot;/users/%s&quot;.formatted(userAdmin.getId());</span>
+
+<span class="fc" id="L104">    mockMvc.perform(get(userUrl)</span>
+<span class="fc" id="L105">            .header(HttpHeaders.AUTHORIZATION, &quot;Bearer &quot; + tokenAdmin)</span>
+<span class="fc" id="L106">            .accept(MediaType.APPLICATION_JSON))</span>
+<span class="fc" id="L107">        .andExpect(status().isOk())</span>
+<span class="fc" id="L108">        .andExpect(jsonPath(&quot;$.id&quot;).exists())</span>
+<span class="fc" id="L109">        .andExpect(jsonPath(&quot;$.fullName&quot;).value(&quot;System Manager Administrator&quot;))</span>
+<span class="fc" id="L110">        .andExpect(jsonPath(&quot;$.email&quot;).value(&quot;admin@mail.com&quot;))</span>
+<span class="fc" id="L111">        .andExpect(jsonPath(&quot;$.username&quot;).value(&quot;admin&quot;))</span>
+<span class="fc" id="L112">        .andExpect(jsonPath(&quot;$.role&quot;).value(&quot;ADMIN&quot;));</span>
+<span class="fc" id="L113">  }</span>
+
+  @Test
+  @DisplayName(&quot;Throw userNotFoundException by id&quot;)
+  public void testUserNotFoundExceptionById() throws Exception {
+
+<span class="fc" id="L119">    String userUrl = &quot;/users/666&quot;;</span>
+
+<span class="fc" id="L121">    mockMvc.perform(get(userUrl)</span>
+<span class="fc" id="L122">            .header(HttpHeaders.AUTHORIZATION, &quot;Bearer &quot; + tokenAdmin)</span>
+<span class="fc" id="L123">            .accept(MediaType.APPLICATION_JSON))</span>
+<span class="fc" id="L124">        .andExpect(status().isNotFound())</span>
+<span class="fc" id="L125">        .andExpect(jsonPath(&quot;$.message&quot;).value(&quot;User not found with identifier 666!&quot;));</span>
+<span class="fc" id="L126">  }</span>
+  
+  @Test
+  @DisplayName(&quot;Retrieval user by username&quot;)
+  public void testUserRetrievalByUsername() throws Exception {
+
+<span class="fc" id="L132">    String userUrl = &quot;/users/find?username=%s&quot;.formatted(&quot;admin&quot;);</span>
+
+<span class="fc" id="L134">    mockMvc.perform(get(userUrl)</span>
+<span class="fc" id="L135">            .header(HttpHeaders.AUTHORIZATION, &quot;Bearer &quot; + tokenAdmin)</span>
+<span class="fc" id="L136">            .accept(MediaType.APPLICATION_JSON))</span>
+<span class="fc" id="L137">        .andExpect(status().isOk())</span>
+<span class="fc" id="L138">        .andExpect(jsonPath(&quot;$.id&quot;).exists())</span>
+<span class="fc" id="L139">        .andExpect(jsonPath(&quot;$.fullName&quot;).value(&quot;System Manager Administrator&quot;))</span>
+<span class="fc" id="L140">        .andExpect(jsonPath(&quot;$.email&quot;).value(&quot;admin@mail.com&quot;))</span>
+<span class="fc" id="L141">        .andExpect(jsonPath(&quot;$.username&quot;).value(&quot;admin&quot;))</span>
+<span class="fc" id="L142">        .andExpect(jsonPath(&quot;$.role&quot;).value(&quot;ADMIN&quot;));</span>
+<span class="fc" id="L143">  }</span>
+
+  @Test
+  @DisplayName(&quot;Throw userNotFoundException by username&quot;)
+  public void testUserNotFoundExceptionByUsername() throws Exception {
+
+<span class="fc" id="L149">    String userUrl = &quot;/users/find?username=doesNotExists&quot;;</span>
+
+<span class="fc" id="L151">    mockMvc.perform(get(userUrl)</span>
+<span class="fc" id="L152">            .header(HttpHeaders.AUTHORIZATION, &quot;Bearer &quot; + tokenAdmin)</span>
+<span class="fc" id="L153">            .accept(MediaType.APPLICATION_JSON))</span>
+<span class="fc" id="L154">        .andExpect(status().isNotFound())</span>
+<span class="fc" id="L155">        .andExpect(jsonPath(&quot;$.message&quot;).value(&quot;User not found with identifier doesNotExists!&quot;));</span>
+<span class="fc" id="L156">  }</span>
+
+  @Test
+  @DisplayName(&quot;Create user&quot;)
+  public void testCreateUser() throws Exception {
+
+<span class="fc" id="L162">    User newUser = new User(null, &quot;Edcarlos Saraiva Bragança&quot;, &quot;edcarlos@mail.com&quot;, &quot;edcarlos&quot;,</span>
+        &quot;password123&quot;, Role.TECHNICIAN);
+
+<span class="fc" id="L165">    ObjectMapper objectMapper = new ObjectMapper();</span>
+<span class="fc" id="L166">    String newUserJson = objectMapper.writeValueAsString(newUser);</span>
+<span class="fc" id="L167">    String userUrl = &quot;/users&quot;;</span>
+
+<span class="fc" id="L169">    mockMvc.perform(post(userUrl)</span>
+<span class="fc" id="L170">            .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L171">            .accept(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L172">            .content(newUserJson))</span>
+<span class="fc" id="L173">        .andExpect(status().isCreated())</span>
+<span class="fc" id="L174">        .andExpect(jsonPath(&quot;$.id&quot;).exists())</span>
+<span class="fc" id="L175">        .andExpect(jsonPath(&quot;$.fullName&quot;).value(&quot;Edcarlos Saraiva Bragança&quot;))</span>
+<span class="fc" id="L176">        .andExpect(jsonPath(&quot;$.email&quot;).value(&quot;edcarlos@mail.com&quot;))</span>
+<span class="fc" id="L177">        .andExpect(jsonPath(&quot;$.username&quot;).value(&quot;edcarlos&quot;))</span>
+<span class="fc" id="L178">        .andExpect(jsonPath(&quot;$.role&quot;).value(&quot;TECHNICIAN&quot;));</span>
+<span class="fc" id="L179">  }</span>
+
+  @Test
+  @DisplayName(&quot;Update user&quot;)
+  public void testUpdateUser() throws Exception {
+
+<span class="fc" id="L185">    User updatedUser = new User(null, &quot;System Manager aka Administrator&quot;, &quot;admin@mail.com&quot;, &quot;admin&quot;,</span>
+        &quot;segredo123&quot;,
+        Role.ADMIN);
+
+<span class="fc" id="L189">    ObjectMapper objectMapper = new ObjectMapper();</span>
+<span class="fc" id="L190">    String updatedUserJson = objectMapper.writeValueAsString(updatedUser);</span>
+<span class="fc" id="L191">    String userUrl = &quot;/users/%s&quot;.formatted(userAdmin.getId());</span>
+
+<span class="fc" id="L193">    mockMvc.perform(put(userUrl)</span>
+<span class="fc" id="L194">            .header(HttpHeaders.AUTHORIZATION, &quot;Bearer &quot; + tokenAdmin)</span>
+<span class="fc" id="L195">            .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L196">            .accept(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L197">            .content(updatedUserJson))</span>
+<span class="fc" id="L198">        .andExpect(status().isOk())</span>
+<span class="fc" id="L199">        .andExpect(jsonPath(&quot;$.id&quot;).exists())</span>
+<span class="fc" id="L200">        .andExpect(jsonPath(&quot;$.fullName&quot;).value(&quot;System Manager aka Administrator&quot;))</span>
+<span class="fc" id="L201">        .andExpect(jsonPath(&quot;$.email&quot;).value(&quot;admin@mail.com&quot;))</span>
+<span class="fc" id="L202">        .andExpect(jsonPath(&quot;$.username&quot;).value(&quot;admin&quot;))</span>
+<span class="fc" id="L203">        .andExpect(jsonPath(&quot;$.role&quot;).value(&quot;ADMIN&quot;));</span>
+<span class="fc" id="L204">  }</span>
+
+  @Test
+  @DisplayName(&quot;Delete user&quot;)
+  public void testDeleteUser() throws Exception {
+
+<span class="fc" id="L210">    User userToDelete = new User(null, &quot;Please Remove Me From Your Database&quot;, &quot;removeme@mail.com&quot;,</span>
+        &quot;removeme&quot;,
+        &quot;segredo123&quot;,
+        Role.TECHNICIAN);
+
+<span class="fc" id="L215">    userRepository.save(userToDelete);</span>
+<span class="fc" id="L216">    String userUrl = &quot;/users/%s&quot;.formatted(userToDelete.getId());</span>
+
+<span class="fc" id="L218">    mockMvc.perform(delete(userUrl)</span>
+<span class="fc" id="L219">            .header(HttpHeaders.AUTHORIZATION, &quot;Bearer &quot; + tokenAdmin)</span>
+<span class="fc" id="L220">            .accept(MediaType.APPLICATION_JSON))</span>
+<span class="fc" id="L221">        .andExpect(status().isOk())</span>
+<span class="fc" id="L222">        .andExpect(jsonPath(&quot;$.id&quot;).exists())</span>
+<span class="fc" id="L223">        .andExpect(jsonPath(&quot;$.fullName&quot;).value(&quot;Please Remove Me From Your Database&quot;))</span>
+<span class="fc" id="L224">        .andExpect(jsonPath(&quot;$.email&quot;).value(&quot;removeme@mail.com&quot;))</span>
+<span class="fc" id="L225">        .andExpect(jsonPath(&quot;$.username&quot;).value(&quot;removeme&quot;))</span>
+<span class="fc" id="L226">        .andExpect(jsonPath(&quot;$.role&quot;).value(&quot;TECHNICIAN&quot;));</span>
+<span class="fc" id="L227">  }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

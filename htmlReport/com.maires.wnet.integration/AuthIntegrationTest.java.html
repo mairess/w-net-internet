@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthIntegrationTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in w-net-internet Coverage Results</a> &gt; <a href="index.source.html" class="el_package">com.maires.wnet.integration</a> &gt; <span class="el_source">AuthIntegrationTest.java</span></div><h1>AuthIntegrationTest.java</h1><pre class="source lang-java linenums">package com.maires.wnet.integration;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.maires.wnet.controller.dto.AuthDto;
+import com.maires.wnet.entity.User;
+import com.maires.wnet.repository.EquipmentRepository;
+import com.maires.wnet.repository.InstallationRepository;
+import com.maires.wnet.repository.PlanRepository;
+import com.maires.wnet.repository.TechnicianRepository;
+import com.maires.wnet.repository.UserRepository;
+import com.maires.wnet.security.Role;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+@Testcontainers
+@DisplayName(&quot;Authentication integration tests&quot;)
+<span class="fc" id="L36">public class AuthIntegrationTest {</span>
+
+  @Container
+<span class="fc" id="L39">  public static PostgreSQLContainer POSTGRES_CONTAINER = new PostgreSQLContainer(&quot;postgres&quot;)</span>
+<span class="fc" id="L40">      .withDatabaseName(&quot;wnetdb&quot;);</span>
+  @Container
+<span class="fc" id="L42">  public static KafkaContainer KAFKA_CONTAINER = new KafkaContainer();</span>
+
+  @Autowired
+  UserRepository userRepository;
+
+  @Autowired
+  PlanRepository planRepository;
+
+  @Autowired
+  InstallationRepository installationRepository;
+
+  @Autowired
+  TechnicianRepository technicianRepository;
+
+  @Autowired
+  EquipmentRepository equipmentRepository;
+
+  @Autowired
+  MockMvc mockMvc;
+
+  @Autowired
+  private PasswordEncoder passwordEncoder;
+
+
+  @DynamicPropertySource
+  public static void overrideProperties(DynamicPropertyRegistry registry) {
+<span class="fc" id="L68">    registry.add(&quot;spring.datasource.url&quot;, POSTGRES_CONTAINER::getJdbcUrl);</span>
+<span class="fc" id="L69">    registry.add(&quot;spring.datasource.username&quot;, POSTGRES_CONTAINER::getUsername);</span>
+<span class="fc" id="L70">    registry.add(&quot;spring.datasource.password&quot;, POSTGRES_CONTAINER::getPassword);</span>
+<span class="fc" id="L71">    registry.add(&quot;spring.kafka.bootstrap-servers&quot;, KAFKA_CONTAINER::getBootstrapServers);</span>
+<span class="fc" id="L72">  }</span>
+
+  @BeforeEach
+  public void cleanUp() {
+<span class="fc" id="L76">    userRepository.deleteAll();</span>
+<span class="fc" id="L77">    installationRepository.deleteAll();</span>
+<span class="fc" id="L78">    technicianRepository.deleteAll();</span>
+<span class="fc" id="L79">    planRepository.deleteAll();</span>
+<span class="fc" id="L80">    equipmentRepository.deleteAll();</span>
+
+<span class="fc" id="L82">    User admin = new User(</span>
+        null,
+        &quot;System Manager Administrator&quot;,
+        &quot;admin@mail.com&quot;,
+        &quot;admin&quot;,
+<span class="fc" id="L87">        passwordEncoder.encode(&quot;segredo123&quot;),</span>
+        Role.ADMIN);
+
+<span class="fc" id="L90">    userRepository.save(admin);</span>
+<span class="fc" id="L91">  }</span>
+
+  @Test
+  @DisplayName(&quot;Login successfully&quot;)
+  public void testAuthentication() throws Exception {
+
+<span class="fc" id="L97">    AuthDto login = new AuthDto(&quot;admin&quot;, &quot;segredo123&quot;);</span>
+
+<span class="fc" id="L99">    ObjectMapper objectMapper = new ObjectMapper();</span>
+<span class="fc" id="L100">    String loginJson = objectMapper.writeValueAsString(login);</span>
+<span class="fc" id="L101">    String authUrl = &quot;/auth/login&quot;;</span>
+
+<span class="fc" id="L103">    mockMvc.perform(post(authUrl)</span>
+<span class="fc" id="L104">            .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L105">            .accept(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L106">            .content(loginJson))</span>
+<span class="fc" id="L107">        .andExpect(status().isOk())</span>
+<span class="fc" id="L108">        .andExpect(jsonPath(&quot;$.token&quot;).exists());</span>
+<span class="fc" id="L109">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

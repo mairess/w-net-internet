@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InstallationService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in w-net-internet Coverage Results</a> &gt; <a href="index.source.html" class="el_package">com.maires.wnet.service</a> &gt; <span class="el_source">InstallationService.java</span></div><h1>InstallationService.java</h1><pre class="source lang-java linenums">package com.maires.wnet.service;
+
+import com.maires.wnet.entity.Address;
+import com.maires.wnet.entity.Equipment;
+import com.maires.wnet.entity.Installation;
+import com.maires.wnet.entity.Plan;
+import com.maires.wnet.entity.Technician;
+import com.maires.wnet.repository.AddressRepository;
+import com.maires.wnet.repository.EquipmentRepository;
+import com.maires.wnet.repository.InstallationRepository;
+import com.maires.wnet.repository.PlanRepository;
+import com.maires.wnet.repository.TechnicianRepository;
+import com.maires.wnet.service.exception.EquipmentAlreadyAssociatedException;
+import com.maires.wnet.service.exception.EquipmentNotFoundException;
+import com.maires.wnet.service.exception.InstallationNotFoundException;
+import com.maires.wnet.service.exception.PlanNotFoundException;
+import com.maires.wnet.service.exception.TechnicianNotFoundException;
+import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.stereotype.Service;
+
+
+/**
+ * The type Installation service.
+ */
+@Service
+public class InstallationService {
+
+  private final InstallationRepository installationRepository;
+  private final AddressRepository addressRepository;
+  private final EquipmentRepository equipmentRepository;
+  private final PlanRepository planRepository;
+  private final TechnicianRepository technicianRepository;
+
+
+  /**
+   * Instantiates a new Installation service.
+   *
+   * @param installationRepository the installation repository
+   * @param addressRepository      the address repository
+   * @param equipmentRepository    the equipment repository
+   * @param planRepository         the plan repository
+   * @param technicianRepository   the technician repository
+   */
+  public InstallationService(
+      InstallationRepository installationRepository,
+      AddressRepository addressRepository,
+      EquipmentRepository equipmentRepository,
+      PlanRepository planRepository,
+      TechnicianRepository technicianRepository
+<span class="fc" id="L52">  ) {</span>
+<span class="fc" id="L53">    this.installationRepository = installationRepository;</span>
+<span class="fc" id="L54">    this.addressRepository = addressRepository;</span>
+<span class="fc" id="L55">    this.equipmentRepository = equipmentRepository;</span>
+<span class="fc" id="L56">    this.planRepository = planRepository;</span>
+<span class="fc" id="L57">    this.technicianRepository = technicianRepository;</span>
+<span class="fc" id="L58">  }</span>
+
+  /**
+   * Find all installations list.
+   *
+   * @return the list
+   */
+  public List&lt;Installation&gt; findAllInstallations() {
+<span class="fc" id="L66">    return installationRepository.findAll();</span>
+  }
+
+  /**
+   * Find installation by id installation.
+   *
+   * @param installationId the installation id
+   * @return the installation
+   * @throws InstallationNotFoundException the installation not found exception
+   */
+  public Installation findInstallationById(Long installationId)
+      throws InstallationNotFoundException {
+<span class="fc" id="L78">    return installationRepository.findById(installationId).orElseThrow(</span>
+<span class="nc" id="L79">        () -&gt; new InstallationNotFoundException(installationId.toString()));</span>
+  }
+
+  /**
+   * Update installation installation.
+   *
+   * @param installationId the installation id
+   * @param planId         the plan id
+   * @param technicianId   the technician id
+   * @param equipmentIds   the equipment ids
+   * @return the installation
+   * @throws InstallationNotFoundException       the installation not found exception
+   * @throws PlanNotFoundException               the plan not found exception
+   * @throws TechnicianNotFoundException         the technician not found exception
+   * @throws EquipmentNotFoundException          the equipment not found exception
+   * @throws EquipmentAlreadyAssociatedException the equipment already associated exception
+   */
+  @Transactional
+  public Installation updateInstallation(
+      Long installationId,
+      Long planId,
+      Long technicianId,
+      List&lt;Long&gt; equipmentIds
+  ) throws
+      InstallationNotFoundException,
+      PlanNotFoundException,
+      TechnicianNotFoundException,
+      EquipmentNotFoundException,
+      EquipmentAlreadyAssociatedException {
+
+<span class="fc" id="L109">    Installation installationToUpdate = findInstallationById(installationId);</span>
+
+<span class="fc" id="L111">    installationToUpdate.getEquipments()</span>
+<span class="fc" id="L112">        .forEach(equipment -&gt; {</span>
+<span class="nc" id="L113">          equipment.setInstallation(null);</span>
+<span class="nc" id="L114">          equipmentRepository.save(equipment);</span>
+<span class="nc" id="L115">        });</span>
+
+<span class="fc" id="L117">    installationToUpdate.getEquipments().clear();</span>
+
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">    if (!equipmentIds.isEmpty()) {</span>
+
+<span class="nc" id="L121">      List&lt;Equipment&gt; equipmentList = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L123" title="All 2 branches missed.">      for (Long id : equipmentIds) {</span>
+
+<span class="nc" id="L125">        Equipment equipment = equipmentRepository.findById(id)</span>
+<span class="nc" id="L126">            .orElseThrow(() -&gt; new EquipmentNotFoundException(id.toString()));</span>
+
+<span class="nc bnc" id="L128" title="All 2 branches missed.">        if (equipment.getInstallation() != null) {</span>
+<span class="nc" id="L129">          throw new EquipmentAlreadyAssociatedException();</span>
+        }
+<span class="nc" id="L131">        equipmentList.add(equipment);</span>
+<span class="nc" id="L132">        equipment.setInstallation(installationToUpdate);</span>
+<span class="nc" id="L133">        equipmentRepository.save(equipment);</span>
+<span class="nc" id="L134">      }</span>
+
+<span class="nc" id="L136">      installationToUpdate.setEquipments(equipmentList);</span>
+    }
+
+<span class="fc" id="L139">    Plan plan = planRepository.findById(planId)</span>
+<span class="pc" id="L140">        .orElseThrow(() -&gt; new PlanNotFoundException(planId.toString()));</span>
+
+<span class="fc" id="L142">    Technician technician = technicianRepository.findById(technicianId)</span>
+<span class="pc" id="L143">        .orElseThrow(() -&gt; new TechnicianNotFoundException(technicianId.toString()));</span>
+
+<span class="fc" id="L145">    installationToUpdate.setPlan(plan);</span>
+<span class="fc" id="L146">    installationToUpdate.setTechnician(technician);</span>
+<span class="fc" id="L147">    return installationRepository.save(installationToUpdate);</span>
+  }
+
+
+  /**
+   * Remove installation by id installation.
+   *
+   * @param installationId the installation id
+   * @return the installation
+   * @throws InstallationNotFoundException the installation not found exception
+   */
+  @Transactional
+  public Installation removeInstallationById(Long installationId)
+      throws InstallationNotFoundException {
+
+<span class="fc" id="L162">    Installation deletedInstallation = findInstallationById(installationId);</span>
+<span class="fc" id="L163">    Address address = deletedInstallation.getAddress();</span>
+
+<span class="pc bpc" id="L165" title="1 of 2 branches missed.">    if (address != null) {</span>
+<span class="nc" id="L166">      address.setInstallation(null);</span>
+<span class="nc" id="L167">      addressRepository.save(address);</span>
+    }
+
+<span class="fc" id="L170">    deletedInstallation.getEquipments()</span>
+<span class="fc" id="L171">        .forEach(equipment -&gt; {</span>
+<span class="nc" id="L172">          equipment.setInstallation(null);</span>
+<span class="nc" id="L173">          equipmentRepository.save(equipment);</span>
+<span class="nc" id="L174">        });</span>
+
+<span class="fc" id="L176">    installationRepository.delete(deletedInstallation);</span>
+<span class="fc" id="L177">    return deletedInstallation;</span>
+
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

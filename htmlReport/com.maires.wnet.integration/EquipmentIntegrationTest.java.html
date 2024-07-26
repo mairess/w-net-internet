@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EquipmentIntegrationTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java in w-net-internet Coverage Results</a> &gt; <a href="index.source.html" class="el_package">com.maires.wnet.integration</a> &gt; <span class="el_source">EquipmentIntegrationTest.java</span></div><h1>EquipmentIntegrationTest.java</h1><pre class="source lang-java linenums">package com.maires.wnet.integration;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.maires.wnet.entity.Equipment;
+import com.maires.wnet.entity.EquipmentType;
+import com.maires.wnet.entity.Installation;
+import com.maires.wnet.entity.User;
+import com.maires.wnet.repository.EquipmentRepository;
+import com.maires.wnet.repository.InstallationRepository;
+import com.maires.wnet.repository.UserRepository;
+import com.maires.wnet.security.Role;
+import com.maires.wnet.service.TokenService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+@Testcontainers
+@DisplayName(&quot;Equipment integration tests&quot;)
+<span class="fc" id="L40">public class EquipmentIntegrationTest {</span>
+
+  @Container
+<span class="fc" id="L43">  public static PostgreSQLContainer POSTGRES_CONTAINER = new PostgreSQLContainer(&quot;postgres&quot;)</span>
+<span class="fc" id="L44">      .withDatabaseName(&quot;wnetdb&quot;);</span>
+  @Container
+<span class="fc" id="L46">  public static KafkaContainer KAFKA_CONTAINER = new KafkaContainer();</span>
+  @Autowired
+  EquipmentRepository equipmentRepository;
+  @Autowired
+  UserRepository userRepository;
+  @Autowired
+  InstallationRepository installationRepository;
+  @Autowired
+  MockMvc mockMvc;
+  @Autowired
+  private TokenService tokenService;
+  private String tokenAdmin;
+
+  @DynamicPropertySource
+  public static void overrideProperties(DynamicPropertyRegistry registry) {
+<span class="fc" id="L61">    registry.add(&quot;spring.datasource.url&quot;, POSTGRES_CONTAINER::getJdbcUrl);</span>
+<span class="fc" id="L62">    registry.add(&quot;spring.datasource.username&quot;, POSTGRES_CONTAINER::getUsername);</span>
+<span class="fc" id="L63">    registry.add(&quot;spring.datasource.password&quot;, POSTGRES_CONTAINER::getPassword);</span>
+<span class="fc" id="L64">    registry.add(&quot;spring.kafka.bootstrap-servers&quot;, KAFKA_CONTAINER::getBootstrapServers);</span>
+<span class="fc" id="L65">  }</span>
+
+  @BeforeEach
+  public void cleanUp() {
+<span class="fc" id="L69">    userRepository.deleteAll();</span>
+<span class="fc" id="L70">    equipmentRepository.deleteAll();</span>
+<span class="fc" id="L71">    User admin = new User(null, &quot;System Manager Administrator&quot;, &quot;admin@mail.com&quot;, &quot;admin&quot;,</span>
+        &quot;segredo123&quot;,
+        Role.ADMIN);
+<span class="fc" id="L74">    User userAdmin = userRepository.save(admin);</span>
+<span class="fc" id="L75">    tokenAdmin = tokenService.generateToken(userAdmin.getUsername());</span>
+<span class="fc" id="L76">  }</span>
+
+  @Test
+  @DisplayName(&quot;Retrieval all equipments&quot;)
+  public void testEquipmentRetrievalAll() throws Exception {
+<span class="fc" id="L81">    Equipment router = new Equipment(EquipmentType.ROUTER, &quot;TP-Link Deco M4&quot;, &quot;SN5332&quot;, &quot;TP-Link&quot;);</span>
+<span class="fc" id="L82">    Equipment modem = new Equipment(EquipmentType.MODEM, &quot;Motorola MG7700&quot;, &quot;SN5333&quot;, &quot;Motorola&quot;);</span>
+
+<span class="fc" id="L84">    equipmentRepository.save(router);</span>
+<span class="fc" id="L85">    equipmentRepository.save(modem);</span>
+<span class="fc" id="L86">    String equipmentUrl = &quot;/equipments&quot;;</span>
+
+<span class="fc" id="L88">    mockMvc.perform(get(equipmentUrl)</span>
+<span class="fc" id="L89">            .accept(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L90">            .header(HttpHeaders.AUTHORIZATION, &quot;Bearer &quot; + tokenAdmin))</span>
+<span class="fc" id="L91">        .andExpect(status().isOk())</span>
+<span class="fc" id="L92">        .andExpect(jsonPath(&quot;$&quot;).isArray())</span>
+<span class="fc" id="L93">        .andExpect(jsonPath(&quot;$.length()&quot;).value(2))</span>
+<span class="fc" id="L94">        .andExpect(jsonPath(&quot;$[0].id&quot;).exists())</span>
+<span class="fc" id="L95">        .andExpect(jsonPath(&quot;$[0].model&quot;).value(&quot;TP-Link Deco M4&quot;))</span>
+<span class="fc" id="L96">        .andExpect(jsonPath(&quot;$[1].id&quot;).exists())</span>
+<span class="fc" id="L97">        .andExpect(jsonPath(&quot;$[1].model&quot;).value(&quot;Motorola MG7700&quot;));</span>
+<span class="fc" id="L98">  }</span>
+
+  @Test
+  @DisplayName(&quot;Retrieval equipment by id&quot;)
+  public void testEquipmentRetrievalById() throws Exception {
+<span class="fc" id="L103">    Equipment router = new Equipment(EquipmentType.ROUTER, &quot;TP-Link Deco M4&quot;, &quot;SN5332&quot;, &quot;TP-Link&quot;);</span>
+
+<span class="fc" id="L105">    equipmentRepository.save(router);</span>
+<span class="fc" id="L106">    String equipmentUrl = &quot;/equipments/%s&quot;.formatted(router.getId());</span>
+
+<span class="fc" id="L108">    mockMvc.perform(get(equipmentUrl)</span>
+<span class="fc" id="L109">            .accept(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L110">            .header(HttpHeaders.AUTHORIZATION, &quot;Bearer &quot; + tokenAdmin))</span>
+<span class="fc" id="L111">        .andExpect(status().isOk())</span>
+<span class="fc" id="L112">        .andExpect(jsonPath(&quot;$.id&quot;).exists())</span>
+<span class="fc" id="L113">        .andExpect(jsonPath(&quot;$.model&quot;).value(&quot;TP-Link Deco M4&quot;));</span>
+<span class="fc" id="L114">  }</span>
+
+  @Test
+  @DisplayName(&quot;Throw equipmentNotFoundException&quot;)
+  public void testEquipmentNotFoundExceptionById() throws Exception {
+
+<span class="fc" id="L120">    String equipmentUrl = &quot;/equipments/666&quot;;</span>
+
+<span class="fc" id="L122">    mockMvc.perform(get(equipmentUrl)</span>
+<span class="fc" id="L123">            .header(HttpHeaders.AUTHORIZATION, &quot;Bearer &quot; + tokenAdmin)</span>
+<span class="fc" id="L124">            .accept(MediaType.APPLICATION_JSON))</span>
+<span class="fc" id="L125">        .andExpect(status().isNotFound())</span>
+<span class="fc" id="L126">        .andExpect(jsonPath(&quot;$.message&quot;).value(&quot;Equipment not found with identifier 666!&quot;));</span>
+<span class="fc" id="L127">  }</span>
+
+  @Test
+  @DisplayName(&quot;Create equipment&quot;)
+  public void testCreateEquipment() throws Exception {
+
+<span class="fc" id="L133">    Equipment newEquipment = new Equipment(EquipmentType.ROUTER, &quot;TP-Link Deco M4&quot;, &quot;SN5332&quot;,</span>
+        &quot;TP-Link&quot;);
+
+<span class="fc" id="L136">    ObjectMapper objectMapper = new ObjectMapper();</span>
+<span class="fc" id="L137">    String newEquipmentJson = objectMapper.writeValueAsString(newEquipment);</span>
+<span class="fc" id="L138">    String equipmentUrl = &quot;/equipments&quot;;</span>
+
+<span class="fc" id="L140">    mockMvc.perform(post(equipmentUrl)</span>
+<span class="fc" id="L141">            .header(HttpHeaders.AUTHORIZATION, &quot;Bearer &quot; + tokenAdmin)</span>
+<span class="fc" id="L142">            .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L143">            .accept(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L144">            .content(newEquipmentJson))</span>
+<span class="fc" id="L145">        .andExpect(status().isCreated())</span>
+<span class="fc" id="L146">        .andExpect(jsonPath(&quot;$.id&quot;).exists())</span>
+<span class="fc" id="L147">        .andExpect(jsonPath(&quot;$.type&quot;).value(&quot;ROUTER&quot;))</span>
+<span class="fc" id="L148">        .andExpect(jsonPath(&quot;$.model&quot;).value(&quot;TP-Link Deco M4&quot;))</span>
+<span class="fc" id="L149">        .andExpect(jsonPath(&quot;$.serialNumber&quot;).value(&quot;SN5332&quot;))</span>
+<span class="fc" id="L150">        .andExpect(jsonPath(&quot;$.manufacturer&quot;).value(&quot;TP-Link&quot;));</span>
+<span class="fc" id="L151">  }</span>
+
+  @Test
+  @DisplayName(&quot;Update equipment&quot;)
+  public void testUpdateEquipment() throws Exception {
+
+<span class="fc" id="L157">    Equipment equipmentToUpdate = new Equipment(EquipmentType.ROUTER, &quot;TP-Link Deco M4&quot;, &quot;SN5332&quot;,</span>
+        &quot;TP-Link&quot;);
+<span class="fc" id="L159">    equipmentRepository.save(equipmentToUpdate);</span>
+
+<span class="fc" id="L161">    equipmentToUpdate.setType(EquipmentType.MODEM);</span>
+<span class="fc" id="L162">    equipmentToUpdate.setModel(&quot;Netgear Nighthawk AC1900&quot;);</span>
+<span class="fc" id="L163">    equipmentToUpdate.setManufacturer(&quot;Netgear&quot;);</span>
+
+<span class="fc" id="L165">    ObjectMapper objectMapper = new ObjectMapper();</span>
+<span class="fc" id="L166">    String updatedEquipmentJson = objectMapper.writeValueAsString(equipmentToUpdate);</span>
+<span class="fc" id="L167">    String equipmentUrl = &quot;/equipments/%s&quot;.formatted(equipmentToUpdate.getId());</span>
+
+<span class="fc" id="L169">    mockMvc.perform(put(equipmentUrl)</span>
+<span class="fc" id="L170">            .header(HttpHeaders.AUTHORIZATION, &quot;Bearer &quot; + tokenAdmin)</span>
+<span class="fc" id="L171">            .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L172">            .accept(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L173">            .content(updatedEquipmentJson))</span>
+<span class="fc" id="L174">        .andExpect(status().isOk())</span>
+<span class="fc" id="L175">        .andExpect(jsonPath(&quot;$.id&quot;).exists())</span>
+<span class="fc" id="L176">        .andExpect(jsonPath(&quot;$.type&quot;).value(&quot;MODEM&quot;))</span>
+<span class="fc" id="L177">        .andExpect(jsonPath(&quot;$.model&quot;).value(&quot;Netgear Nighthawk AC1900&quot;))</span>
+<span class="fc" id="L178">        .andExpect(jsonPath(&quot;$.serialNumber&quot;).value(&quot;SN5332&quot;))</span>
+<span class="fc" id="L179">        .andExpect(jsonPath(&quot;$.manufacturer&quot;).value(&quot;Netgear&quot;));</span>
+<span class="fc" id="L180">  }</span>
+
+  @Test
+  @DisplayName(&quot;Delete equipment&quot;)
+  public void testDeleteEquipment() throws Exception {
+
+<span class="fc" id="L186">    Equipment equipmentToDelete = new Equipment(EquipmentType.ROUTER, &quot;TP-Link Deco M4&quot;, &quot;SN5332&quot;,</span>
+        &quot;TP-Link&quot;);
+<span class="fc" id="L188">    equipmentRepository.save(equipmentToDelete);</span>
+
+<span class="fc" id="L190">    String equipmentUrl = &quot;/equipments/%s&quot;.formatted(equipmentToDelete.getId());</span>
+
+<span class="fc" id="L192">    mockMvc.perform(delete(equipmentUrl)</span>
+<span class="fc" id="L193">            .header(HttpHeaders.AUTHORIZATION, &quot;Bearer &quot; + tokenAdmin)</span>
+<span class="fc" id="L194">            .accept(MediaType.APPLICATION_JSON))</span>
+<span class="fc" id="L195">        .andExpect(status().isOk())</span>
+<span class="fc" id="L196">        .andExpect(jsonPath(&quot;$.id&quot;).exists())</span>
+<span class="fc" id="L197">        .andExpect(jsonPath(&quot;$.type&quot;).value(&quot;ROUTER&quot;))</span>
+<span class="fc" id="L198">        .andExpect(jsonPath(&quot;$.model&quot;).value(&quot;TP-Link Deco M4&quot;))</span>
+<span class="fc" id="L199">        .andExpect(jsonPath(&quot;$.serialNumber&quot;).value(&quot;SN5332&quot;))</span>
+<span class="fc" id="L200">        .andExpect(jsonPath(&quot;$.manufacturer&quot;).value(&quot;TP-Link&quot;));</span>
+<span class="fc" id="L201">  }</span>
+
+  @Test
+  @DisplayName(&quot;Throw equipmentCannotBeExcludedException&quot;)
+  public void testEquipmentCannotBeExcludedException() throws Exception {
+
+<span class="fc" id="L207">    Equipment equipmentToDelete = new Equipment(EquipmentType.ROUTER, &quot;TP-Link Deco M4&quot;, &quot;SN5332&quot;,</span>
+        &quot;TP-Link&quot;);
+
+<span class="fc" id="L210">    Installation installation = new Installation();</span>
+<span class="fc" id="L211">    installationRepository.save(installation);</span>
+
+<span class="fc" id="L213">    equipmentToDelete.setInstallation(installation);</span>
+<span class="fc" id="L214">    equipmentRepository.save(equipmentToDelete);</span>
+
+<span class="fc" id="L216">    String equipmentUrl = &quot;/equipments/%s&quot;.formatted(equipmentToDelete.getId());</span>
+
+<span class="fc" id="L218">    mockMvc.perform(delete(equipmentUrl)</span>
+<span class="fc" id="L219">            .header(HttpHeaders.AUTHORIZATION, &quot;Bearer &quot; + tokenAdmin)</span>
+<span class="fc" id="L220">            .accept(MediaType.APPLICATION_JSON))</span>
+<span class="fc" id="L221">        .andExpect(status().isConflict())</span>
+<span class="fc" id="L222">        .andExpect(jsonPath(&quot;$.message&quot;).value(</span>
+            &quot;This equipment cannot be excluded because it has an association!&quot;));
+<span class="fc" id="L224">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
